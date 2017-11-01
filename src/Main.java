@@ -14,8 +14,6 @@ public class Main extends Application {
     RobotSim robot = new RobotSim();
 
     public static void main(String[] args) {
-        Algorithm.boundaryPoints.add(0, new Point2D.Double(100, 100));
-
         launch(args);
     }
 
@@ -40,9 +38,6 @@ public class Main extends Application {
             public void handle(long currentNanoTime)
             {
                 gc.clearRect(0, 0, 800, 600);
-
-                double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-
                 drawShapes(gc);
             }
         }.start();
@@ -55,19 +50,15 @@ public class Main extends Application {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(3);
 
-        for (int i = 0; i < Algorithm.boundaryPoints.size(); i++) {
-            if (i == Algorithm.boundaryPoints.size() - 1) {
-                gc.strokeLine(Algorithm.boundaryPoints.get(i).getX(), Algorithm.boundaryPoints.get(i).getY(),
-                        Algorithm.boundaryPoints.get(0).getX(), Algorithm.boundaryPoints.get(0).getY());
-            } else {
-                gc.strokeLine(Algorithm.boundaryPoints.get(i).getX(), Algorithm.boundaryPoints.get(i).getY(),
-                        Algorithm.boundaryPoints.get(i+1).getX(), Algorithm.boundaryPoints.get(i+1).getY());
-            }
-
-            gc.fillOval(Algorithm.boundaryPoints.get(i).getX(), Algorithm.boundaryPoints.get(i).getY(), 8, 8);
+        for (int i = 0; i < Algorithm.boundaryPoints.size() - 1; i++) {
+            gc.strokeLine(Algorithm.boundaryPoints.get(i).getX(), Algorithm.boundaryPoints.get(i).getY(), Algorithm.boundaryPoints.get(i+1).getX(), Algorithm.boundaryPoints.get(i+1).getY());
         }
 
-        robot.approachPoint(Algorithm.boundaryPoints.get(Algorithm.boundaryPoints.size()-1));
+        if (Algorithm.boundaryPoints.size() != 0) {
+            gc.fillOval(Algorithm.boundaryPoints.get(Algorithm.boundaryPoints.size()-1).getX(), Algorithm.boundaryPoints.get(Algorithm.boundaryPoints.size()-1).getY(), 5, 5);
+            robot.approachPoint(Algorithm.boundaryPoints.get(Algorithm.boundaryPoints.size()-1));
+        }
+
         gc.fillRect(robot.pos.getX(), robot.pos.getY(), robot.width, robot.height);
     }
 }

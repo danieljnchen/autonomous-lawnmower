@@ -1,11 +1,14 @@
 import java.awt.geom.Point2D;
 
-public class RobotSim {
-    public Point2D pos = new Point2D.Double(0, 0);
-    public double width = 15;
-    public double height = 10;
+class RobotSim {
+    Point2D pos = new Point2D.Double(0, 0);
+    double width = 15;
+    double height = 10;
+    private Point2D currentTarget;
 
-    public void approachPoint(Point2D point) {
+    void approachPoint(Point2D point) {
+        currentTarget = point;
+
         double dx = point.getX() - pos.getX();
         double dy = point.getY() - pos.getY();
 
