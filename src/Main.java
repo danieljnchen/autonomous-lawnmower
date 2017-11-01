@@ -31,8 +31,6 @@ public class Main extends Application {
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
 
-        final long startNanoTime = System.nanoTime();
-
         new AnimationTimer()
         {
             public void handle(long currentNanoTime)
