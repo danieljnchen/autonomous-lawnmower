@@ -11,9 +11,11 @@ import javafx.stage.Stage;
 import java.awt.geom.Point2D;
 
 public class Main extends Application {
-    RobotSim robot = new RobotSim();
+    static Robot robot = new Robot();
+    static Algorithm algorithm = new Algorithm(robot);
 
     public static void main(String[] args) {
+        algorithm.generatePath();
         launch(args);
     }
 
@@ -24,9 +26,7 @@ public class Main extends Application {
         Canvas canvas = new Canvas(800, 600);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> Algorithm.boundaryPoints.add(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
-
-        drawShapes(gc);
+        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
@@ -48,13 +48,13 @@ public class Main extends Application {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(3);
 
-        for (int i = 0; i < Algorithm.boundaryPoints.size() - 1; i++) {
-            gc.strokeLine(Algorithm.boundaryPoints.get(i).getX(), Algorithm.boundaryPoints.get(i).getY(), Algorithm.boundaryPoints.get(i+1).getX(), Algorithm.boundaryPoints.get(i+1).getY());
+        for (int i = 0; i < robot.pathNodes.size() - 1; i++) {
+            gc.strokeLine(robot.pathNodes.get(i).getX(), robot.pathNodes.get(i).getY(), robot.pathNodes.get(i+1).getX(), robot.pathNodes.get(i+1).getY());
         }
 
-        if (Algorithm.boundaryPoints.size() != 0) {
-            gc.fillOval(Algorithm.boundaryPoints.get(Algorithm.boundaryPoints.size()-1).getX(), Algorithm.boundaryPoints.get(Algorithm.boundaryPoints.size()-1).getY(), 5, 5);
-            robot.approachPoint(Algorithm.boundaryPoints.get(Algorithm.boundaryPoints.size()-1));
+        if (robot.pathNodes.size() != 0) {
+            gc.fillOval(robot.pathNodes.get(robot.pathNodes.size()-1).getX(), robot.pathNodes.get(robot.pathNodes.size()-1).getY(), 5, 5);
+            robot.approachNextNode();
         }
 
         gc.fillRect(robot.pos.getX(), robot.pos.getY(), robot.width, robot.height);

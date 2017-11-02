@@ -2,9 +2,31 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Algorithm {
-    public static ArrayList<Point2D> boundaryPoints = new ArrayList<>();
+    Robot robot;
+    
+    public Algorithm(Robot robot) {
+        this.robot = robot;
+    }
 
-    public static ArrayList<Point2D> makeRect(Point2D p1, Point2D p2) {
+    public void generatePath() {
+        generateZigZag();
+    }
+
+    public void generateZigZag() {
+        double width = 50;
+        double height = 100;
+        
+        // Get point that stops the robot
+        for (int i = 0; i < height; i+=2) {
+            Main.robot.pathNodes.add(new Point2D.Double(0, robot.width * i));
+            Main.robot.pathNodes.add(new Point2D.Double(width, robot.width * i));
+            Main.robot.pathNodes.add(new Point2D.Double(width, robot.width * (i+1)));
+            Main.robot.pathNodes.add(new Point2D.Double(0, robot.width * (i+1)));
+            Main.robot.pathNodes.add(new Point2D.Double(0, robot.width * (i+2)));
+        }
+    }
+
+    public ArrayList<Point2D> makeRect(Point2D p1, Point2D p2) {
         ArrayList<Point2D> points = new ArrayList<>();
 
         points.add(new Point2D.Double(p1.getX(), p1.getY()));
