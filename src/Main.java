@@ -45,9 +45,15 @@ public class Main extends Application {
 
     private void drawShapes(GraphicsContext gc) {
         gc.setFill(Color.BLACK);
-        gc.setStroke(Color.BLUE);
         gc.setLineWidth(3);
 
+        // Draw boundaries
+        for (int i = 0; i < algorithm.boundary.size() - 1; i++) {
+            gc.strokeLine(robot.pathNodes.get(i).getX(), robot.pathNodes.get(i).getY(), robot.pathNodes.get(i+1).getX(), robot.pathNodes.get(i+1).getY());
+        }
+
+        // Draw robot node path
+        gc.setStroke(Color.DARKGRAY);
         for (int i = 0; i < robot.pathNodes.size() - 1; i++) {
             gc.strokeLine(robot.pathNodes.get(i).getX(), robot.pathNodes.get(i).getY(), robot.pathNodes.get(i+1).getX(), robot.pathNodes.get(i+1).getY());
         }

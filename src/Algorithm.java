@@ -3,16 +3,18 @@ import java.util.ArrayList;
 
 public class Algorithm {
     Robot robot;
+
+    ArrayList<Point2D> boundary = new ArrayList<>();
     
-    public Algorithm(Robot robot) {
+    Algorithm(Robot robot) {
         this.robot = robot;
     }
 
-    public void generatePath() {
+    void generatePath() {
         generateZigZag();
     }
 
-    public void generateZigZag() {
+    private void generateZigZag() {
         double width = 50;
         double height = 100;
         
