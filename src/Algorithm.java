@@ -1,30 +1,104 @@
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 public class Algorithm {
     Robot robot;
 
-    ArrayList<Point2D> boundary = new ArrayList<>();
+    ArrayList<Point2D> outerBoundary = new ArrayList<>();
+    ArrayList<ArrayList<Point2D>> innerBoundaries = new ArrayList<>();
     
     Algorithm(Robot robot) {
         this.robot = robot;
     }
 
-    void generatePath() {
-        generateZigZag();
+    void perimeterSweep(ArrayList<Point2D> perimeter) {
+        robot.pathNodes.addAll(perimeter);
+        robot.pathNodes.add(perimeter.get(0));
     }
 
-    private void generateZigZag() {
-        double width = 50;
-        double height = 100;
-        
-        // Get point that stops the robot
-        for (int i = 0; i < height; i+=2) {
-            Main.robot.pathNodes.add(new Point2D.Double(0, robot.width * i));
-            Main.robot.pathNodes.add(new Point2D.Double(width, robot.width * i));
-            Main.robot.pathNodes.add(new Point2D.Double(width, robot.width * (i+1)));
-            Main.robot.pathNodes.add(new Point2D.Double(0, robot.width * (i+1)));
-            Main.robot.pathNodes.add(new Point2D.Double(0, robot.width * (i+2)));
+    void generatePath() {
+        perimeterSweep(outerBoundary);
+
+        for (Rectangle2D rect : subDivideIntoRects()) {
+            generateZigZag(rect);
+        }
+    }
+
+    ArrayList<Rectangle2D> subDivideIntoRects() {
+        ArrayList<Rectangle2D> subRects = new ArrayList<>();
+
+        double maxH = 0;
+        double lastW = 0;
+        double lastH = 0;
+
+        // Find max height of outer boundary
+        for (Point2D point : outerBoundary) {
+            if (point.getY() > maxH) {
+                // If so, our height is at that point
+                maxH = point.getY();
+                break;
+            }
+        }
+
+        // Repeat until area is fully subdivided
+        while (lastH < maxH) {
+            double curW = 0;
+            double curH = 0;
+
+            // Step 1: Set initial rect width
+            for (Point2D point : outerBoundary) {
+                // Check if the X component is bigger
+                if (point.getX() > curW && point.getY() == lastH) {
+                    curW = point.getX();
+                }
+            }
+
+            // Step 2: Find rect height based on change in x
+            for (Point2D point : outerBoundary) {
+                // Check if the X component has changed
+                if (point.getX() > curW) {
+                    // If so, our height is at that point
+                    curH = point.getX();
+                    break;
+                }
+            }
+
+            // TODO: set rect coords
+
+
+
+            // TODO: respect inner boundaries
+            // Step 3: Get the left-most point of all of the boundaries; this will be the divider
+            /*for (ArrayList<Point2D> boundary : innerBoundaries) {
+                for (int i = 0; i < boundary.size(); i++) {
+                    if (boundary.get(curHeight).getX() < nearestPoint) {
+                        nearestPoint = boundary.get(curHeight).getX();
+                    }
+                }
+            }*/
+
+            // Add the new subdivision to the list
+            subRects.add(new Rectangle2D.Double(0, lastH, curW, curH));
+
+            lastW = curW;
+            lastH = curH;
+        }
+
+        System.out.println(subRects.toString());
+        return subRects;
+    }
+
+    private void generateZigZag(Rectangle2D rect) {
+        int i = 0;
+        while (i < rect.getHeight() / robot.width) {
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), robot.width * i));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), robot.width * i));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), robot.width * (i+1)));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), robot.width * (i+1)));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), robot.width * (i+2)));
+
+            i+=2;
         }
     }
 

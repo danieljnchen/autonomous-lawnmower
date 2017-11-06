@@ -9,12 +9,20 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Main extends Application {
     static Robot robot = new Robot();
     static Algorithm algorithm = new Algorithm(robot);
 
     public static void main(String[] args) {
+        algorithm.outerBoundary.add(new Point2D.Double(0, 0));
+        algorithm.outerBoundary.add(new Point2D.Double(200, 0));
+        algorithm.outerBoundary.add(new Point2D.Double(200, 300));
+        algorithm.outerBoundary.add(new Point2D.Double(300, 300));
+        algorithm.outerBoundary.add(new Point2D.Double(300, 400));
+        algorithm.outerBoundary.add(new Point2D.Double(0, 400));
+
         algorithm.generatePath();
         launch(args);
     }
@@ -44,16 +52,25 @@ public class Main extends Application {
     }
 
     private void drawShapes(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.setLineWidth(3);
+        gc.setLineWidth(4);
 
-        // Draw boundaries
-        for (int i = 0; i < algorithm.boundary.size() - 1; i++) {
-            gc.strokeLine(robot.pathNodes.get(i).getX(), robot.pathNodes.get(i).getY(), robot.pathNodes.get(i+1).getX(), robot.pathNodes.get(i+1).getY());
+        // Draw outer boundaries
+        gc.setStroke(Color.BLUE);
+        for (int i = 0; i < algorithm.outerBoundary.size() - 1; i++) {
+            gc.strokeLine(algorithm.outerBoundary.get(i).getX(), algorithm.outerBoundary.get(i).getY(), algorithm.outerBoundary.get(i+1).getX(), algorithm.outerBoundary.get(i+1).getY());
+        }
+
+        // Draw inner boundaries
+        gc.setStroke(Color.OLIVEDRAB);
+        for (ArrayList bound : algorithm.innerBoundaries) {
+            for (int i = 0; i < bound.size(); i++) {
+                gc.strokeLine(robot.pathNodes.get(i).getX(), robot.pathNodes.get(i).getY(), robot.pathNodes.get(i+1).getX(), robot.pathNodes.get(i+1).getY());
+            }
         }
 
         // Draw robot node path
-        gc.setStroke(Color.DARKGRAY);
+        gc.setLineWidth(2);
+        gc.setStroke(Color.RED);
         for (int i = 0; i < robot.pathNodes.size() - 1; i++) {
             gc.strokeLine(robot.pathNodes.get(i).getX(), robot.pathNodes.get(i).getY(), robot.pathNodes.get(i+1).getX(), robot.pathNodes.get(i+1).getY());
         }
@@ -63,6 +80,7 @@ public class Main extends Application {
             robot.approachNextNode();
         }
 
-        gc.fillRect(robot.pos.getX(), robot.pos.getY(), robot.width, robot.height);
+        // Draw robot
+        gc.fillRect(robot.pos.getX() - robot.width/2, robot.pos.getY() - robot.height/2, robot.width, robot.height);
     }
 }
