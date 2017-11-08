@@ -35,9 +35,8 @@ public class Algorithm {
         // Find max height of outer boundary
         for (Point2D point : outerBoundary) {
             if (point.getY() > maxH) {
-                // If so, our height is at that point
+                // If so, our max height is at that point
                 maxH = point.getY();
-                break;
             }
         }
 
@@ -46,7 +45,7 @@ public class Algorithm {
             double curW = 0;
             double curH = 0;
 
-            // Step 1: Set initial rect width
+            // Step 1: Find max rect width
             for (Point2D point : outerBoundary) {
                 // Check if the X component is bigger
                 if (point.getX() > curW && point.getY() == lastH) {
@@ -54,19 +53,14 @@ public class Algorithm {
                 }
             }
 
-            // Step 2: Find rect height based on change in x
+            // Step 2: Find max rect height based on width
             for (Point2D point : outerBoundary) {
-                // Check if the X component has changed
-                if (point.getX() > curW) {
-                    // If so, our height is at that point
-                    curH = point.getX();
-                    break;
+                if (point.getY() > curH && point.getX() == curW) {
+                    curH = point.getY();
                 }
             }
 
             // TODO: set rect coords
-
-
 
             // TODO: respect inner boundaries
             // Step 3: Get the left-most point of all of the boundaries; this will be the divider
@@ -80,23 +74,23 @@ public class Algorithm {
 
             // Add the new subdivision to the list
             subRects.add(new Rectangle2D.Double(0, lastH, curW, curH));
+            System.out.println("Added rect: " + curW + ", " + curH);
 
             lastW = curW;
             lastH = curH;
         }
 
-        System.out.println(subRects.toString());
         return subRects;
     }
 
     private void generateZigZag(Rectangle2D rect) {
         int i = 0;
         while (i < rect.getHeight() / robot.width) {
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), robot.width * i));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), robot.width * i));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), robot.width * (i+1)));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), robot.width * (i+1)));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), robot.width * (i+2)));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * i));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * i));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * (i+1)));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+1)));
+            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+2)));
 
             i+=2;
         }

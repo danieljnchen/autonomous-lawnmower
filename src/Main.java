@@ -21,6 +21,7 @@ public class Main extends Application {
         algorithm.outerBoundary.add(new Point2D.Double(200, 300));
         algorithm.outerBoundary.add(new Point2D.Double(300, 300));
         algorithm.outerBoundary.add(new Point2D.Double(300, 400));
+        algorithm.outerBoundary.add(new Point2D.Double(200, 400));
         algorithm.outerBoundary.add(new Point2D.Double(0, 400));
 
         algorithm.generatePath();
@@ -35,6 +36,7 @@ public class Main extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
+
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
