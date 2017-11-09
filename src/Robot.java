@@ -17,7 +17,7 @@ class Robot {
         double theta = Math.atan2(dy, dx);
 
         //pos.setLocation(pos.getX() + Math.cos(theta), pos.getY() + Math.sin(theta));
-        pos.setLocation(pos.getX() + dx/10, pos.getY() + dy/10);
+        pos.setLocation(pos.getX() + dx/5, pos.getY() + dy/5);
 
         if (pos.distance(node) < 1) {
             if (pathNodes.size() - 1 > curNodeDest) {

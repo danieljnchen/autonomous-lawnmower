@@ -17,12 +17,15 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         algorithm.outerBoundary.add(new Point2D.Double(0, 0));
-        algorithm.outerBoundary.add(new Point2D.Double(200, 0));
-        algorithm.outerBoundary.add(new Point2D.Double(200, 300));
-        algorithm.outerBoundary.add(new Point2D.Double(300, 300));
-        algorithm.outerBoundary.add(new Point2D.Double(300, 400));
+        algorithm.outerBoundary.add(new Point2D.Double(100, 0));
+        algorithm.outerBoundary.add(new Point2D.Double(100, 200));
+        algorithm.outerBoundary.add(new Point2D.Double(200, 200));
         algorithm.outerBoundary.add(new Point2D.Double(200, 400));
-        algorithm.outerBoundary.add(new Point2D.Double(0, 400));
+        algorithm.outerBoundary.add(new Point2D.Double(200, 400));
+        algorithm.outerBoundary.add(new Point2D.Double(100, 500));
+        algorithm.outerBoundary.add(new Point2D.Double(0, 500));
+
+
 
         algorithm.generatePath();
         launch(args);

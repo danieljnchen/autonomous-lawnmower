@@ -7,7 +7,7 @@ public class Algorithm {
 
     ArrayList<Point2D> outerBoundary = new ArrayList<>();
     ArrayList<ArrayList<Point2D>> innerBoundaries = new ArrayList<>();
-    
+
     Algorithm(Robot robot) {
         this.robot = robot;
     }
@@ -29,8 +29,8 @@ public class Algorithm {
         ArrayList<Rectangle2D> subRects = new ArrayList<>();
 
         double maxH = 0;
-        double lastW = 0;
-        double lastH = 0;
+        // Track how far we have subdivided
+        double curY = 0;
 
         // Find max height of outer boundary
         for (Point2D point : outerBoundary) {
@@ -40,44 +40,38 @@ public class Algorithm {
             }
         }
 
+        System.out.println("Max height: " + maxH);
+
         // Repeat until area is fully subdivided
-        while (lastH < maxH) {
+        while (curY < maxH) {
+            // Dimensions of new rect
+            double curX = 0;
             double curW = 0;
             double curH = 0;
 
-            // Step 1: Find max rect width
+            // Step 1: Find rect width at the current Y
             for (Point2D point : outerBoundary) {
-                // Check if the X component is bigger
-                if (point.getX() > curW && point.getY() == lastH) {
+                if (point.getX() != curW && point.getY() == curY) {
                     curW = point.getX();
                 }
             }
 
             // Step 2: Find max rect height based on width
             for (Point2D point : outerBoundary) {
-                if (point.getY() > curH && point.getX() == curW) {
-                    curH = point.getY();
+                if (point.getY() - curY > curH && point.getX() == curW) {
+                    curH = point.getY() - curY;
+                    break;
                 }
             }
 
-            // TODO: set rect coords
-
             // TODO: respect inner boundaries
-            // Step 3: Get the left-most point of all of the boundaries; this will be the divider
-            /*for (ArrayList<Point2D> boundary : innerBoundaries) {
-                for (int i = 0; i < boundary.size(); i++) {
-                    if (boundary.get(curHeight).getX() < nearestPoint) {
-                        nearestPoint = boundary.get(curHeight).getX();
-                    }
-                }
-            }*/
 
             // Add the new subdivision to the list
-            subRects.add(new Rectangle2D.Double(0, lastH, curW, curH));
-            System.out.println("Added rect: " + curW + ", " + curH);
+            Rectangle2D rect = new Rectangle2D.Double(curX, curY, curW, curH);
+            subRects.add(rect);
+            System.out.println(rect.toString());
 
-            lastW = curW;
-            lastH = curH;
+            curY += curH;
         }
 
         return subRects;
