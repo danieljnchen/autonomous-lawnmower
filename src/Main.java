@@ -25,8 +25,6 @@ public class Main extends Application {
         algorithm.outerBoundary.add(new Point2D.Double(100, 500));
         algorithm.outerBoundary.add(new Point2D.Double(0, 500));
 
-
-
         algorithm.generatePath();
         launch(args);
     }

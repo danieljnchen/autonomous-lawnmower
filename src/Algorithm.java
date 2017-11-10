@@ -12,13 +12,13 @@ public class Algorithm {
         this.robot = robot;
     }
 
-    void perimeterSweep(ArrayList<Point2D> perimeter) {
+    void boundarySweep(ArrayList<Point2D> perimeter) {
         robot.pathNodes.addAll(perimeter);
         robot.pathNodes.add(perimeter.get(0));
     }
 
     void generatePath() {
-        perimeterSweep(outerBoundary);
+        boundarySweep(outerBoundary);
 
         for (Rectangle2D rect : subDivideIntoRects()) {
             generateZigZag(rect);
@@ -78,6 +78,8 @@ public class Algorithm {
     }
 
     private void generateZigZag(Rectangle2D rect) {
+        // Zig zag through defined rectangle based on robot width
+
         int i = 0;
         while (i < rect.getHeight() / robot.width) {
             Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * i));
@@ -88,16 +90,5 @@ public class Algorithm {
 
             i+=2;
         }
-    }
-
-    public ArrayList<Point2D> makeRect(Point2D p1, Point2D p2) {
-        ArrayList<Point2D> points = new ArrayList<>();
-
-        points.add(new Point2D.Double(p1.getX(), p1.getY()));
-        points.add(new Point2D.Double(p2.getX(), p1.getY()));
-        points.add(new Point2D.Double(p2.getX(), p2.getY()));
-        points.add(new Point2D.Double(p1.getX(), p2.getY()));
-
-        return points;
     }
 }
