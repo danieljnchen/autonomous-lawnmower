@@ -1,3 +1,4 @@
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -72,6 +73,10 @@ public class Algorithm {
             System.out.println(rect.toString());
 
             curY += curH;
+
+            if (curH == 0) {
+                break;
+            }
         }
 
         return subRects;
@@ -90,5 +95,9 @@ public class Algorithm {
 
             i+=2;
         }
+    }
+
+    private void raycast() {
+
     }
 }
