@@ -1,4 +1,3 @@
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -13,13 +12,13 @@ public class Algorithm {
         this.robot = robot;
     }
 
-    void boundarySweep(ArrayList<Point2D> perimeter) {
+    void perimeterSweep(ArrayList<Point2D> perimeter) {
         robot.pathNodes.addAll(perimeter);
         robot.pathNodes.add(perimeter.get(0));
     }
 
     void generatePath() {
-        boundarySweep(outerBoundary);
+        perimeterSweep(outerBoundary);
 
         for (Rectangle2D rect : subDivideIntoRects()) {
             generateZigZag(rect);
