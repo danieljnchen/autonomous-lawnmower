@@ -1,5 +1,6 @@
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
+
 import java.util.ArrayList;
 
 public class Algorithm {
@@ -67,7 +68,7 @@ public class Algorithm {
 			// TODO: respect inner boundaries
 
 			// Add the new subdivision to the list
-			Rectangle2D rect = new Rectangle2D.Double(curX, curY, curW, curH);
+			Rectangle2D rect = new Rectangle2D(curX, curY, curW, curH);
 			subRects.add(rect);
 			System.out.println(rect.toString());
 
@@ -86,11 +87,11 @@ public class Algorithm {
 
 		int i = 0;
 		while (i < rect.getHeight() / robot.width) {
-			Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * i));
-			Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * i));
-			Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * (i + 1)));
-			Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i + 1)));
-			Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i + 2)));
+			Main.robot.pathNodes.add(new Point2D(rect.getMinX(), rect.getMinY() + robot.width * i));
+			Main.robot.pathNodes.add(new Point2D(rect.getWidth(), rect.getMinY() + robot.width * i));
+			Main.robot.pathNodes.add(new Point2D(rect.getWidth(), rect.getMinY() + robot.width * (i + 1)));
+			Main.robot.pathNodes.add(new Point2D(rect.getMinX(), rect.getMinY() + robot.width * (i + 1)));
+			Main.robot.pathNodes.add(new Point2D(rect.getMinX(), rect.getMinY() + robot.width * (i + 2)));
 
 			i += 2;
 		}

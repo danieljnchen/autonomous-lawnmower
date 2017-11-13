@@ -1,5 +1,6 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -8,7 +9,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Main extends Application {
@@ -16,14 +16,14 @@ public class Main extends Application {
 	static Algorithm algorithm = new Algorithm(robot);
 
 	public static void main(String[] args) {
-		algorithm.outerBoundary.add(new Point2D.Double(0, 0));
-		algorithm.outerBoundary.add(new Point2D.Double(100, 0));
-		algorithm.outerBoundary.add(new Point2D.Double(100, 200));
-		algorithm.outerBoundary.add(new Point2D.Double(200, 200));
-		algorithm.outerBoundary.add(new Point2D.Double(200, 400));
-		algorithm.outerBoundary.add(new Point2D.Double(200, 400));
-		algorithm.outerBoundary.add(new Point2D.Double(100, 500));
-		algorithm.outerBoundary.add(new Point2D.Double(0, 500));
+		algorithm.outerBoundary.add(new Point2D(0, 0));
+		algorithm.outerBoundary.add(new Point2D(100, 0));
+		algorithm.outerBoundary.add(new Point2D(100, 200));
+		algorithm.outerBoundary.add(new Point2D(200, 200));
+		algorithm.outerBoundary.add(new Point2D(200, 400));
+		algorithm.outerBoundary.add(new Point2D(200, 400));
+		algorithm.outerBoundary.add(new Point2D(100, 500));
+		algorithm.outerBoundary.add(new Point2D(0, 500));
 
 		algorithm.generatePath();
 		launch(args);
@@ -36,7 +36,7 @@ public class Main extends Application {
 		Canvas canvas = new Canvas(800, 600);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
-		canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
+		canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
 
 
 		root.getChildren().add(canvas);
