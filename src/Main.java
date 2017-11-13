@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Main extends Application {
 	static Robot robot = new Robot();
-	static Algorithm algorithm = new Algorithm(robot);
+	private static Algorithm algorithm = new Algorithm(robot);
 
 	public static void main(String[] args) {
 		algorithm.outerBoundary.add(new Point2D(0, 0));
