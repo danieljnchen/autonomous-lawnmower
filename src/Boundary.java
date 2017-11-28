@@ -8,8 +8,8 @@ public class Boundary extends UIObject {
     ArrayList<ArrayList<Point2D>> innerBounds = new ArrayList<>();
 
     private void draw() {
+        gc.setStroke(Color.RED);
         // Draw outer boundaries
-        gc.setStroke(Color.FIREBRICK);
         for (int i = 0; i < outerBound.size() - 1; i++) {
             gc.strokeLine(outerBound.get(i).getX(), outerBound.get(i).getY(), outerBound.get(i+1).getX(), outerBound.get(i+1).getY());
         }

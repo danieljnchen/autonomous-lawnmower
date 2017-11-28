@@ -1,6 +1,9 @@
+import javafx.scene.paint.Color;
+
 import java.awt.geom.Point2D;
 
 public class Raycast extends UIObject {
+    private Point2D startPoint;
     private Point2D hitPoint;
 
     public Raycast(Point2D start, double angle) {
@@ -19,6 +22,8 @@ public class Raycast extends UIObject {
      * @param boundary
      */
     public void start(Point2D start, double angle, Boundary boundary) {
+        startPoint = start;
+
         // Create a new point for us to manipulate
         Point2D cast = new Point2D.Double(start.getX(), start.getY());
         angle = Math.toRadians(angle);
@@ -40,5 +45,8 @@ public class Raycast extends UIObject {
     }
 
     private void draw() {
+        gc.setStroke(Color.BLUE);
+        // Initial raycast point
+        gc.fillOval(startPoint.getX(), startPoint.getY(), 5, 5);
     }
 }
