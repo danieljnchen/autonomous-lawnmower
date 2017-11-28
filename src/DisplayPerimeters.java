@@ -4,11 +4,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,16 +16,21 @@ import java.util.ArrayList;
 public class DisplayPerimeters extends Application {
     private static String fileName = "out.txt";
     private static String line = null;
-    private static ArrayList<Point2D>  perimeter = new ArrayList<>();
+    private static ArrayList<ArrayList<Point2D>> perimeters = new ArrayList<>();
+    private Paint[] paintCycle = {Paint.valueOf("Black"), Paint.valueOf("Yellow"), Paint.valueOf("Green"), Paint.valueOf("Red"), Paint.valueOf("Blue"), Paint.valueOf("Orange")};
 
     public static void main(String[] args) {
         try {
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while((line = bufferedReader.readLine()) != null) {
-                perimeter.add(new Point2D.Double(Double.valueOf(line.substring(0, line.indexOf(" "))), Double.valueOf(line.substring(line.indexOf(" ")+1))));
-               /*System.out.println(line.substring(0, line.indexOf(" ")));
-               System.out.println(line.substring(line.indexOf(" ")+1));*/
+                if(line.equals("Perimeter")) {
+                    perimeters.add(new ArrayList<>());
+                    continue;
+                }
+                perimeters.get(perimeters.size()-1).add(new Point2D.Double(Double.valueOf(line.substring(0, line.indexOf(" "))), Double.valueOf(line.substring(line.indexOf(" ")+1))));
+               System.out.println(line.substring(0, line.indexOf(" ")));
+               System.out.println(line.substring(line.indexOf(" ")+1));
             }
             Application.launch(args);
         } catch (IOException e) {
@@ -40,10 +45,14 @@ public class DisplayPerimeters extends Application {
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        for(int i = 0; i<perimeter.size()-1; ++i) {
-            gc.strokeLine(perimeter.get(i).getX(),perimeter.get(i).getY(),perimeter.get(i+1).getX(),perimeter.get(i+1).getY());
+        for(int i = 0; i<perimeters.size(); ++i) {
+            gc.setStroke(paintCycle[i]);
+            for(int j = 0; j<perimeters.get(i).size()-1; ++j) {
+                gc.strokeLine(perimeters.get(i).get(j).getX(),perimeters.get(i).get(j).getY(),perimeters.get(i).get(j+1).getX(),perimeters.get(i).get(j+1).getY());
+                gc.strokeLine(perimeters.get(i).get(perimeters.get(i).size()-1).getX(),perimeters.get(i).get(perimeters.get(i).size()-1).getY(),perimeters.get(i).get(0).getX(),perimeters.get(i).get(0).getY());
+            }
         }
-        gc.strokeLine(perimeter.get(perimeter.size()-1).getX(),perimeter.get(perimeter.size()-1).getY(),perimeter.get(0).getX(),perimeter.get(0).getY());
+
         new AnimationTimer() {
             public void handle(long currentNanoTime){}
         }.start();
