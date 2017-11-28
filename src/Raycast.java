@@ -38,4 +38,7 @@ public class Raycast extends UIObject {
         if (false) System.out.println("Error: raycast failed to hit a target");
         return hitPoint;
     }
+
+    private void draw() {
+    }
 }

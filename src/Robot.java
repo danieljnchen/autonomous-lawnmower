@@ -28,7 +28,7 @@ class Robot extends UIObject {
         }
     }
 
-    public void draw() {
+    private void draw() {
         // Robot shape
         gc.setFill(Color.ORANGE);
         gc.fillRect(pos.getX() - width/2, pos.getY() - height/2, width, height);

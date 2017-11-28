@@ -7,7 +7,7 @@ public class Boundary extends UIObject {
     ArrayList<Point2D> outerBound = new ArrayList<>();
     ArrayList<ArrayList<Point2D>> innerBounds = new ArrayList<>();
 
-    public void draw() {
+    private void draw() {
         // Draw outer boundaries
         gc.setStroke(Color.FIREBRICK);
         for (int i = 0; i < outerBound.size() - 1; i++) {
