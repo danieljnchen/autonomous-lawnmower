@@ -7,5 +7,5 @@ public class UIObject {
         Main.uiObjects.add(this);
     }
 
-    private void draw() {}
+    public void draw() {}
 }

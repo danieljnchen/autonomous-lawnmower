@@ -44,7 +44,7 @@ public class Raycast extends UIObject {
         return hitPoint;
     }
 
-    private void draw() {
+    public void draw() {
         gc.setStroke(Color.BLUE);
         // Initial raycast point
         gc.fillOval(startPoint.getX(), startPoint.getY(), 5, 5);
