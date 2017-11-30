@@ -6,6 +6,8 @@ public class Raycast extends UIObject {
     private Point2D startPoint;
     private Point2D hitPoint;
 
+    private Point2D cast;
+
     private Point2D point1;
     private Point2D point2;
 
@@ -28,7 +30,7 @@ public class Raycast extends UIObject {
         startPoint = start;
 
         // Create a new point for us to manipulate
-        Point2D cast = new Point2D.Double(start.getX(), start.getY());
+        cast = new Point2D.Double(start.getX(), start.getY());
 
         double speedCoef = 0.5;
 
@@ -90,5 +92,8 @@ public class Raycast extends UIObject {
 
         // Target line segment
         gc.strokeLine(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+
+        // Raycast line
+        gc.strokeLine(startPoint.getX(), startPoint.getY(), cast.getX(), cast.getY());
     }
 }

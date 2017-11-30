@@ -74,14 +74,18 @@ public class Algorithm {
         // Zig zag through defined rectangle based on robot width
         int i = 0;
         while (i < rect.getHeight() / robot.width) {
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * i));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * i));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * (i+1)));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+1)));
-            Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+2)));
+            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * i));
+            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * i));
+            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * (i+1)));
+            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+1)));
+            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+2)));
 
             i+=2;
         }
+    }
+
+    void raycastZigZag() {
+
     }
 
     private double getMaxHeight() {
@@ -96,17 +100,5 @@ public class Algorithm {
         }
 
         return maxH;
-    }
-
-    public void raycastIter() {
-        int i = 0;
-
-        while (i > getMaxHeight()) {
-            Raycast cast = new Raycast(new Point2D.Double(10, 10), 15, boundary);
-
-            cast.hit();
-
-            i += robot.height;
-        }
     }
 }
