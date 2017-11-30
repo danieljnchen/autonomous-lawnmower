@@ -62,12 +62,17 @@ public class Raycast extends UIObject {
         }
 
         // Iterate the point forwards in the specified direction
-        while (distDelta1 < 0 && distDelta2 < 0) {
-            distDelta1 = cast.distance(point1) - prevDist1;
-            distDelta2 = cast.distance(point2) - prevDist2;
+        while (true) {
+            double angle1 = Math.atan2(point1.getY() - cast.getY(), point1.getX() - cast.getX());
+            double angle2 = Math.atan2(point2.getY() - cast.getY(), point2.getX() - cast.getX());
+
+            // Check if the vector angles of the two points are opposite each other
+            if (angle1 == -angle2) break;
 
             cast.setLocation(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
         }
+
+        hitPoint = cast;
     }
 
     public Point2D hit() {
