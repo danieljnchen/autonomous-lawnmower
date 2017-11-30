@@ -19,6 +19,23 @@ public class DisplayPerimeters extends Application {
     private static ArrayList<ArrayList<Point2D>> perimeters = new ArrayList<>();
     private Paint[] paintCycle = {Paint.valueOf("Black"), Paint.valueOf("Yellow"), Paint.valueOf("Green"), Paint.valueOf("Red"), Paint.valueOf("Blue"), Paint.valueOf("Orange")};
 
+    public static ArrayList<ArrayList<Point2D>> readPerimeters() {
+        try {
+            FileReader fileReader = new FileReader(fileName);
+
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.equals("Perimeter")) {
+                    perimeters.add(new ArrayList<>());
+                    continue;
+                }
+                perimeters.get(perimeters.size() - 1).add(new Point2D.Double(Double.valueOf(line.substring(0, line.indexOf(" "))), Double.valueOf(line.substring(line.indexOf(" ") + 1))));
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        return perimeters;
+    }
     public static void main(String[] args) {
         try {
             FileReader fileReader = new FileReader(fileName);
@@ -28,7 +45,7 @@ public class DisplayPerimeters extends Application {
                     perimeters.add(new ArrayList<>());
                     continue;
                 }
-                perimeters.get(perimeters.size()-1).add(new Point2D.Double(Double.valueOf(line.substring(0, line.indexOf(" "))), Double.valueOf(line.substring(line.indexOf(" ")+1))));
+               perimeters.get(perimeters.size()-1).add(new Point2D.Double(Double.valueOf(line.substring(0, line.indexOf(" "))), Double.valueOf(line.substring(line.indexOf(" ")+1))));
                System.out.println(line.substring(0, line.indexOf(" ")));
                System.out.println(line.substring(line.indexOf(" ")+1));
             }
