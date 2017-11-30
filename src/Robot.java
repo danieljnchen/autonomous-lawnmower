@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 class Robot extends UIObject {
     Point2D pos = new Point2D.Double(); // relative to center of robot
-    double width = 15;
-    double height = 10;
+    double length = 15;
+    double width = 10;
 
     ArrayList<Point2D> pathNodes = new ArrayList<>();
     private int curNodeDest = 0;
@@ -31,7 +31,7 @@ class Robot extends UIObject {
     public void draw() {
         // Robot shape
         gc.setFill(Color.ORANGE);
-        gc.fillRect(pos.getX() - width/2, pos.getY() - height/2, width, height);
+        gc.fillRect(pos.getX() - length /2, pos.getY() - width /2, length, width);
 
         // Planned path
         gc.setLineWidth(2);

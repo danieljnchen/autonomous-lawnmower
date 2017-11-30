@@ -38,14 +38,14 @@ public class Algorithm {
             double curW = 0;
             double curH = 0;
 
-            // Step 1: Find rect width at the current Y
+            // Step 1: Find rect length at the current Y
             for (Point2D point : boundary.outerBound) {
                 if (point.getX() != curW && point.getY() == curY) {
                     curW = point.getX();
                 }
             }
 
-            // Step 2: Find max rect height based on width
+            // Step 2: Find max rect width based on length
             for (Point2D point : boundary.outerBound) {
                 if (point.getY() - curY > curH && point.getX() == curW) {
                     curH = point.getY() - curY;
@@ -71,30 +71,39 @@ public class Algorithm {
     }
 
     private void generateZigZag(Rectangle2D rect) {
-        // Zig zag through defined rectangle based on robot width
+        // Zig zag through defined rectangle based on robot length
         int i = 0;
-        while (i < rect.getHeight() / robot.width) {
-            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * i));
-            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * i));
-            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.width * (i+1)));
-            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+1)));
-            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+2)));
+        while (i < rect.getHeight() / robot.length) {
+            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.length * i));
+            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.length * i));
+            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.length * (i+1)));
+            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.length * (i+1)));
+            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.length * (i+2)));
 
             i+=2;
         }
     }
 
-    void raycastZigZag() {
+    void raycastZigZag(Point2D start, double angle, Boundary boundary) {
+        double height = 0;
+
+        // Start a new raycast in the specified direction
+        Raycast r = new Raycast(start, angle, boundary);
+        Point2D hit = r.hit();
+
+        while (height < getMaxHeight()) {
+            height += robot.length;
+        }
 
     }
 
     private double getMaxHeight() {
         double maxH = 0;
 
-        // Find max height of outer boundary
+        // Find max width of outer boundary
         for (Point2D point : boundary.outerBound) {
             if (point.getY() > maxH) {
-                // If so, our max height is at that point
+                // If so, our max width is at that point
                 maxH = point.getY();
             }
         }

@@ -26,7 +26,7 @@ public class Raycast extends UIObject {
      * @param angle
      * @param boundary
      */
-    public void start(Point2D start, double angle, Boundary boundary) {
+    private void start(Point2D start, double angle, Boundary boundary) {
         startPoint = start;
 
         // Create a new point for us to manipulate
