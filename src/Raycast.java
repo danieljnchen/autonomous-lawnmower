@@ -37,6 +37,27 @@ public class Raycast extends UIObject {
         double distDelta1 = -1;
         double distDelta2 = -1;
 
+        int index = 0;
+        for(int index1 = 1; index1 < boundary.outerBound.size(); ++index1) {
+            if (Math.abs(Math.atan2(boundary.outerBound.get(index1).getY() - cast.getY(),
+                    boundary.outerBound.get(index1).getX() - cast.getX()) - angle)
+                    <
+                    Math.abs(Math.atan2(boundary.outerBound.get(index).getY() - cast.getY(),
+                            boundary.outerBound.get(index).getX() - cast.getY()) - angle)) {
+                index = index1;
+            }
+        }
+        point1 = boundary.outerBound.get(index);
+        if(Math.abs(Math.atan2(boundary.outerBound.get(index-1).getY() - cast.getY(),
+                boundary.outerBound.get(index-1).getX() - cast.getY()) - angle)
+        <
+        Math.abs(Math.atan2(boundary.outerBound.get(index+1).getY() - cast.getY(),
+                boundary.outerBound.get(index+1).getX() - cast.getY()) - angle)) {
+            point2 = boundary.outerBound.get(index-1);
+        } else {
+            point2 = boundary.outerBound.get(index+1);
+        }
+        /*
         // Search for two points closest to a specified direction
         double curAngle = 90; // start at 90 degrees; rotate left/right depending on raycast direction
         if (angle > 90) {
@@ -60,6 +81,7 @@ public class Raycast extends UIObject {
                 point2 = point;
             }
         }
+        */
 
         // Iterate the point forwards in the specified direction
         while (distDelta1 < 0 && distDelta2 < 0) {
