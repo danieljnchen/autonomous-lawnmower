@@ -7,14 +7,8 @@ public class Algorithm {
     Boundary boundary;
 
     Algorithm(Robot robot, Boundary boundary) {
-        super();
         this.robot = robot;
         this.boundary = boundary;
-    }
-
-    void perimeterSweep(ArrayList<Point2D> perimeter) {
-        robot.pathNodes.addAll(perimeter);
-        robot.pathNodes.add(perimeter.get(0));
     }
 
     void generatePath() {
@@ -25,22 +19,17 @@ public class Algorithm {
         }
     }
 
+    void perimeterSweep(ArrayList<Point2D> perimeter) {
+        robot.pathNodes.addAll(perimeter);
+        robot.pathNodes.add(perimeter.get(0));
+    }
+
     ArrayList<Rectangle2D> subDivideIntoRects() {
         ArrayList<Rectangle2D> subRects = new ArrayList<>();
 
-        double maxH = 0;
+        double maxH = getMaxHeight();
         // Track how far we have subdivided
         double curY = 0;
-
-        // Find max height of outer boundary
-        for (Point2D point : boundary.outerBound) {
-            if (point.getY() > maxH) {
-                // If so, our max height is at that point
-                maxH = point.getY();
-            }
-        }
-
-        System.out.println("Max height: " + maxH);
 
         // Repeat until area is fully subdivided
         while (curY < maxH) {
@@ -92,6 +81,32 @@ public class Algorithm {
             Main.robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.width * (i+2)));
 
             i+=2;
+        }
+    }
+
+    private double getMaxHeight() {
+        double maxH = 0;
+
+        // Find max height of outer boundary
+        for (Point2D point : boundary.outerBound) {
+            if (point.getY() > maxH) {
+                // If so, our max height is at that point
+                maxH = point.getY();
+            }
+        }
+
+        return maxH;
+    }
+
+    public void raycastIter() {
+        int i = 0;
+
+        while (i > getMaxHeight()) {
+            Raycast cast = new Raycast(new Point2D.Double(10, 10), 15, boundary);
+
+            cast.hit();
+
+            i += robot.height;
         }
     }
 }
