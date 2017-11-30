@@ -6,6 +6,8 @@ public class Raycast extends UIObject {
     private Point2D startPoint;
     private Point2D hitPoint;
 
+    private Point2D cast;
+
     private Point2D point1;
     private Point2D point2;
 
@@ -24,11 +26,11 @@ public class Raycast extends UIObject {
      * @param angle
      * @param boundary
      */
-    public void start(Point2D start, double angle, Boundary boundary) {
+    private void start(Point2D start, double angle, Boundary boundary) {
         startPoint = start;
 
         // Create a new point for us to manipulate
-        Point2D cast = new Point2D.Double(start.getX(), start.getY());
+        cast = new Point2D.Double(start.getX(), start.getY());
 
         double speedCoef = 0.5;
 
@@ -84,12 +86,17 @@ public class Raycast extends UIObject {
         */
 
         // Iterate the point forwards in the specified direction
-        while (distDelta1 < 0 && distDelta2 < 0) {
-            distDelta1 = cast.distance(point1) - prevDist1;
-            distDelta2 = cast.distance(point2) - prevDist2;
+        while (true) {
+            double angle1 = Math.atan2(point1.getY() - cast.getY(), point1.getX() - cast.getX());
+            double angle2 = Math.atan2(point2.getY() - cast.getY(), point2.getX() - cast.getX());
+
+            // Check if the vector angles of the two points are opposite each other
+            if (angle1 == -angle2) break;
 
             cast.setLocation(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
         }
+
+        hitPoint = cast;
     }
 
     public Point2D hit() {
@@ -107,5 +114,8 @@ public class Raycast extends UIObject {
 
         // Target line segment
         gc.strokeLine(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+
+        // Raycast line
+        gc.strokeLine(startPoint.getX(), startPoint.getY(), cast.getX(), cast.getY());
     }
 }
