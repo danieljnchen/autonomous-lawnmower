@@ -91,7 +91,7 @@ public class Raycast extends UIObject {
             double angle2 = Math.atan2(point2.getY() - cast.getY(), point2.getX() - cast.getX());
 
             // Check if the vector angles of the two points are opposite each other
-            if (angle1 == -angle2) break;
+            if (angle1 + angle2 < .05) break;
 
             cast.setLocation(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
         }
