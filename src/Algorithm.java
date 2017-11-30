@@ -14,9 +14,7 @@ public class Algorithm {
     void generatePath() {
         perimeterSweep(boundary.outerBound);
 
-        for (Rectangle2D rect : subDivideIntoRects()) {
-            generateZigZag(rect);
-        }
+        raycastZigZag(robot.pathNodes.get(robot.pathNodes.size()-1), 0, boundary);
     }
 
     void perimeterSweep(ArrayList<Point2D> perimeter) {
@@ -86,12 +84,14 @@ public class Algorithm {
 
     void raycastZigZag(Point2D start, double angle, Boundary boundary) {
         double height = 0;
-
-        // Start a new raycast in the specified direction
-        Raycast r = new Raycast(start, angle, boundary);
-        Point2D hit = r.hit();
+        Point2D curPoint = new Point2D.Double(start.getX(), start.getY());
 
         while (height < getMaxHeight()) {
+            // Start a new raycast in the specified direction
+            Raycast ray1 = new Raycast(start, angle, boundary);
+            Raycast ray2 = new Raycast(ray1.hit(), angle + 180, boundary);
+
+            curPoint.setLocation(curPoint.getX(), curPoint.getY() + robot.length);
             height += robot.length;
         }
 
