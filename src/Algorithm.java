@@ -89,7 +89,7 @@ public class Algorithm {
         while (height < getMaxHeight()) {
             // Start a new raycast in the specified direction
             Raycast ray1 = new Raycast(start, angle, boundary);
-            Raycast ray2 = new Raycast(ray1.hit(), angle + 180, boundary);
+            //Raycast ray2 = new Raycast(ray1.hit(), angle + 180, boundary);
 
             curPoint.setLocation(curPoint.getX(), curPoint.getY() + robot.length);
             height += robot.length;

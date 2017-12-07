@@ -6,6 +6,21 @@ import java.util.ArrayList;
 public class Boundary extends UIObject {
     ArrayList<Point2D> outerBound = new ArrayList<>();
     ArrayList<ArrayList<Point2D>> innerBounds = new ArrayList<>();
+    ArrayList<ArrayList<Point2D>> allBounds = new ArrayList<>();
+
+    public Boundary() {
+        allBounds.add(outerBound);
+        allBounds.addAll(innerBounds);
+    }
+
+    public void addOuter(Point2D p) {
+        outerBound.add(p);
+        allBounds.get(0).add(p);
+    }
+    public void addInner(Point2D p) {
+        innerBounds.get(innerBounds.size()-1).add(p);
+        allBounds.get(innerBounds.size()).add(p);
+    }
 
     public void draw() {
         gc.setStroke(Color.RED);
