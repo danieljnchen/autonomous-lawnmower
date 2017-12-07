@@ -9,6 +9,13 @@ class Robot {
 	ArrayList<Point2D> pathNodes = new ArrayList<>();
 	private int curNodeDest = 0;
 
+	void start() {
+		curNodeDest = 0;
+
+		Main.algorithm.outerBoundary = Editor.loadPerimeter();
+		Main.algorithm.generatePath();
+	}
+
 	void approachNextNode() {
 		Point2D node = pathNodes.get(curNodeDest);
 

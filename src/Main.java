@@ -5,7 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -13,19 +13,9 @@ import java.util.ArrayList;
 
 public class Main extends Application {
 	static Robot robot = new Robot();
-	private static Algorithm algorithm = new Algorithm(robot);
+	static Algorithm algorithm = new Algorithm(robot);
 
 	public static void main(String[] args) {
-		algorithm.outerBoundary.add(new Point2D(0, 0));
-		algorithm.outerBoundary.add(new Point2D(100, 0));
-		algorithm.outerBoundary.add(new Point2D(100, 200));
-		algorithm.outerBoundary.add(new Point2D(200, 200));
-		algorithm.outerBoundary.add(new Point2D(200, 400));
-		algorithm.outerBoundary.add(new Point2D(200, 400));
-		algorithm.outerBoundary.add(new Point2D(100, 500));
-		algorithm.outerBoundary.add(new Point2D(0, 500));
-
-		algorithm.generatePath();
 		launch(args);
 	}
 
@@ -35,9 +25,6 @@ public class Main extends Application {
 		Group root = new Group();
 		Canvas canvas = new Canvas(800, 600);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-
-		canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
-
 
 		root.getChildren().add(canvas);
 		primaryStage.setScene(new Scene(root));
@@ -50,6 +37,12 @@ public class Main extends Application {
 		}.start();
 
 		primaryStage.show();
+
+		Button load = new Button("Restart");
+		load.setOnAction(value -> robot.start());
+		root.getChildren().add(load);
+
+		robot.start();
 	}
 
 	private void drawShapes(GraphicsContext gc) {
