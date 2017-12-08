@@ -4,7 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.geom.Point2D;
@@ -17,7 +17,7 @@ public class DisplayPerimeters extends Application {
     private static String fileName = "out.txt";
     private static String line = null;
     private static ArrayList<ArrayList<Point2D>> perimeters = new ArrayList<>();
-    private Paint[] paintCycle = {Paint.valueOf("Black"), Paint.valueOf("Yellow"), Paint.valueOf("Green"), Paint.valueOf("Red"), Paint.valueOf("Blue"), Paint.valueOf("Orange")};
+    private Color[] colorCycle = { Color.BLACK, Color.YELLOW, Color.GREEN, Color.RED, Color.BLUE, Color.ORANGE};
 
     public static ArrayList<ArrayList<Point2D>> readPerimeters() {
         try {
@@ -63,7 +63,7 @@ public class DisplayPerimeters extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         for(int i = 0; i<perimeters.size(); ++i) {
-            gc.setStroke(paintCycle[i]);
+            gc.setStroke(colorCycle[i]);
             for(int j = 0; j<perimeters.get(i).size()-1; ++j) {
                 gc.strokeLine(perimeters.get(i).get(j).getX(),perimeters.get(i).get(j).getY(),perimeters.get(i).get(j+1).getX(),perimeters.get(i).get(j+1).getY());
                 gc.strokeLine(perimeters.get(i).get(perimeters.get(i).size()-1).getX(),perimeters.get(i).get(perimeters.get(i).size()-1).getY(),perimeters.get(i).get(0).getX(),perimeters.get(i).get(0).getY());

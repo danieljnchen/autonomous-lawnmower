@@ -44,6 +44,7 @@ public class CreatePerimeters extends Application {
         primaryStage.setTitle("Drawing");
         Group root = new Group();
         Canvas canvas = new Canvas(500,800);
+
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
@@ -54,6 +55,7 @@ public class CreatePerimeters extends Application {
         exit.setLayoutX(50);
         exit.setLayoutY(50);
         root.getChildren().add(exit);
+
         Button newPerimeter = new Button("New Perimeter");
         newPerimeter.setOnAction(actionEvent -> perimeters.add(new ArrayList<>()));
         root.getChildren().add(newPerimeter);
