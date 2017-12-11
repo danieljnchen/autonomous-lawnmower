@@ -1,21 +1,20 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class Main extends Application {
-    static ArrayList<UIObject> uiObjects = new ArrayList<>();
+public class Testing extends Application {
 
-    static Robot robot = new Robot();
+    static ArrayList<UIObject> uiObjects = new ArrayList<>();
     static Boundary boundary = new Boundary();
-    static Algorithm algorithm = new Algorithm(robot, boundary);
+    static Raycast r;
+    static Point2D insct;
 
     public static void main(String[] args) {
         boundary.outerBound.add(new Point2D.Double(0, 0));
@@ -27,22 +26,21 @@ public class Main extends Application {
         boundary.outerBound.add(new Point2D.Double(100, 500));
         boundary.outerBound.add(new Point2D.Double(0, 500));
 
-        algorithm.generatePath();
         launch(args);
     }
 
-    @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Algorithm Simulation");
         Group root = new Group();
         Canvas canvas = new Canvas(800, 600);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         UIObject.gc = gc;
+        r = new Raycast(new Point2D.Double(0,300),0,boundary);
 
-        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
+        primaryStage.show();
 
         new AnimationTimer()
         {
@@ -52,8 +50,6 @@ public class Main extends Application {
                 drawShapes(gc);
             }
         }.start();
-
-        primaryStage.show();
     }
 
     private void drawShapes(GraphicsContext gc) {
