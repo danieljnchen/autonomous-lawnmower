@@ -17,6 +17,7 @@ public class Raycast extends UIObject {
     }
 
     public Raycast(Point2D start, double angle, Boundary boundary) {
+        super();
         start(start, angle, boundary);
     }
 
@@ -34,32 +35,33 @@ public class Raycast extends UIObject {
 
         double speedCoef = 0.5;
 
+        /*
         double prevDist1 = 1;
         double prevDist2 = 1;
         double distDelta1 = -1;
         double distDelta2 = -1;
+        */
 
-        /*int index = 0;
-        for(int index1 = 1; index1 < boundary.outerBound.size(); ++index1) {
-            if (Math.abs(Math.atan2(boundary.outerBound.get(index1).getY() - cast.getY(),
-                    boundary.outerBound.get(index1).getX() - cast.getX()) - angle)
-                    <
-                    Math.abs(Math.atan2(boundary.outerBound.get(index).getY() - cast.getY(),
-                            boundary.outerBound.get(index).getX() - cast.getY()) - angle)) {
-                index = index1;
+        for(int index = 0; index<boundary.outerBound.size(); ++index) {
+            boolean sign; //false -> angle to cast less than angle, true -> angle to cast greater than angle
+            boolean finished = false;
+            double angleToIndex = Math.atan2(boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getY() - cast.getY(), boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getX() - cast.getX());
+            double angleToIndex1 = Math.atan2(boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1)).getY(),boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1)).getX());
+
+            if(angleToIndex == angle) {
+                finished = true;
+            }
+            sign = (angleToIndex < angle);
+            if((angleToIndex1 < angle) != sign) {
+                finished = true;
+            }
+            if(finished) {
+                point1 = boundary.outerBound.get(index%(boundary.outerBound.size()-1));
+                point2 = boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1));
+                break;
             }
         }
-        point1 = boundary.outerBound.get(index);
-        if(Math.abs(Math.atan2(boundary.outerBound.get(index-1).getY() - cast.getY(),
-                boundary.outerBound.get(index-1).getX() - cast.getY()) - angle)
-        <
-        Math.abs(Math.atan2(boundary.outerBound.get(index+1).getY() - cast.getY(),
-                boundary.outerBound.get(index+1).getX() - cast.getY()) - angle)) {
-            point2 = boundary.outerBound.get(index-1);
-        } else {
-            point2 = boundary.outerBound.get(index+1);
-        }
-        */
+
         /*
         // Search for two points closest to a specified direction
         double curAngle = 90; // start at 90 degrees; rotate left/right depending on raycast direction
@@ -96,14 +98,22 @@ public class Raycast extends UIObject {
 
             cast.setLocation(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
         }*/
-        for(int i = 0; i<=boundary.outerBound.size(); ++i) {
-            Point2D intersect = intersection(startPoint,cast,boundary.outerBound.get(i),boundary.outerBound.get((i+1)%(boundary.outerBound.size()-1)));
+        //for(int i = 0; i<=boundary.outerBound.size(); ++i) {
+
+        /*
+        while(true) {
+            //Point2D intersect = intersection(startPoint,cast,boundary.outerBound.get(i),boundary.outerBound.get((i+1)%(boundary.outerBound.size()-1)));
+            Point2D intersect = intersection(startPoint,cast,point1,point2);
             if(intersect != null) {
                 hitPoint = intersect;
                 break;
+            } else if(Math.abs(cast.getX())>500) {
+                break;
             }
             cast.setLocation(cast.getX()+Math.cos(angle)*speedCoef,cast.getY()+Math.sin(angle)*speedCoef);
+            System.out.println(cast.getX() + " " + cast.getY());
         }
+        */
     }
 
     /*public Point2D hit() {
@@ -136,12 +146,17 @@ public class Raycast extends UIObject {
         gc.setFill(Color.BLUE);
 
         // Initial raycast point
-        gc.fillOval(startPoint.getX(), startPoint.getY(), 5, 5);
+        //gc.fillOval(startPoint.getX(),startPoint.getY(),5,5);
 
         // Target line segment
-        //gc.strokeLine(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+        gc.strokeLine(point1.getX(),point1.getY(),point2.getX(),point2.getY());
 
         // Raycast line
-        gc.strokeLine(startPoint.getX(), startPoint.getY(), cast.getX(), cast.getY());
+        //gc.strokeLine(startPoint.getX(),startPoint.getY(),cast.getX(),cast.getY());
+
+        // Hit point
+        if(hitPoint != null) {
+            //gc.fillOval(hitPoint.getX(), hitPoint.getY(), 5, 5);
+        }
     }
 }
