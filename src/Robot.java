@@ -1,5 +1,4 @@
 import javafx.scene.paint.Color;
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
@@ -11,15 +10,15 @@ class Robot extends UIObject {
     ArrayList<Point2D> pathNodes = new ArrayList<>();
     private int curNodeDest = 0;
 
+    void start() {
+        curNodeDest = 0;
+
+        Main.algorithm.outerBoundary = Editor.loadPerimeter();
+        Main.algorithm.generatePath();
+    }
+
     void approachNextNode() {
         Point2D node = pathNodes.get(curNodeDest);
-
-        double dx = node.getX() - pos.getX();
-        double dy = node.getY() - pos.getY();
-        double theta = Math.atan2(dy, dx);
-
-        //pos.setLocation(pos.getX() + Math.cos(theta), pos.getY() + Math.sin(theta));
-        pos.setLocation(pos.getX() + dx/5, pos.getY() + dy/5);
 
         if (pos.distance(node) < 1) {
             if (pathNodes.size() - 1 > curNodeDest) {
