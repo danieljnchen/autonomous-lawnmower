@@ -4,7 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Editor extends Application {
     private static ArrayList<ArrayList<Point2D>> perimeters = new ArrayList<>();
@@ -42,21 +43,47 @@ public class Editor extends Application {
         stage.setScene(new Scene(root));
         stage.show();
 
-        perimeters.add(new ArrayList<>());
+        Button new_perimeter = new Button("New perimeter");
+        new_perimeter.setOnAction(actionEvent -> perimeters.add(new ArrayList<>()));
+        root.getChildren().add(new_perimeter);
 
-        Button newPerimeter = new Button("New Perimeter");
-        newPerimeter.setOnAction(actionEvent -> perimeters.add(new ArrayList<>()));
-        root.getChildren().add(newPerimeter);
+        Button load_boundary = new Button("Load boundary");
+        load_boundary.setLayoutX(100);
+        load_boundary.setOnAction(actionEvent -> {
+            try {
+                loadBoundary();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        root.getChildren().add(load_boundary);
+
+        Button save_boundary = new Button("Save boundary");
+        save_boundary.setLayoutX(200);
+        save_boundary.setOnAction(actionEvent -> saveBoundary());
+        root.getChildren().add(save_boundary);
+
+        Button clear_boundary = new Button("Clear boundary");
+        clear_boundary.setLayoutX(300);
+        clear_boundary.setOnAction(actionEvent -> clearBoundary());
+        root.getChildren().add(clear_boundary);
+
+        ToggleGroup group = new ToggleGroup();
+        RadioButton buttonModeDraw = new RadioButton("Draw");
+        buttonModeDraw.setToggleGroup(group);
+        buttonModeDraw.setSelected(true);
+        RadioButton buttonModeErase = new RadioButton("Erase");
+        buttonModeErase.setToggleGroup(group);
 
         canvas.addEventFilter(MouseEvent.MOUSE_MOVED, mouseEvent -> {
             Point2D mousePoint = new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
             switch (drawMode) {
                 case DRAW:
-                    draw(gc, mousePoint);
+                    drawPoint(mousePoint);
                     break;
                 case ERASE:
-                    erase(gc, mousePoint, 10);
+                    erasePoint(mousePoint, 10);
                     break;
             }
         });
@@ -82,31 +109,54 @@ public class Editor extends Application {
             }
 
             // Run the draw to place a single point
-            draw(gc, new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+            drawPoint(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
         });
 
+        stage.setOnCloseRequest(event -> {
+            exit();
+            event.consume();
+        });
 
-        AnimationTimer animator = new AnimationTimer(){
+                AnimationTimer animator = new AnimationTimer(){
             @Override
-            public void handle(long arg0) {}
+            public void handle(long arg0) {
+                draw(gc);
+            }
         };
 
         animator.start();
     }
 
     private void exit() {
-        saveBoundary();
-        System.exit(0);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit confirmation");
+        alert.setHeaderText(null);
+        alert.setContentText("Do you want to save changes before exiting?");
+
+        ButtonType buttonSave = new ButtonType("Save and exit");
+        ButtonType buttonNoSave = new ButtonType("Exit without saving");
+        ButtonType buttonCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonSave, buttonNoSave, buttonCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonSave){
+            saveBoundary();
+            System.exit(0);
+        } else if (result.get() == buttonNoSave) {
+            System.exit(0);
+        } else {
+
+        }
     }
 
-    private void draw(GraphicsContext gc, Point2D point) {
-        gc.setFill(paintCycle[(perimeters.size() - 1) % paintCycle.length]);
-        perimeters.get(perimeters.size() - 1).add(new Point2D.Double(point.getX(), point.getY()));
-        gc.fillOval(perimeters.get(perimeters.size() - 1).get(perimeters.get(perimeters.size() - 1).size()-1).getX(),
-                perimeters.get(perimeters.size() - 1).get(perimeters.get(perimeters.size() - 1).size()-1).getY(),3,3);
+    private void drawPoint(Point2D point) {
+        if (perimeters.size() == 0) perimeters.add(new ArrayList<>());
+
+        perimeters.get(perimeters.size() - 1).add(point);
     }
 
-    private void erase(GraphicsContext gc, Point2D point, int radius) {
+    private void erasePoint(Point2D point, int radius) {
         ArrayList<Point2D> perim = null;
 
         for (ArrayList<Point2D> perimeter : perimeters) {
@@ -138,6 +188,9 @@ public class Editor extends Application {
     }
 
     private void loadBoundary() throws IOException {
+        // Clear current bounds
+        perimeters.clear();
+
         FileReader fileReader = new FileReader(fileName);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -149,9 +202,34 @@ public class Editor extends Application {
             }
 
             perimeters.get(perimeters.size()-1).add(new Point2D.Double(Double.valueOf(line.substring(0, line.indexOf(" "))), Double.valueOf(line.substring(line.indexOf(" ")+1))));
+        }
+    }
 
-            System.out.println(line.substring(0, line.indexOf(" ")));
-            System.out.println(line.substring(line.indexOf(" ")+1));
+    private void clearBoundary() {
+        perimeters.clear();
+    }
+
+    public void draw(GraphicsContext gc) {
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
+        // Perimeters
+        int i = 0;
+        for (ArrayList<Point2D> perimeter : perimeters) {
+            int j = 0;
+            if (perimeter.size() > 0) {
+                gc.setFill(paintCycle[i % paintCycle.length]);
+                gc.setStroke(paintCycle[i % paintCycle.length]);
+
+                for (Point2D point : perimeter) {
+                    gc.fillOval(point.getX(), point.getY(), 3, 3);
+                    gc.strokeLine(point.getX(), point.getY(),
+                            perimeter.get((j + 1) % perimeter.size()).getX(), perimeter.get((j + 1) % perimeter.size()).getY());
+
+                    j++;
+                }
+            }
+
+            i++;
         }
     }
 }
