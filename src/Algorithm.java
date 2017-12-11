@@ -55,7 +55,7 @@ public class Algorithm {
             // TODO: respect inner boundaries
 
             // Add the new subdivision to the list
-            Rectangle2D rect = new Rectangle2D.Double(curX, curY, curW, curH);
+            Rectangle2D rect = new Rectangle2D(curX, curY, curW, curH);
             subRects.add(rect);
             System.out.println(rect.toString());
 
@@ -73,11 +73,11 @@ public class Algorithm {
         // Zig zag through defined rectangle based on robot length
         int i = 0;
         while (i < rect.getHeight() / robot.length) {
-            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.length * i));
-            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.length * i));
-            robot.pathNodes.add(new Point2D.Double(rect.getWidth(), rect.getY() + robot.length * (i+1)));
-            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.length * (i+1)));
-            robot.pathNodes.add(new Point2D.Double(rect.getX(), rect.getY() + robot.length * (i+2)));
+            robot.pathNodes.add(new Point2D(rect.getMinX(), rect.getMinY() + robot.length * i));
+            robot.pathNodes.add(new Point2D(rect.getWidth(), rect.getMinY() + robot.length * i));
+            robot.pathNodes.add(new Point2D(rect.getWidth(), rect.getMinY() + robot.length * (i+1)));
+            robot.pathNodes.add(new Point2D(rect.getMinX(), rect.getMinY() + robot.length * (i+1)));
+            robot.pathNodes.add(new Point2D(rect.getMinX(), rect.getMinY() + robot.length * (i+2)));
 
             i+=2;
         }
@@ -85,14 +85,14 @@ public class Algorithm {
 
     void raycastZigZag(Point2D start, double angle, Boundary boundary) {
         double height = 0;
-        Point2D curPoint = new Point2D.Double(start.getX(), start.getY());
+        Point2D curPoint = new Point2D(start.getX(), start.getY());
 
         while (height < getMaxHeight()) {
             // Start a new raycast in the specified direction
             Raycast ray1 = new Raycast(start, angle, boundary);
             //Raycast ray2 = new Raycast(ray1.hit(), angle + 180, boundary);
 
-            curPoint.setLocation(curPoint.getX(), curPoint.getY() + robot.length);
+            curPoint = new Point2D(curPoint.getX(), curPoint.getY() + robot.length);
             height += robot.length;
         }
 

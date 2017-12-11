@@ -1,6 +1,5 @@
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
-
-import java.awt.geom.Point2D;
 
 public class Raycast extends UIObject {
     private Point2D startPoint;
@@ -10,11 +9,6 @@ public class Raycast extends UIObject {
 
     private Point2D point1;
     private Point2D point2;
-
-    public Raycast(Point2D start, double angle) {
-        // Assume we want the main boundary
-        start(start, angle, Main.boundary);
-    }
 
     public Raycast(Point2D start, double angle, Boundary boundary) {
         super();
@@ -31,18 +25,9 @@ public class Raycast extends UIObject {
         startPoint = start;
 
         // Create a new point for us to manipulate
-        cast = new Point2D.Double(start.getX(), start.getY());
+        cast = new Point2D(start.getX(), start.getY());
 
-        double speedCoef = 0.5;
-
-        /*
-        double prevDist1 = 1;
-        double prevDist2 = 1;
-        double distDelta1 = -1;
-        double distDelta2 = -1;
-        */
-
-        for(int index = 0; index<boundary.outerBound.size(); ++index) {
+        for(int index = 0; index < boundary.outerBound.size(); ++index) {
             boolean sign; //false -> angle to cast less than angle, true -> angle to cast greater than angle
             boolean finished = false;
             double angleToIndex = Math.atan2(boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getY() - cast.getY(), boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getX() - cast.getX());
@@ -96,7 +81,7 @@ public class Raycast extends UIObject {
             // Check if the vector angles of the two points are opposite each other
             if (angle1 + angle2 < .05) break;
 
-            cast.setLocation(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
+            cast = new Point2D(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
         }*/
         //for(int i = 0; i<=boundary.outerBound.size(); ++i) {
 
@@ -110,7 +95,7 @@ public class Raycast extends UIObject {
             } else if(Math.abs(cast.getX())>500) {
                 break;
             }
-            cast.setLocation(cast.getX()+Math.cos(angle)*speedCoef,cast.getY()+Math.sin(angle)*speedCoef);
+            cast = new Point2D(cast.getX()+Math.cos(angle)*speedCoef,cast.getY()+Math.sin(angle)*speedCoef);
             System.out.println(cast.getX() + " " + cast.getY());
         }
         */
@@ -123,21 +108,25 @@ public class Raycast extends UIObject {
     }*/
 
     public static Point2D intersection(Point2D line1initial, Point2D line1terminal, Point2D line2initial, Point2D line2terminal) {
-        Point2D vector1 = new Point2D.Double();
-        Point2D vector2 = new Point2D.Double();
-        vector1.setLocation(line1terminal.getX()-line1initial.getX(),line1terminal.getY()-line1initial.getY());
-        vector2.setLocation(line2terminal.getX()-line2initial.getX(),line2terminal.getY()-line2initial.getY());
+        Point2D vector1;
+        Point2D vector2;
+
+        vector1 = new Point2D(line1terminal.getX()-line1initial.getX(),line1terminal.getY()-line1initial.getY());
+        vector2 = new Point2D(line2terminal.getX()-line2initial.getX(),line2terminal.getY()-line2initial.getY());
+
         double scalar1, scalar2;
         scalar2 = (vector1.getY()/vector1.getX()*(line2initial.getX()-line1initial.getX())-(line2initial.getY()-line1initial.getY()))
                 /(vector2.getY()*(1-(vector1.getY()*vector2.getX())/(vector1.getX()*vector2.getY())));
         scalar1 = (line2initial.getX()-line1initial.getX()+scalar2*vector2.getX())/vector1.getX();
+
         Point2D out;
         if(scalar1 >= 0 && scalar1 <= 1 && scalar2 >= 0 && scalar2 <=1) {
-            out = new Point2D.Double();
-            out.setLocation(line1initial.getX()+vector1.getX()*scalar1,line1initial.getY()+vector1.getY()*scalar1);
+            out = Point2D.ZERO;
+            out = new Point2D(line1initial.getX()+vector1.getX()*scalar1,line1initial.getY()+vector1.getY()*scalar1);
         } else {
             out = null;
         }
+
         return out;
     }
 

@@ -1,9 +1,9 @@
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 class Robot extends UIObject {
-    Point2D pos = new Point2D.Double(); // relative to center of robot
+    Point2D pos = Point2D.ZERO; // relative to center of robot
     double length = 15;
     double width = 10;
 
@@ -13,7 +13,7 @@ class Robot extends UIObject {
     void start() {
         curNodeDest = 0;
 
-        Main.algorithm.outerBoundary = Editor.loadPerimeter();
+        Main.algorithm.boundary.outerBound = Editor.loadPerimeter();
         Main.algorithm.generatePath();
     }
 

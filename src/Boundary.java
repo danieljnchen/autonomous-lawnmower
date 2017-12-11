@@ -1,6 +1,6 @@
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Boundary extends UIObject {
@@ -17,6 +17,7 @@ public class Boundary extends UIObject {
         outerBound.add(p);
         allBounds.get(0).add(p);
     }
+
     public void addInner(Point2D p) {
         innerBounds.get(innerBounds.size()-1).add(p);
         allBounds.get(innerBounds.size()).add(p);
