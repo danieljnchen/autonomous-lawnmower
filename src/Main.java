@@ -24,22 +24,18 @@ public class Main extends Application {
         algorithm.outerBoundary.add(new Point2D.Double(200, 400));
         algorithm.outerBoundary.add(new Point2D.Double(0, 400));*/
 
-        algorithm.outerBoundary = DisplayPerimeters.readPerimeters().get(0);
-
         algorithm.generatePath();
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Algorithm Simulation");
+        primaryStage.setTitle("Algorithm");
         Group root = new Group();
         Canvas canvas = new Canvas(800, 600);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
-
-
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
 

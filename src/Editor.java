@@ -68,62 +68,38 @@ public class Editor extends Application {
         clear_boundary.setOnAction(actionEvent -> clearBoundary());
         root.getChildren().add(clear_boundary);
 
-        ToggleGroup group = new ToggleGroup();
-        RadioButton buttonModeDraw = new RadioButton("Draw");
-        buttonModeDraw.setToggleGroup(group);
-        buttonModeDraw.setSelected(true);
-        RadioButton buttonModeErase = new RadioButton("Erase");
-        buttonModeErase.setToggleGroup(group);
+        ToggleButton tb1 = new ToggleButton("Erase mode");
+        tb1.setLayoutY(50);
+        root.getChildren().add(tb1);
 
-        canvas.addEventFilter(MouseEvent.MOUSE_MOVED, mouseEvent -> {
-            Point2D mousePoint = new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-
-            switch (drawMode) {
-                case DRAW:
-                    drawPoint(mousePoint);
-                    break;
-                case ERASE:
-                    erasePoint(mousePoint, 10);
-                    break;
-            }
-        });
+        canvas.addEventFilter(MouseEvent.MOUSE_MOVED, mouseEvent -> runDraw(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
 
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            switch (mouseEvent.getButton()) {
-                case PRIMARY:
-                    if (drawMode == DrawMode.NONE) {
-                        drawMode = DrawMode.DRAW;
-                    } else {
-                        drawMode = DrawMode.NONE;
-                    }
-                    break;
-                /*case SECONDARY:
-                    if (drawMode == DrawMode.NONE) {
-                        drawMode = DrawMode.ERASE;
-                    } else if (drawMode == DrawMode.DRAW) {
-                        drawMode = DrawMode.ERASE;
-                    } else if (drawMode == DrawMode.ERASE) {
-                        drawMode = DrawMode.NONE;
-                    }
-                    break;*/
+            if (drawMode == DrawMode.NONE) {
+                if (tb1.isSelected()) {
+                    drawMode = DrawMode.ERASE;
+                } else {
+                    drawMode = DrawMode.DRAW;
+                }
+            } else {
+                drawMode = DrawMode.NONE;
             }
 
             // Run the draw to place a single point
-            drawPoint(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+            runDraw(new Point2D.Double(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
         });
 
-        stage.setOnCloseRequest(event -> {
+        /*stage.setOnCloseRequest(event -> {
             exit();
             event.consume();
-        });
+        });*/
 
-                AnimationTimer animator = new AnimationTimer(){
+        AnimationTimer animator = new AnimationTimer(){
             @Override
             public void handle(long arg0) {
                 draw(gc);
             }
         };
-
         animator.start();
     }
 
@@ -145,8 +121,17 @@ public class Editor extends Application {
             System.exit(0);
         } else if (result.get() == buttonNoSave) {
             System.exit(0);
-        } else {
+        }
+    }
 
+    private void runDraw(Point2D point) {
+        switch (drawMode) {
+            case DRAW:
+                drawPoint(point);
+                break;
+            case ERASE:
+                erasePoint(point, 15);
+                break;
         }
     }
 
@@ -157,18 +142,20 @@ public class Editor extends Application {
     }
 
     private void erasePoint(Point2D point, int radius) {
-        ArrayList<Point2D> perim = null;
+        ArrayList<Point2D> targetPar = null;
+        Point2D target = null;
 
         for (ArrayList<Point2D> perimeter : perimeters) {
             for (Point2D pt : perimeter) {
                 if (point.distance(pt) < radius) {
-                    perim = perimeter;
+                    targetPar = perimeter;
+                    target = pt;
                     break;
                 }
             }
         }
 
-        if (perim != null) perimeters.remove(perim);
+        if (target != null) targetPar.remove(target);
     }
 
     private void saveBoundary() {
