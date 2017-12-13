@@ -13,7 +13,6 @@ public class Testing extends Application {
     static ArrayList<UIObject> uiObjects = new ArrayList<>();
     static Boundary boundary = new Boundary();
     static Raycast r;
-    static Point2D insct;
 
     public static void main(String[] args) {
         boundary.outerBound.add(new Point2D(0, 0));
@@ -34,7 +33,7 @@ public class Testing extends Application {
         Canvas canvas = new Canvas(800, 600);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         UIObject.gc = gc;
-        r = new Raycast(new Point2D(0,300),0, boundary);
+        r = new Raycast(new Point2D(10,10),Math.PI/3, boundary);
 
 
         root.getChildren().add(canvas);

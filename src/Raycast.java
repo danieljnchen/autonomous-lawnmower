@@ -1,14 +1,17 @@
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+
+
 public class Raycast extends UIObject {
     private Point2D startPoint;
-    private Point2D hitPoint;
+    private ArrayList<Point2D> hitPoints = new ArrayList<>();
 
     private Point2D cast;
 
-    private Point2D point1;
-    private Point2D point2;
+    private ArrayList<Point2D> points1 = new ArrayList<>();
+    private ArrayList<Point2D> points2 = new ArrayList<>();
 
     public Raycast(Point2D start, double angle, Boundary boundary) {
         super();
@@ -22,16 +25,18 @@ public class Raycast extends UIObject {
      * @param boundary
      */
     private void start(Point2D start, double angle, Boundary boundary) {
-        startPoint = start;
-
         // Create a new point for us to manipulate
-        cast = new Point2D(start.getX(), start.getY());
+        startPoint = start;
+        //cast = new Point2D(start.getX(), start.getY());
+/*        double speedCoef = .5;
 
         for(int index = 0; index < boundary.outerBound.size(); ++index) {
             boolean sign; //false -> angle to cast less than angle, true -> angle to cast greater than angle
             boolean finished = false;
-            double angleToIndex = Math.atan2(boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getY() - cast.getY(), boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getX() - cast.getX());
-            double angleToIndex1 = Math.atan2(boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1)).getY(),boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1)).getX());
+            Point2D point1C = boundary.outerBound.get(index%(boundary.outerBound.size()-1));
+            Point2D point2C = boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1));
+            double angleToIndex = Math.atan2(point1C.getY() - startPoint.getY(),point1C.getX() - startPoint.getX());
+            double angleToIndex1 = Math.atan2(point2C.getY() - startPoint.getY(),point2C.getX() - startPoint.getX());
 
             if(angleToIndex == angle) {
                 finished = true;
@@ -47,45 +52,6 @@ public class Raycast extends UIObject {
             }
         }
 
-        /*
-        // Search for two points closest to a specified direction
-        double curAngle = 90; // start at 90 degrees; rotate left/right depending on raycast direction
-        if (angle > 90) {
-
-        }
-
-        // First point
-        for (Point2D point : boundary.outerBound) {
-            if (point.distance(cast) < curAngle) {
-                curAngle = point.distance(cast);
-                point1 = point;
-            }
-        }
-
-        curAngle = cast.distance(point2);
-
-        // Second point
-        for (Point2D point : boundary.outerBound) {
-            if (point.distance(cast) < curAngle && point != point1) {
-                curAngle = point.distance(cast);
-                point2 = point;
-            }
-        }
-        */
-
-        // Iterate the point forwards in the specified direction
-        /*while (true) {
-            double angle1 = Math.atan2(point1.getY() - cast.getY(), point1.getX() - cast.getX());
-            double angle2 = Math.atan2(point2.getY() - cast.getY(), point2.getX() - cast.getX());
-
-            // Check if the vector angles of the two points are opposite each other
-            if (angle1 + angle2 < .05) break;
-
-            cast = new Point2D(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
-        }*/
-        //for(int i = 0; i<=boundary.outerBound.size(); ++i) {
-
-        /*
         while(true) {
             //Point2D intersect = intersection(startPoint,cast,boundary.outerBound.get(i),boundary.outerBound.get((i+1)%(boundary.outerBound.size()-1)));
             Point2D intersect = intersection(startPoint,cast,point1,point2);
@@ -97,15 +63,20 @@ public class Raycast extends UIObject {
             }
             cast = new Point2D(cast.getX()+Math.cos(angle)*speedCoef,cast.getY()+Math.sin(angle)*speedCoef);
             System.out.println(cast.getX() + " " + cast.getY());
-        }
-        */
-    }
 
-    /*public Point2D hit() {
-        // If raycast check is getting further from all points, stop; we're not going to hit anything
-        if (false) System.out.println("Error: raycast failed to hit a target");
-        return hitPoint;
-    }*/
+        }
+*/
+        for (int index = 0; index <= boundary.outerBound.size(); index++) {
+            Point2D point1 = boundary.outerBound.get(index%boundary.outerBound.size());
+            Point2D point2 = boundary.outerBound.get((index+1)%boundary.outerBound.size());
+            Point2D hitPoint = intersection(startPoint,new Point2D(startPoint.getX()+1000*Math.cos(angle),startPoint.getY()+1000*Math.sin(angle)),point1,point2);
+            if(hitPoint != null) {
+                points1.add(point1);
+                points2.add(point2);
+                hitPoints.add(hitPoint);
+            }
+        }
+    }
 
     public static Point2D intersection(Point2D line1initial, Point2D line1terminal, Point2D line2initial, Point2D line2terminal) {
         Point2D vector1;
@@ -121,7 +92,6 @@ public class Raycast extends UIObject {
 
         Point2D out;
         if(scalar1 >= 0 && scalar1 <= 1 && scalar2 >= 0 && scalar2 <=1) {
-            out = Point2D.ZERO;
             out = new Point2D(line1initial.getX()+vector1.getX()*scalar1,line1initial.getY()+vector1.getY()*scalar1);
         } else {
             out = null;
@@ -130,22 +100,36 @@ public class Raycast extends UIObject {
         return out;
     }
 
+    private double distance(Point2D a, Point2D b) {
+        return Math.sqrt(Math.pow(b.getX()-a.getX(),2)+Math.pow(b.getY()-a.getY(),2));
+    }
+
     public void draw() {
         gc.setStroke(Color.BLUE);
         gc.setFill(Color.BLUE);
 
         // Initial raycast point
-        //gc.fillOval(startPoint.getX(),startPoint.getY(),5,5);
+        gc.fillOval(startPoint.getX(),startPoint.getY(),5,5);
 
-        // Target line segment
-        gc.strokeLine(point1.getX(),point1.getY(),point2.getX(),point2.getY());
+        if(hitPoints.size() != 0) {
+            Point2D hitPoint = hitPoints.get(0);
+            for (int i = 0; i < points1.size(); ++i) {
 
-        // Raycast line
-        //gc.strokeLine(startPoint.getX(),startPoint.getY(),cast.getX(),cast.getY());
+                // Target line segment
+                gc.strokeLine(points1.get(i).getX(), points1.get(i).getY(), points2.get(i).getX(), points2.get(i).getY());
+                if (distance(startPoint, hitPoints.get(i)) < distance(startPoint, hitPoint)) {
+                    hitPoint = hitPoints.get(i);
+                }
+                gc.fillOval(hitPoints.get(i).getX(), hitPoints.get(i).getY(), 5, 5);
+            }
 
-        // Hit point
-        if(hitPoint != null) {
+            // Hit point
             //gc.fillOval(hitPoint.getX(), hitPoint.getY(), 5, 5);
+
+            // Raycast line
+            gc.strokeLine(startPoint.getX(),startPoint.getY(),hitPoint.getX(),hitPoint.getY());
+        } else {
+            System.out.println("Failed to hit a point.");
         }
     }
 }
