@@ -13,12 +13,12 @@ public class Algorithm {
     }
 
     void generatePath() {
-        perimeterSweep(boundary.outerBound);
+        boundarySweep(boundary.getOuterBound());
 
         raycastZigZag(robot.pathNodes.get(robot.pathNodes.size()-1), 0, boundary);
     }
 
-    void perimeterSweep(ArrayList<Point2D> perimeter) {
+    void boundarySweep(ArrayList<Point2D> perimeter) {
         robot.pathNodes.addAll(perimeter);
         robot.pathNodes.add(perimeter.get(0));
     }
@@ -38,14 +38,14 @@ public class Algorithm {
             double curH = 0;
 
             // Step 1: Find rect length at the current Y
-            for (Point2D point : boundary.outerBound) {
+            for (Point2D point : boundary.getOuterBound()) {
                 if (point.getX() != curW && point.getY() == curY) {
                     curW = point.getX();
                 }
             }
 
             // Step 2: Find max rect width based on length
-            for (Point2D point : boundary.outerBound) {
+            for (Point2D point : boundary.getOuterBound()) {
                 if (point.getY() - curY > curH && point.getX() == curW) {
                     curH = point.getY() - curY;
                     break;
@@ -102,7 +102,7 @@ public class Algorithm {
         double maxH = 0;
 
         // Find max width of outer boundary
-        for (Point2D point : boundary.outerBound) {
+        for (Point2D point : boundary.getOuterBound()) {
             if (point.getY() > maxH) {
                 // If so, our max width is at that point
                 maxH = point.getY();

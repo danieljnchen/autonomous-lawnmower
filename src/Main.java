@@ -5,11 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
-import java.util.ArrayList;
 
 public class Main extends Application {
-    static ArrayList<UIObject> uiObjects = new ArrayList<>();
-
     static Robot robot = new Robot();
     static Boundary boundary = new Boundary();
     static Algorithm algorithm = new Algorithm(robot, boundary);
@@ -24,7 +21,6 @@ public class Main extends Application {
         Group root = new Group();
         Canvas canvas = new Canvas(800, 600);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        UIObject.gc = gc;
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
@@ -33,17 +29,17 @@ public class Main extends Application {
         {
             public void handle(long currentNanoTime)
             {
-                gc.clearRect(0, 0, 800, 600);
-                drawShapes(gc);
+                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                draw(gc);
             }
         }.start();
 
         primaryStage.show();
     }
 
-    private void drawShapes(GraphicsContext gc) {
-        for (UIObject obj : uiObjects) {
-            obj.draw();
+    private void draw(GraphicsContext gc) {
+        for (UIObject obj : UIObject.uiObjects) {
+            obj.draw(gc);
         }
     }
 }

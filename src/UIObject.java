@@ -1,11 +1,13 @@
 import javafx.scene.canvas.GraphicsContext;
 
-public class UIObject {
-    static GraphicsContext gc;
+import java.util.ArrayList;
 
-    public UIObject() {
-        Testing.uiObjects.add(this);
+public class UIObject {
+    static ArrayList<UIObject> uiObjects = new ArrayList<>();
+
+    UIObject() {
+        uiObjects.add(this);
     }
 
-    public void draw() {}
+    public void draw(GraphicsContext gc) {}
 }

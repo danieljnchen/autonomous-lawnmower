@@ -1,4 +1,5 @@
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Raycast extends UIObject {
@@ -11,7 +12,6 @@ public class Raycast extends UIObject {
     private Point2D point2;
 
     public Raycast(Point2D start, double angle, Boundary boundary) {
-        super();
         start(start, angle, boundary);
     }
 
@@ -27,11 +27,11 @@ public class Raycast extends UIObject {
         // Create a new point for us to manipulate
         cast = new Point2D(start.getX(), start.getY());
 
-        for(int index = 0; index < boundary.outerBound.size(); ++index) {
+        for(int index = 0; index < boundary.getOuterBound().size(); ++index) {
             boolean sign; //false -> angle to cast less than angle, true -> angle to cast greater than angle
             boolean finished = false;
-            double angleToIndex = Math.atan2(boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getY() - cast.getY(), boundary.outerBound.get(index%(boundary.outerBound.size()-1)).getX() - cast.getX());
-            double angleToIndex1 = Math.atan2(boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1)).getY(),boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1)).getX());
+            double angleToIndex = Math.atan2(boundary.getOuterBound().get(index%(boundary.getOuterBound().size()-1)).getY() - cast.getY(), boundary.getOuterBound().get(index%(boundary.getOuterBound().size()-1)).getX() - cast.getX());
+            double angleToIndex1 = Math.atan2(boundary.getOuterBound().get((index+1)%(boundary.getOuterBound().size()-1)).getY(),boundary.getOuterBound().get((index+1)%(boundary.getOuterBound().size()-1)).getX());
 
             if(angleToIndex == angle) {
                 finished = true;
@@ -41,8 +41,8 @@ public class Raycast extends UIObject {
                 finished = true;
             }
             if(finished) {
-                point1 = boundary.outerBound.get(index%(boundary.outerBound.size()-1));
-                point2 = boundary.outerBound.get((index+1)%(boundary.outerBound.size()-1));
+                point1 = boundary.getOuterBound().get(index%(boundary.getOuterBound().size()-1));
+                point2 = boundary.getOuterBound().get((index+1)%(boundary.getOuterBound().size()-1));
                 break;
             }
         }
@@ -55,7 +55,7 @@ public class Raycast extends UIObject {
         }
 
         // First point
-        for (Point2D point : boundary.outerBound) {
+        for (Point2D point : boundary.getOuterBound()) {
             if (point.distance(cast) < curAngle) {
                 curAngle = point.distance(cast);
                 point1 = point;
@@ -65,7 +65,7 @@ public class Raycast extends UIObject {
         curAngle = cast.distance(point2);
 
         // Second point
-        for (Point2D point : boundary.outerBound) {
+        for (Point2D point : boundary.getOuterBound()) {
             if (point.distance(cast) < curAngle && point != point1) {
                 curAngle = point.distance(cast);
                 point2 = point;
@@ -83,11 +83,11 @@ public class Raycast extends UIObject {
 
             cast = new Point2D(cast.getX() + Math.cos(angle) * speedCoef, cast.getY() + Math.sin(angle) * speedCoef);
         }*/
-        //for(int i = 0; i<=boundary.outerBound.size(); ++i) {
+        //for(int i = 0; i<=boundary.getOuterBound().size(); ++i) {
 
         /*
         while(true) {
-            //Point2D intersect = intersection(startPoint,cast,boundary.outerBound.get(i),boundary.outerBound.get((i+1)%(boundary.outerBound.size()-1)));
+            //Point2D intersect = intersection(startPoint,cast,boundary.getOuterBound().get(i),boundary.getOuterBound().get((i+1)%(boundary.getOuterBound().size()-1)));
             Point2D intersect = intersection(startPoint,cast,point1,point2);
             if(intersect != null) {
                 hitPoint = intersect;
@@ -130,7 +130,7 @@ public class Raycast extends UIObject {
         return out;
     }
 
-    public void draw() {
+    public void draw(GraphicsContext gc) {
         gc.setStroke(Color.BLUE);
         gc.setFill(Color.BLUE);
 

@@ -1,4 +1,5 @@
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
@@ -12,8 +13,6 @@ class Robot extends UIObject {
 
     void start() {
         curNodeDest = 0;
-
-        Main.algorithm.boundary.outerBound = Editor.loadPerimeter();
         Main.algorithm.generatePath();
     }
 
@@ -27,7 +26,7 @@ class Robot extends UIObject {
         }
     }
 
-    public void draw() {
+    public void draw(GraphicsContext gc) {
         // Robot shape
         gc.setFill(Color.ORANGE);
         gc.fillRect(pos.getX() - length /2, pos.getY() - width /2, length, width);
