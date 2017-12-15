@@ -26,7 +26,7 @@ public class Algorithm {
     ArrayList<Rectangle2D> subDivideIntoRects() {
         ArrayList<Rectangle2D> subRects = new ArrayList<>();
 
-        double maxH = getMaxLength(0);
+        double maxH = getMaxLength(Point2D.ZERO, 0);
         // Track how far we have subdivided
         double curY = 0;
 
@@ -87,7 +87,7 @@ public class Algorithm {
         double lengthCovered = 0;
         Point2D curPoint = boundary.getOuterBound().get(0);
 
-        while (lengthCovered < getMaxLength(0)) {
+        while (lengthCovered < getMaxLength(Point2D.ZERO, 0)) {
             Raycast ray1 = new Raycast(curPoint, angle);
             Raycast ray2 = new Raycast(ray1.getHitPoint(), angle + 180);
 
@@ -102,10 +102,9 @@ public class Algorithm {
      * @param angle In degrees
      * @return Distance
      */
-    private double getMaxLength(double angle) {
+    private double getMaxLength(Point2D startPoint, double angle) {
         double maxLength = 0;
         angle = Math.toRadians(angle);
-        Point2D startPoint = Point2D.ZERO;
 
         // Raycast to determine distance
         Raycast cast = new Raycast(startPoint, angle);
