@@ -11,18 +11,19 @@ class Robot extends UIObject {
     ArrayList<Point2D> pathNodes = new ArrayList<>();
     private int curNodeDest = 0;
 
-    void start() {
-        curNodeDest = 0;
-        Main.algorithm.generatePath();
-    }
-
-    void approachNextNode() {
+    private void approachNextNode() {
         Point2D node = pathNodes.get(curNodeDest);
 
         if (pos.distance(node) < 1) {
-            if (pathNodes.size() - 1 > curNodeDest) {
+            if (curNodeDest < pathNodes.size() - 1) {
                 curNodeDest++;
             }
+        } else {
+            double dx = node.getX() - pos.getX();
+            double dy = node.getY() - pos.getY();
+            double angle = Math.atan2(dy, dx);
+
+            pos = new Point2D(pos.getX() + Math.cos(angle), pos.getY() + Math.sin(angle));
         }
     }
 
@@ -32,7 +33,7 @@ class Robot extends UIObject {
         gc.fillRect(pos.getX() - length /2, pos.getY() - width /2, length, width);
 
         // Planned path
-        gc.setLineWidth(2);
+        gc.setLineWidth(5);
         gc.setStroke(Color.RED);
         for (int i = 0; i < pathNodes.size() - 1; i++) {
             gc.strokeLine(pathNodes.get(i).getX(), pathNodes.get(i).getY(), pathNodes.get(i+1).getX(), pathNodes.get(i+1).getY());

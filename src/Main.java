@@ -1,5 +1,6 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -12,6 +13,11 @@ public class Main extends Application {
     static Algorithm algorithm = new Algorithm(robot, boundary);
 
     public static void main(String[] args) {
+        boundary.load(Boundary.saveLocation);
+
+        //algorithm.generatePath();
+        Raycast ray = new Raycast(Point2D.ZERO, -45);
+
         launch(args);
     }
 
