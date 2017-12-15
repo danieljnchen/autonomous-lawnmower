@@ -15,9 +15,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         boundary.load(Boundary.saveLocation);
 
-        //algorithm.generatePath();
-        Raycast ray = new Raycast(Point2D.ZERO, -45);
-
         launch(args);
     }
 
