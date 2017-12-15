@@ -9,7 +9,17 @@ import java.util.Scanner;
 
 public class Boundary extends UIObject {
     ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
-    private Color[] colorCycle = { Color.BLACK.deriveColor(0, 0, 0, .5), Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON };
+    private Color[] colorCycle = { Color.BLACK, Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON };
+
+    Boundary() {
+        Color[] colors = new Color[colorCycle.length];
+
+        for (int i = 0; i < colorCycle.length; i++) {
+            colors[i] = colorCycle[i].deriveColor(0, 1, 1, 0.5);
+        }
+
+        System.arraycopy(colors, 0, colorCycle, 0, colorCycle.length);
+    }
 
     public static String saveLocation = "out.txt";
 

@@ -32,7 +32,7 @@ public class Editor extends Application {
         stage.setTitle("Editor");
 
         Group root = new Group();
-        Canvas canvas = new Canvas(800,600);
+        Canvas canvas = new Canvas(800, 600);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
@@ -84,7 +84,7 @@ public class Editor extends Application {
             event.consume();
         });*/
 
-        AnimationTimer animator = new AnimationTimer(){
+        AnimationTimer animator = new AnimationTimer() {
             @Override
             public void handle(long arg0) {
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -107,7 +107,7 @@ public class Editor extends Application {
         alert.getButtonTypes().setAll(buttonSave, buttonNoSave, buttonCancel);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonSave){
+        if (result.get() == buttonSave) {
             boundary.save(Boundary.saveLocation);
             System.exit(0);
         } else if (result.get() == buttonNoSave) {
