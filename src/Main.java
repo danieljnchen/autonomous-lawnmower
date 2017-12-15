@@ -5,28 +5,15 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import java.util.ArrayList;
 
 public class Main extends Application {
-    static ArrayList<UIObject> uiObjects = new ArrayList<>();
-
     static Robot robot = new Robot();
     static Boundary boundary = new Boundary();
     static Algorithm algorithm = new Algorithm(robot, boundary);
 
     public static void main(String[] args) {
-        boundary.outerBound.add(new Point2D(0, 0));
-        boundary.outerBound.add(new Point2D(100, 0));
-        boundary.outerBound.add(new Point2D(100, 200));
-        boundary.outerBound.add(new Point2D(200, 200));
-        boundary.outerBound.add(new Point2D(200, 400));
-        boundary.outerBound.add(new Point2D(200, 400));
-        boundary.outerBound.add(new Point2D(100, 500));
-        boundary.outerBound.add(new Point2D(0, 500));
-
-        algorithm.generatePath();
+        boundary.load(Boundary.saveLocation);
 
         launch(args);
     }
@@ -37,9 +24,6 @@ public class Main extends Application {
         Group root = new Group();
         Canvas canvas = new Canvas(800, 600);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        UIObject.gc = gc;
-
-        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> robot.pathNodes.add(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
@@ -48,17 +32,17 @@ public class Main extends Application {
         {
             public void handle(long currentNanoTime)
             {
-                gc.clearRect(0, 0, 800, 600);
-                drawShapes(gc);
+                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                draw(gc);
             }
         }.start();
 
         primaryStage.show();
     }
 
-    private void drawShapes(GraphicsContext gc) {
-        for (UIObject obj : uiObjects) {
-            obj.draw();
+    private void draw(GraphicsContext gc) {
+        for (UIObject obj : UIObject.uiObjects) {
+            obj.draw(gc);
         }
     }
 }

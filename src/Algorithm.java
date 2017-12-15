@@ -4,8 +4,8 @@ import javafx.geometry.Rectangle2D;
 import java.util.ArrayList;
 
 public class Algorithm {
-    Robot robot;
-    Boundary boundary;
+    private Robot robot;
+    private Boundary boundary;
 
     Algorithm(Robot robot, Boundary boundary) {
         this.robot = robot;
@@ -13,12 +13,12 @@ public class Algorithm {
     }
 
     void generatePath() {
-        perimeterSweep(boundary.outerBound);
+        boundarySweep(boundary.getOuterBound());
 
-        raycastZigZag(robot.pathNodes.get(robot.pathNodes.size()-1), 0, boundary);
+        raycastZigZag(0);
     }
 
-    void perimeterSweep(ArrayList<Point2D> perimeter) {
+    void boundarySweep(ArrayList<Point2D> perimeter) {
         robot.pathNodes.addAll(perimeter);
         robot.pathNodes.add(perimeter.get(0));
     }
@@ -26,7 +26,7 @@ public class Algorithm {
     ArrayList<Rectangle2D> subDivideIntoRects() {
         ArrayList<Rectangle2D> subRects = new ArrayList<>();
 
-        double maxH = getMaxHeight();
+        double maxH = getMaxLength(0);
         // Track how far we have subdivided
         double curY = 0;
 
@@ -38,14 +38,14 @@ public class Algorithm {
             double curH = 0;
 
             // Step 1: Find rect length at the current Y
-            for (Point2D point : boundary.outerBound) {
+            for (Point2D point : boundary.getOuterBound()) {
                 if (point.getX() != curW && point.getY() == curY) {
                     curW = point.getX();
                 }
             }
 
             // Step 2: Find max rect width based on length
-            for (Point2D point : boundary.outerBound) {
+            for (Point2D point : boundary.getOuterBound()) {
                 if (point.getY() - curY > curH && point.getX() == curW) {
                     curH = point.getY() - curY;
                     break;
@@ -69,7 +69,7 @@ public class Algorithm {
         return subRects;
     }
 
-    private void generateZigZag(Rectangle2D rect) {
+    private void rectZigZag(Rectangle2D rect) {
         // Zig zag through defined rectangle based on robot length
         int i = 0;
         while (i < rect.getHeight() / robot.length) {
@@ -83,32 +83,48 @@ public class Algorithm {
         }
     }
 
-    void raycastZigZag(Point2D start, double angle, Boundary boundary) {
-        double height = 0;
-        Point2D curPoint = new Point2D(start.getX(), start.getY());
+    private void raycastZigZag(double angle) {
+        double lengthCovered = 0;
+        Point2D curPoint = boundary.getOuterBound().get(0);
 
-        while (height < getMaxHeight()) {
-            // Start a new raycast in the specified direction
-            Raycast ray1 = new Raycast(start, angle, boundary);
-            //Raycast ray2 = new Raycast(ray1.hit(), angle + 180, boundary);
+        while (lengthCovered < getMaxLength(0)) {
+            Raycast ray1 = new Raycast(curPoint, angle);
+            Raycast ray2 = new Raycast(ray1.hitPoint, angle + 180);
 
             curPoint = new Point2D(curPoint.getX(), curPoint.getY() + robot.length);
-            height += robot.length;
+            lengthCovered += robot.length;
         }
 
     }
 
-    private double getMaxHeight() {
-        double maxH = 0;
+    /**
+     * Finds the greatest distance from one side of a boundary to another
+     * @param angle In degrees
+     * @return Distance
+     */
+    private double getMaxLength(double angle) {
+        double maxLength = 0;
+        angle = Math.toRadians(angle);
+        Point2D startPoint = Point2D.ZERO;
 
-        // Find max width of outer boundary
-        for (Point2D point : boundary.outerBound) {
-            if (point.getY() > maxH) {
-                // If so, our max width is at that point
-                maxH = point.getY();
+        // Raycast to determine distance
+        Raycast cast = new Raycast(startPoint, angle);
+        if (cast.hitPoint == null) return -1;
+
+        Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
+
+        while (currentPoint.distance(cast.hitPoint) > robot.length) {
+            // Raycast to the left and right to find our max length
+            Raycast left = new Raycast(currentPoint, angle - Math.PI/2);
+            Raycast right = new Raycast(currentPoint, angle + Math.PI/2);
+
+            if (left.hitPoint.distance(right.hitPoint) > maxLength) {
+                maxLength = left.hitPoint.distance(right.hitPoint);
             }
+
+            currentPoint = new Point2D(currentPoint.getX() + Math.cos(angle), currentPoint.getY() + Math.sin(angle));
         }
 
-        return maxH;
+        return maxLength;
     }
 }
