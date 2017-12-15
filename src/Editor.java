@@ -148,7 +148,13 @@ public class Editor extends Application {
             }
         }
 
-        if (target != null) targetPar.remove(target);
+        if (targetPar != null) {
+            targetPar.remove(target);
+
+            if (targetPar.size() == 0) {
+                boundary.bounds.remove(targetPar);
+            }
+        }
     }
 
     private void draw(GraphicsContext gc) {
