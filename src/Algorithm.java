@@ -89,7 +89,7 @@ public class Algorithm {
 
         while (lengthCovered < getMaxLength(0)) {
             Raycast ray1 = new Raycast(curPoint, angle);
-            Raycast ray2 = new Raycast(ray1.hitPoint, angle + 180);
+            Raycast ray2 = new Raycast(ray1.hitPoints.get(0), angle + 180);
 
             curPoint = new Point2D(curPoint.getX(), curPoint.getY() + robot.length);
             lengthCovered += robot.length;
@@ -109,17 +109,17 @@ public class Algorithm {
 
         // Raycast to determine distance
         Raycast cast = new Raycast(startPoint, angle);
-        if (cast.hitPoint == null) return -1;
+        if (cast.hitPoints.get(0) == null) return -1;
 
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
 
-        while (currentPoint.distance(cast.hitPoint) > robot.length) {
+        while (currentPoint.distance(cast.hitPoints.get(0)) > robot.length) {
             // Raycast to the left and right to find our max length
             Raycast left = new Raycast(currentPoint, angle - Math.PI/2);
             Raycast right = new Raycast(currentPoint, angle + Math.PI/2);
 
-            if (left.hitPoint.distance(right.hitPoint) > maxLength) {
-                maxLength = left.hitPoint.distance(right.hitPoint);
+            if (left.hitPoints.get(0).distance(right.hitPoints.get(0)) > maxLength) {
+                maxLength = left.hitPoints.get(0).distance(right.hitPoints.get(0));
             }
 
             currentPoint = new Point2D(currentPoint.getX() + Math.cos(angle), currentPoint.getY() + Math.sin(angle));
