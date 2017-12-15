@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 
 public class Raycast extends UIObject {
-    private Point2D startPoint;
+    private final Point2D startPoint;
     private ArrayList<Point2D> hitPoints = new ArrayList<>();
-
-    private Point2D cast;
 
     private ArrayList<Point2D> points1 = new ArrayList<>();
     private ArrayList<Point2D> points2 = new ArrayList<>();
+
+    public int index;
 
     Raycast(Point2D start, double angle) {
         startPoint = start;
@@ -26,16 +26,21 @@ public class Raycast extends UIObject {
      * @param boundary
      */
     private void start(Point2D start, double angle, Boundary boundary) {
-        startPoint = start;
-
-        for (int index = 0; index <= boundary.outerBound.size(); index++) {
-            Point2D point1 = boundary.outerBound.get(index%boundary.outerBound.size());
-            Point2D point2 = boundary.outerBound.get((index+1)%boundary.outerBound.size());
-            Point2D hitPoint = intersection(startPoint,new Point2D(startPoint.getX()+1000*Math.cos(angle),startPoint.getY()+1000*Math.sin(angle)),point1,point2);
+        for (int index = 0; index <= boundary.bounds.get(0).size(); index++) {
+            Point2D point1 = boundary.bounds.get(0).get(index%boundary.bounds.get(0).size());
+            Point2D point2 = boundary.bounds.get(0).get((index+1)%boundary.bounds.get(0).size());
+            Point2D hitPoint = intersection(startPoint,new Point2D(startPoint.getX()+1000*Math.cos(Math.toRadians(angle)),startPoint.getY()+1000*Math.sin(Math.toRadians(angle))),point1,point2);
             if(hitPoint != null) {
                 points1.add(point1);
                 points2.add(point2);
                 hitPoints.add(hitPoint);
+            }
+        }
+        Point2D hitPoint = hitPoints.get(0);
+        for (int i = 1; i < hitPoints.size(); i++) {
+            if(startPoint.distance(hitPoints.get(i)) < startPoint.distance(hitPoint)) {
+                hitPoint = hitPoints.get(i);
+                index = i;
             }
         }
     }
@@ -61,7 +66,6 @@ public class Raycast extends UIObject {
 
     public void draw(GraphicsContext gc) {
 
-    public void draw() {
         gc.setStroke(Color.BLUE);
         gc.setFill(Color.BLUE);
 
@@ -74,14 +78,15 @@ public class Raycast extends UIObject {
 
                 // Target line segment
                 gc.strokeLine(points1.get(i).getX(), points1.get(i).getY(), points2.get(i).getX(), points2.get(i).getY());
-                if (distance(startPoint, hitPoints.get(i)) < distance(startPoint, hitPoint)) {
+                if (startPoint.distance(hitPoints.get(i)) < startPoint.distance(hitPoint)) {
                     hitPoint = hitPoints.get(i);
                 }
-                gc.fillOval(hitPoints.get(i).getX(), hitPoints.get(i).getY(), 5, 5);
+                //All hitPoints
+                //gc.fillOval(hitPoints.get(i).getX(), hitPoints.get(i).getY(), 5, 5);
             }
 
             // Hit point
-            //gc.fillOval(hitPoint.getX(), hitPoint.getY(), 5, 5);
+            gc.fillOval(hitPoint.getX(), hitPoint.getY(), 5, 5);
 
             // Raycast line
             gc.strokeLine(startPoint.getX(),startPoint.getY(),hitPoint.getX(),hitPoint.getY());
