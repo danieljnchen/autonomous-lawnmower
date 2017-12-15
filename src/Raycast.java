@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 
 public class Raycast extends UIObject {
-    private final Point2D startPoint;
-    private ArrayList<Point2D> hitPoints = new ArrayList<>();
+    public final Point2D startPoint;
+    public ArrayList<Point2D> hitPoints = new ArrayList<>();
 
     private ArrayList<Point2D> points1 = new ArrayList<>();
     private ArrayList<Point2D> points2 = new ArrayList<>();
