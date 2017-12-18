@@ -7,25 +7,24 @@ import java.util.ArrayList;
 
 public class Raycast extends UIObject {
     public final Point2D startPoint;
-    public ArrayList<Point2D> hitPoints = new ArrayList<>();
+    public double angle;
 
+    public int index;
+    public ArrayList<Point2D> hitPoints = new ArrayList<>();
     private ArrayList<Point2D> points1 = new ArrayList<>();
     private ArrayList<Point2D> points2 = new ArrayList<>();
 
-    public int index;
-
-    Raycast(Point2D start, double angle) {
+    Raycast(Point2D start, double angleIn) {
         startPoint = start;
-        start(start, angle, Main.boundary);
+        angle = angleIn;
+        start(Main.boundary);
     }
 
     /***
      * Raycasts in the specified direction.
-     * @param start
-     * @param angle In degrees
      * @param boundary
      */
-    private void start(Point2D start, double angle, Boundary boundary) {
+    private void start(Boundary boundary) {
         for (int index = 0; index <= boundary.bounds.get(0).size(); index++) {
             Point2D point1 = boundary.bounds.get(0).get(index%boundary.bounds.get(0).size());
             Point2D point2 = boundary.bounds.get(0).get((index+1)%boundary.bounds.get(0).size());
@@ -46,6 +45,7 @@ public class Raycast extends UIObject {
             }
         } else {
             index = -1;
+            System.out.println("Failed to hit a point");
         }
     }
 
@@ -90,9 +90,9 @@ public class Raycast extends UIObject {
             // Hit point
             gc.fillOval(hitPoints.get(index).getX(), hitPoints.get(index).getY(), 5, 5);
             // Raycast line
-            gc.strokeLine(startPoint.getX(),startPoint.getY(),hitPoints.get(index).getX(),hitPoints.get(index).getY());
+            gc.strokeLine(startPoint.getX(), startPoint.getY(), hitPoints.get(index).getX(), hitPoints.get(index).getY());
         } else {
-            System.out.println("Failed to hit a point.");
+            gc.strokeLine(startPoint.getX(),startPoint.getY(),startPoint.getX() + 5000*Math.cos(Math.toRadians(angle)),startPoint.getY() + 5000*Math.sin(Math.toRadians(angle)));
         }
     }
 }
