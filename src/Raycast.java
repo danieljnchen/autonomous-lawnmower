@@ -36,12 +36,16 @@ public class Raycast extends UIObject {
                 hitPoints.add(hitPoint);
             }
         }
-        Point2D hitPoint = hitPoints.get(0);
-        for (int i = 1; i < hitPoints.size(); i++) {
-            if(startPoint.distance(hitPoints.get(i)) < startPoint.distance(hitPoint)) {
-                hitPoint = hitPoints.get(i);
-                index = i;
+        if(hitPoints.size() != 0) {
+            Point2D hitPoint = hitPoints.get(0);
+            for (int i = 1; i < hitPoints.size(); i++) {
+                if (startPoint.distance(hitPoints.get(i)) < startPoint.distance(hitPoint)) {
+                    hitPoint = hitPoints.get(i);
+                    index = i;
+                }
             }
+        } else {
+            index = -1;
         }
     }
 
@@ -64,6 +68,14 @@ public class Raycast extends UIObject {
         return out;
     }
 
+    public Point2D getHitPoint() {
+        if(index != -1) {
+            return hitPoints.get(index);
+        } else {
+            return null;
+        }
+    }
+
     public void draw(GraphicsContext gc) {
 
         gc.setStroke(Color.BLUE);
@@ -72,24 +84,13 @@ public class Raycast extends UIObject {
         // Initial raycast point
         gc.fillOval(startPoint.getX(),startPoint.getY(),5,5);
 
-        if(hitPoints.size() != 0) {
-            Point2D hitPoint = hitPoints.get(0);
-            for (int i = 0; i < points1.size(); ++i) {
-
-                // Target line segment
-                gc.strokeLine(points1.get(i).getX(), points1.get(i).getY(), points2.get(i).getX(), points2.get(i).getY());
-                if (startPoint.distance(hitPoints.get(i)) < startPoint.distance(hitPoint)) {
-                    hitPoint = hitPoints.get(i);
-                }
-                //All hitPoints
-                //gc.fillOval(hitPoints.get(i).getX(), hitPoints.get(i).getY(), 5, 5);
-            }
-
+        if(index != -1) {
+            // Target line segment
+            gc.strokeLine(points1.get(index).getX(), points1.get(index).getY(), points2.get(index).getX(), points2.get(index).getY());
             // Hit point
-            gc.fillOval(hitPoint.getX(), hitPoint.getY(), 5, 5);
-
+            gc.fillOval(hitPoints.get(index).getX(), hitPoints.get(index).getY(), 5, 5);
             // Raycast line
-            gc.strokeLine(startPoint.getX(),startPoint.getY(),hitPoint.getX(),hitPoint.getY());
+            gc.strokeLine(startPoint.getX(),startPoint.getY(),hitPoints.get(index).getX(),hitPoints.get(index).getY());
         } else {
             System.out.println("Failed to hit a point.");
         }
