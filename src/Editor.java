@@ -61,7 +61,6 @@ public class Editor extends Application {
         ToggleButton tb1 = new ToggleButton("Erase mode");
         tb1.setLayoutY(50);
         root.getChildren().add(tb1);
-
         canvas.addEventFilter(MouseEvent.MOUSE_MOVED, mouseEvent -> runDraw(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
 
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
