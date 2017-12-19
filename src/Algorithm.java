@@ -13,9 +13,9 @@ public class Algorithm {
     }
 
     void generatePath() {
-        boundarySweep(boundary.getOuterBound());
+        //boundarySweep(boundary.getOuterBound());
 
-        raycastZigZag(0);
+        raycastComb(boundary.getOuterBound().get(boundary.getOuterBound().size() - 1).add(10, 0), 0);
     }
 
     void boundarySweep(ArrayList<Point2D> perimeter) {
@@ -83,45 +83,140 @@ public class Algorithm {
         }
     }
 
-    private void raycastZigZag(double angle) {
-        double lengthCovered = 0;
-        Point2D curPoint = boundary.getOuterBound().get(0);
-
-        while (lengthCovered < getMaxLength(Point2D.ZERO, 0)) {
-            Raycast ray1 = new Raycast(curPoint, angle);
-            Raycast ray2 = new Raycast(ray1.getHitPoint(), angle + 180);
-
-            curPoint = new Point2D(curPoint.getX(), curPoint.getY() + robot.length);
-            lengthCovered += robot.length;
-        }
-
-    }
-
-    /**
-     * Finds the greatest distance from one side of a boundary to another
-     * @param angle In degrees
-     * @return Distance
-     */
-    private double getMaxLength(Point2D startPoint, double angle) {
+    private double raycastComb(Point2D startPoint, double angle) {
+        double searchAngle = angle - 90;
         double maxLength = 0;
-        angle = Math.toRadians(angle);
+        boolean escaped = false; // whether we've escaped a starting vertex
 
-        // Raycast to determine distance
-        Raycast cast = new Raycast(startPoint, angle);
-        if (cast.getHitPoint() == null) return -1;
+        // Raycast up and down
+        Raycast cast;
+        try {
+            cast = new Raycast(startPoint, searchAngle);
+        } catch (NoHitException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        System.out.println(startPoint);
+        System.out.println(cast.getHitPoint());
 
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
+        Point2D lastLeft = currentPoint.add(0, 0);
+        Point2D lastRight = currentPoint.add(0, 0);
 
-        while (currentPoint.distance(cast.getHitPoint()) > robot.length) {
-            // Raycast to the left and right to find our max length
-            Raycast left = new Raycast(currentPoint, angle - Math.PI/2);
-            Raycast right = new Raycast(currentPoint, angle + Math.PI/2);
+        while (true) {
+            System.out.println(currentPoint.distance(cast.getHitPoint()));
+            boolean reachedFinish = currentPoint.distance(cast.getHitPoint()) < robot.length;
+
+            if (reachedFinish) {
+                if (escaped) break;
+            } else {
+                escaped = true;
+            }
+
+            Raycast left;
+            Raycast right;
+            try {
+                left = new Raycast(currentPoint, searchAngle + 90);
+                right = new Raycast(currentPoint, searchAngle - 90);
+            } catch (NoHitException e) {
+                e.printStackTrace();
+                return 0;
+            }
 
             if (left.getHitPoint().distance(right.getHitPoint()) > maxLength) {
                 maxLength = left.getHitPoint().distance(right.getHitPoint());
             }
 
-            currentPoint = new Point2D(currentPoint.getX() + Math.cos(angle), currentPoint.getY() + Math.sin(angle));
+            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)));
+
+            // Add the points to the queue
+            robot.pathNodes.add(lastLeft);
+            robot.pathNodes.add(lastRight);
+            robot.pathNodes.add(right.getHitPoint());
+            robot.pathNodes.add(left.getHitPoint());
+
+            lastLeft = left.getHitPoint();
+            lastRight = right.getHitPoint();
+        }
+
+        return maxLength;
+    }
+
+    /*private void raycastZigZag(Point2D startPoint, double angle) {
+        Point2D curPoint = new Point2D(startPoint.getX(), startPoint.getY());
+        double maxLength = getMaxLength(curPoint, angle - 90);
+
+        while (curPoint.getY() < maxLength + startPoint.getY()) {
+            robot.pathNodes.add(curPoint);
+
+            Raycast ray1 = null;
+            try {
+                ray1 = new Raycast(curPoint, angle);
+                robot.pathNodes.add(ray1.getHitPoint());
+            } catch (NoHitException e) {
+                e.printStackTrace();
+            }
+
+            // Move over for the next cast
+            assert ray1 != null;
+            curPoint = ray1.getHitPoint().add(robot.length * Math.sin(Math.toRadians(angle)), robot.length * Math.cos(Math.toRadians(angle)));
+            robot.pathNodes.add(curPoint);
+
+            // Cast in the opposite direction
+            Raycast ray2 = null;
+            try {
+                ray2 = new Raycast(curPoint, angle + 180);
+                robot.pathNodes.add(ray2.getHitPoint());
+            } catch (NoHitException e) {
+                e.printStackTrace();
+            }
+
+            assert ray2 != null;
+            curPoint = ray2.getHitPoint().add(robot.length * Math.sin(Math.toRadians(angle)), robot.length * Math.cos(Math.toRadians(angle)));
+            robot.pathNodes.add(curPoint);
+        }
+    }*/
+
+    private double getMaxLength(Point2D startPoint, double angle) {
+        double maxLength = 0;
+        boolean escaped = false;
+
+        // Raycast to determine distance to search
+        Raycast cast;
+        try {
+            cast = new Raycast(startPoint, angle);
+        } catch (NoHitException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
+
+        while (true) {
+            boolean reachedFinish = currentPoint.distance(cast.getHitPoint()) < robot.length;
+
+            if (reachedFinish) {
+                if (escaped) break;
+            } else {
+                escaped = true;
+            }
+
+            // Raycast to the left and right to find our max length
+            Raycast left;
+            Raycast right;
+            try {
+                left = new Raycast(currentPoint, angle + 90);
+                right = new Raycast(currentPoint, angle - 90);
+            } catch (NoHitException e) {
+                e.printStackTrace();
+                return 0;
+            }
+
+            if (left.getHitPoint().distance(right.getHitPoint()) > maxLength) {
+                maxLength = left.getHitPoint().distance(right.getHitPoint());
+            }
+
+            currentPoint = currentPoint.add(Math.cos(angle), Math.sin(angle));
         }
 
         return maxLength;
