@@ -24,7 +24,7 @@ public class Main extends Application {
         boundary.getOuterBound().add(new Point2D(100, 200));
 
         try {
-            Raycast r = new Raycast(new Point2D(80, 50), 30);
+            Raycast r = new Raycast(new Point2D(80, 50), 90);
         } catch (NoHitException e) {
             e.printStackTrace();
         }
