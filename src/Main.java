@@ -1,9 +1,11 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -28,6 +30,9 @@ public class Main extends Application {
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
+
+        // Create comb on mouse click
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), -90));
 
         new AnimationTimer()
         {

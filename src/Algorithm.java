@@ -83,7 +83,7 @@ public class Algorithm {
         }
     }
 
-    private double raycastComb(Point2D startPoint, double angle) {
+    public double raycastComb(Point2D startPoint, double angle) {
         double searchAngle = angle + 90;
         double maxLength = 0;
         boolean escaped = false; // whether we've escaped a starting vertex
