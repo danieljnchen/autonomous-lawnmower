@@ -127,7 +127,7 @@ public class Algorithm {
                 maxLength = left.getHitPoint().distance(right.getHitPoint());
             }
 
-            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)));
+            currentPoint = currentPoint.add(Math.cos(Math.toRadians(searchAngle)), Math.sin(Math.toRadians(searchAngle)));
 
             // Add the points to the queue
             /*robot.pathNodes.add(lastLeft);
