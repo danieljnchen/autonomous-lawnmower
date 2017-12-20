@@ -15,7 +15,7 @@ public class Algorithm {
     void generatePath() {
         //boundarySweep(boundary.getOuterBound());
 
-        raycastComb(boundary.getOuterBound().get(0).add(0, 10), 0);
+        raycastComb(boundary.getOuterBound().get(boundary.getOuterBound().size() - 1).add(10, 0), -90);
     }
 
     void boundarySweep(ArrayList<Point2D> perimeter) {
@@ -26,7 +26,7 @@ public class Algorithm {
     ArrayList<Rectangle2D> subDivideIntoRects() {
         ArrayList<Rectangle2D> subRects = new ArrayList<>();
 
-        double maxH = getMaxLength(Point2D.ZERO, 0);
+        double maxH = getMaxLength(Point2D.ZERO, -90);
         // Track how far we have subdivided
         double curY = 0;
 
@@ -130,10 +130,10 @@ public class Algorithm {
             currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)));
 
             // Add the points to the queue
-            robot.pathNodes.add(lastLeft);
+            /*robot.pathNodes.add(lastLeft);
             robot.pathNodes.add(lastRight);
             robot.pathNodes.add(right.getHitPoint());
-            robot.pathNodes.add(left.getHitPoint());
+            robot.pathNodes.add(left.getHitPoint());*/
 
             lastLeft = left.getHitPoint();
             lastRight = right.getHitPoint();

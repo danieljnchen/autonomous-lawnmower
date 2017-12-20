@@ -1,13 +1,10 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
 
 public class Main extends Application {
     static Robot robot = new Robot();
@@ -15,20 +12,9 @@ public class Main extends Application {
     static Algorithm algorithm = new Algorithm(robot, boundary);
 
     public static void main(String[] args) {
-        //boundary.load(Boundary.saveLocation);
+        boundary.load(Boundary.saveLocation);
 
-        boundary.bounds.add(new ArrayList<>());
-        boundary.getOuterBound().add(new Point2D(100, 100));
-        boundary.getOuterBound().add(new Point2D(200, 100));
-        boundary.getOuterBound().add(new Point2D(200, 200));
-        boundary.getOuterBound().add(new Point2D(100, 200));
-
-        try {
-            Raycast r = new Raycast(new Point2D(80, 50), 90);
-        } catch (NoHitException e) {
-            e.printStackTrace();
-        }
-        //algorithm.generatePath();
+        algorithm.generatePath();
 
         launch(args);
     }
