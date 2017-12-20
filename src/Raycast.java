@@ -15,7 +15,11 @@ public class Raycast extends UIObject {
     private ArrayList<Point2D> points1 = new ArrayList<>();
     private ArrayList<Point2D> points2 = new ArrayList<>();
 
-
+    /***
+     * Raycasts a ray at the specified angle. Contains the point the ray intersects with a boundary.
+     * @param startPoint point to start raycast
+     * @param angle in degrees
+     */
     Raycast(Point2D startPoint, double angle) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
@@ -23,18 +27,12 @@ public class Raycast extends UIObject {
         start(startPoint, angle, Main.boundary);
     }
 
-    /***
-     * Raycasts in the specified direction.
-     * @param startPoint
-     * @param angle In degrees
-     * @param boundary
-     */
     private void start(Point2D startPoint, double angle, Boundary boundary) throws NoHitException {
         for (int index = 0; index <= boundary.bounds.get(0).size(); index++) {
             Point2D point1 = boundary.bounds.get(0).get(index % boundary.bounds.get(0).size());
             Point2D point2 = boundary.bounds.get(0).get((index + 1) % boundary.bounds.get(0).size());
 
-            Point2D hitPoint = intersection(startPoint, startPoint.add(Double.MAX_VALUE * Math.cos(Math.toRadians(angle)), Double.MAX_VALUE * Math.sin(Math.toRadians(angle))), point1, point2);
+            Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
             if (hitPoint != null) {
                 points1.add(point1);
@@ -95,7 +93,7 @@ public class Raycast extends UIObject {
             // Raycast line
             gc.strokeLine(startPoint.getX(), startPoint.getY(), hitPoints.get(index).getX(), hitPoints.get(index).getY());
         } else {
-            gc.strokeLine(startPoint.getX(),startPoint.getY(),startPoint.getX() + 5000*Math.cos(Math.toRadians(angle)),startPoint.getY() + 5000*Math.sin(Math.toRadians(angle)));
+            gc.strokeLine(startPoint.getX(), startPoint.getY(), 5000 * Math.cos(Math.toRadians(angle)), startPoint.getY() + 5000 * Math.sin(Math.toRadians(angle)));
         }
     }
 

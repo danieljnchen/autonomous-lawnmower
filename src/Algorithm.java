@@ -15,7 +15,7 @@ public class Algorithm {
     void generatePath() {
         //boundarySweep(boundary.getOuterBound());
 
-        raycastComb(boundary.getOuterBound().get(boundary.getOuterBound().size() - 1).add(10, 0), 0);
+        raycastComb(boundary.getOuterBound().get(0).add(0, 10), 0);
     }
 
     void boundarySweep(ArrayList<Point2D> perimeter) {
@@ -84,7 +84,7 @@ public class Algorithm {
     }
 
     private double raycastComb(Point2D startPoint, double angle) {
-        double searchAngle = angle - 90;
+        double searchAngle = angle + 90;
         double maxLength = 0;
         boolean escaped = false; // whether we've escaped a starting vertex
 
