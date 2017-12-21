@@ -56,13 +56,19 @@ public class Raycast extends UIObject {
     }
 
     private static Point2D intersection(Point2D line1initial, Point2D line1terminal, Point2D line2initial, Point2D line2terminal) {
+
         Point2D vector1 = new Point2D(line1terminal.getX() - line1initial.getX(), line1terminal.getY() - line1initial.getY());
         Point2D vector2 = new Point2D(line2terminal.getX() - line2initial.getX(), line2terminal.getY() - line2initial.getY());
+        System.out.println();
+        System.out.println(vector1);
+        System.out.println(vector2);
 
         double scalar1, scalar2;
         scalar2 = (vector1.getY() / vector1.getX() * (line2initial.getX() - line1initial.getX()) - (line2initial.getY() - line1initial.getY()))
                 / (vector2.getY() * (1 - (vector1.getY() * vector2.getX()) / (vector1.getX() * vector2.getY())));
         scalar1 = (line2initial.getX() - line1initial.getX() + scalar2 * vector2.getX()) / vector1.getX();
+        // vector1 x cannot be 0
+        // vector2 y cannot be 0
 
         Point2D out;
         if (scalar1 >= 0 && scalar1 <= 1 && scalar2 >= 0 && scalar2 <= 1) {

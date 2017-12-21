@@ -15,7 +15,7 @@ public class Algorithm {
     void generatePath() {
         //boundarySweep(boundary.getOuterBound());
 
-        raycastComb(boundary.getOuterBound().get(boundary.getOuterBound().size() - 1).add(10, 0), -90);
+        raycastComb(new Point2D(200, 300), -90);
     }
 
     void boundarySweep(ArrayList<Point2D> perimeter) {
