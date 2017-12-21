@@ -103,7 +103,6 @@ public class Algorithm {
         Point2D lastRight = currentPoint.add(0, 0);
 
         while (true) {
-            System.out.println(currentPoint.distance(cast.getHitPoint()));
             boolean reachedFinish = currentPoint.distance(cast.getHitPoint()) < robot.length;
 
             if (reachedFinish) {
