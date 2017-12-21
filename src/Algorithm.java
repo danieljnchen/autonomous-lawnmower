@@ -83,9 +83,8 @@ public class Algorithm {
         }
     }
 
-    public double raycastComb(Point2D startPoint, double angle) {
+    public void raycastComb(Point2D startPoint, double angle) {
         double searchAngle = angle + 90;
-        double maxLength = 0;
         boolean escaped = false; // whether we've escaped a starting vertex
 
         // Raycast up and down
@@ -94,7 +93,7 @@ public class Algorithm {
             cast = new Raycast(startPoint, searchAngle);
         } catch (NoHitException e) {
             e.printStackTrace();
-            return 0;
+            return;
         }
         System.out.println(startPoint);
         System.out.println(cast.getHitPoint());
@@ -120,11 +119,6 @@ public class Algorithm {
                 right = new Raycast(currentPoint, searchAngle - 90);
             } catch (NoHitException e) {
                 e.printStackTrace();
-                return 0;
-            }
-
-            if (left.getHitPoint().distance(right.getHitPoint()) > maxLength) {
-                maxLength = left.getHitPoint().distance(right.getHitPoint());
             }
 
             currentPoint = currentPoint.add(Math.cos(Math.toRadians(searchAngle)), Math.sin(Math.toRadians(searchAngle)));
@@ -134,12 +128,7 @@ public class Algorithm {
             robot.pathNodes.add(lastRight);
             robot.pathNodes.add(right.getHitPoint());
             robot.pathNodes.add(left.getHitPoint());*/
-
-            lastLeft = left.getHitPoint();
-            lastRight = right.getHitPoint();
         }
-
-        return maxLength;
     }
 
     /*private void raycastZigZag(Point2D startPoint, double angle) {
