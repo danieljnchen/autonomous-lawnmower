@@ -13,7 +13,6 @@ public class Algorithm {
     }
 
     public void generatePath() {
-        aroundBound(boundary.getOuterBound());
         raycastComb(new Point2D(200, 300), -91);
     }
 
@@ -40,7 +39,6 @@ public class Algorithm {
                 e.printStackTrace();
             }
 
-            System.out.println(currentPoint.distance(cast.getHitPoint()));
             currentPoint = currentPoint.add(robot.width * Math.cos(Math.toRadians(searchAngle)), robot.width * Math.sin(Math.toRadians(searchAngle)));
         } while (currentPoint.distance(cast.getHitPoint()) > robot.length);
     }
