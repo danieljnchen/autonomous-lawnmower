@@ -19,8 +19,8 @@ public class Algorithm {
     public void raycastComb(Point2D startPoint, double angle) {
         double searchAngle = angle + 90;
 
-        Raycast cast;
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
+        Raycast cast;
 
         try {
             cast = new Raycast(startPoint, searchAngle);
@@ -29,18 +29,17 @@ public class Algorithm {
             return;
         }
 
-        do {
-            Raycast left;
-            Raycast right;
+        while (true) {
             try {
-                left = new Raycast(currentPoint, searchAngle + 90);
-                right = new Raycast(currentPoint, searchAngle - 90);
+                Raycast left = new Raycast(currentPoint, searchAngle + 90);
+                Raycast right = new Raycast(currentPoint, searchAngle - 90);
             } catch (NoHitException e) {
-                e.printStackTrace();
+                System.out.println("Reached obstruction, stopping");
+                break;
             }
 
             currentPoint = currentPoint.add(robot.width * Math.cos(Math.toRadians(searchAngle)), robot.width * Math.sin(Math.toRadians(searchAngle)));
-        } while (currentPoint.distance(cast.getHitPoint()) > robot.length);
+        }
     }
 
     private void aroundBound(ArrayList<Point2D> bound) {
