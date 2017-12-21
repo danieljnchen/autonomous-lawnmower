@@ -8,6 +8,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import java.awt.geom.Line2D;
+
 public class Main extends Application {
     static Robot robot = new Robot();
     static Boundary boundary = new Boundary();
@@ -32,7 +34,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
 
         // Create comb on mouse click
-        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), -90));
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), -91));
 
         new AnimationTimer()
         {

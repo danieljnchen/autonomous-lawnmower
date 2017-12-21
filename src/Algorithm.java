@@ -51,9 +51,6 @@ public class Algorithm {
                     break;
                 }
             }
-
-            // TODO: respect inner boundaries
-
             // Add the new subdivision to the list
             Rectangle2D rect = new Rectangle2D(curX, curY, curW, curH);
             subRects.add(rect);
@@ -120,7 +117,7 @@ public class Algorithm {
                 e.printStackTrace();
             }
 
-            currentPoint = currentPoint.add(Math.cos(Math.toRadians(searchAngle)), Math.sin(Math.toRadians(searchAngle)));
+            currentPoint = currentPoint.add(robot.width * Math.cos(Math.toRadians(searchAngle)), robot.width * Math.sin(Math.toRadians(searchAngle)));
 
             // Add the points to the queue
             /*robot.pathNodes.add(lastLeft);
