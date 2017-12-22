@@ -18,7 +18,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         boundary.load(Boundary.saveLocation);
 
-        algorithm.generatePath();
+        //algorithm.generatePath();
 
         launch(args);
     }
@@ -34,7 +34,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
 
         // Create comb on mouse click
-        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), 40));
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), 0));
 
         new AnimationTimer()
         {

@@ -16,7 +16,7 @@ public class Algorithm {
         raycastComb(new Point2D(200, 300), -45);
     }
 
-    public void raycastComb(Point2D startPoint, double angle) {
+    public double raycastComb(Point2D startPoint, double angle) {
 
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
         Raycast cast;
@@ -25,19 +25,27 @@ public class Algorithm {
             cast = new Raycast(startPoint, angle);
         } catch (NoHitException e) {
             e.printStackTrace();
-            return;
+            return -1;
         }
 
+        double maxLength = 0;
         do {
+            Raycast right;
+            Raycast left;
             try {
-                Raycast right = new Raycast(currentPoint, angle + 90);
-                Raycast left = new Raycast(currentPoint, angle - 90);
+                right = new Raycast(currentPoint, angle + 90);
+                left = new Raycast(currentPoint, angle - 90);
             } catch (NoHitException e) {
                 System.out.println("Outside boundary, stopping");
                 break;
             }
-            currentPoint = currentPoint.add(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
+            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)));
+            if(right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude() > maxLength) {
+                maxLength = right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude();
+            }
         } while(Raycast.lineContains(startPoint,cast.getHitPoint(),currentPoint));
+        System.out.println("Max Length: " + maxLength);
+        return maxLength;
     }
 
     private void aroundBound(ArrayList<Point2D> bound) {
