@@ -28,16 +28,18 @@ public class Raycast extends UIObject {
     }
 
     private void start(Point2D startPoint, double angle, Boundary boundary) throws NoHitException {
-        for (int index = 0; index <= boundary.bounds.get(0).size(); index++) {
-            Point2D point1 = boundary.bounds.get(0).get(index % boundary.bounds.get(0).size());
-            Point2D point2 = boundary.bounds.get(0).get((index + 1) % boundary.bounds.get(0).size());
+        for(int i = 0; i < boundary.bounds.size(); ++i) {
+            for (int index = 0; index <= boundary.bounds.get(i).size(); index++) {
+                Point2D point1 = boundary.bounds.get(i).get(index % boundary.bounds.get(i).size());
+                Point2D point2 = boundary.bounds.get(i).get((index + 1) % boundary.bounds.get(i).size());
 
-            Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
+                Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
-            if (hitPoint != null) {
-                points1.add(point1);
-                points2.add(point2);
-                hitPoints.add(hitPoint);
+                if (hitPoint != null) {
+                    points1.add(point1);
+                    points2.add(point2);
+                    hitPoints.add(hitPoint);
+                }
             }
         }
 
@@ -60,20 +62,35 @@ public class Raycast extends UIObject {
         Point2D vector2 = new Point2D(line2terminal.getX() - line2initial.getX(), line2terminal.getY() - line2initial.getY());
 
         double scalar1, scalar2;
-        scalar2 = (vector1.getY() / vector1.getX() * (line2initial.getX() - line1initial.getX()) - (line2initial.getY() - line1initial.getY()))
-                / (vector2.getY() * (1 - (vector1.getY() * vector2.getX()) / (vector1.getX() * vector2.getY())));
-        scalar1 = (line2initial.getX() - line1initial.getX() + scalar2 * vector2.getX()) / vector1.getX();
-        // vector1 x cannot be 0
-        // vector2 y cannot be 0
-
         Point2D out;
-        if (scalar1 >= 0 && scalar1 <= 1 && scalar2 >= 0 && scalar2 <= 1) {
-            out = new Point2D(line1initial.getX() + vector1.getX() * scalar1, line1initial.getY() + vector1.getY() * scalar1);
+        if((Math.abs(vector1.getX()) < .0001) && (Math.abs(vector2.getY()) < .0001)) {
+            out = new Point2D(line1initial.getX(),line2initial.getY());
+        } else if(Math.abs(vector1.getX()) < .0001) {
+            out = new Point2D(line1initial.getX(),line2initial.getY() + (line1initial.getX()-line2initial.getX())/vector2.getX()*vector2.getY());
+        } else if(Math.abs(vector2.getY()) < .0001) {
+            out = new Point2D(line1initial.getX() + (line2initial.getY()-line1initial.getY())/vector1.getY()*vector1.getX(),line2initial.getY());
         } else {
-            out = null;
+            scalar2 = (vector1.getY() / vector1.getX() * (line2initial.getX() - line1initial.getX()) - (line2initial.getY() - line1initial.getY()))
+                    / (vector2.getY() * (1 - (vector1.getY() * vector2.getX()) / (vector1.getX() * vector2.getY())));
+            scalar1 = (line2initial.getX() - line1initial.getX() + scalar2 * vector2.getX()) / vector1.getX();
+            out = new Point2D(line1initial.getX() + vector1.getX() * scalar1, line1initial.getY() + vector1.getY() * scalar1);
         }
+        if(lineContains(line1initial, line1terminal, out) && lineContains(line2initial, line2terminal, out)) {
+            return out;
+        } else {
+            return null;
+        }
+    }
 
-        return out;
+    public static boolean lineContains(Point2D lineInitial, Point2D lineTerminal, Point2D point) {
+        Point2D vectorLine = lineTerminal.subtract(lineInitial);
+        Point2D vectorPoint = point.subtract(lineInitial);
+        if(Math.abs(vectorLine.angle(vectorPoint)) < .0001) {
+            if (vectorLine.magnitude() >= vectorPoint.magnitude()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Point2D getHitPoint() {
@@ -87,15 +104,15 @@ public class Raycast extends UIObject {
 
         if (index != -1) {
             // Target line segment
-            //gc.strokeLine(points1.get(index).getX(), points1.get(index).getY(), points2.get(index).getX(), points2.get(index).getY());
+            gc.strokeLine(points1.get(index).getX(), points1.get(index).getY(), points2.get(index).getX(), points2.get(index).getY());
 
             // Hit point
-            gc.fillOval(hitPoints.get(index).getX() - 2, hitPoints.get(index).getY() - 2, 4, 4);
+            gc.fillOval(getHitPoint().getX()-2,getHitPoint().getY()-2, 4, 4);
 
             // Raycast line
             gc.strokeLine(startPoint.getX(), startPoint.getY(), hitPoints.get(index).getX(), hitPoints.get(index).getY());
         } else {
-            gc.strokeLine(startPoint.getX(), startPoint.getY(), startPoint.getX() + 5000 * Math.cos(Math.toRadians(angle)), startPoint.getY() + 5000 * Math.sin(Math.toRadians(angle)));
+            //gc.strokeLine(startPoint.getX(), startPoint.getY(), startPoint.getX() + 5000 * Math.cos(Math.toRadians(angle)), startPoint.getY() + 5000 * Math.sin(Math.toRadians(angle)));
         }
     }
 

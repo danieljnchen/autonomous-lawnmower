@@ -34,7 +34,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
 
         // Create comb on mouse click
-        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), -91));
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), 40));
 
         new AnimationTimer()
         {

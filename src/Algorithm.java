@@ -13,33 +13,31 @@ public class Algorithm {
     }
 
     public void generatePath() {
-        raycastComb(new Point2D(200, 300), -91);
+        raycastComb(new Point2D(200, 300), -45);
     }
 
     public void raycastComb(Point2D startPoint, double angle) {
-        double searchAngle = angle + 90;
 
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
         Raycast cast;
 
         try {
-            cast = new Raycast(startPoint, searchAngle);
+            cast = new Raycast(startPoint, angle);
         } catch (NoHitException e) {
             e.printStackTrace();
             return;
         }
 
-        while (true) {
+        do {
             try {
-                Raycast left = new Raycast(currentPoint, searchAngle + 90);
-                Raycast right = new Raycast(currentPoint, searchAngle - 90);
+                Raycast right = new Raycast(currentPoint, angle + 90);
+                Raycast left = new Raycast(currentPoint, angle - 90);
             } catch (NoHitException e) {
-                System.out.println("Reached obstruction, stopping");
+                System.out.println("Outside boundary, stopping");
                 break;
             }
-
-            currentPoint = currentPoint.add(robot.width * Math.cos(Math.toRadians(searchAngle)), robot.width * Math.sin(Math.toRadians(searchAngle)));
-        }
+            currentPoint = currentPoint.add(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
+        } while(Raycast.lineContains(startPoint,cast.getHitPoint(),currentPoint));
     }
 
     private void aroundBound(ArrayList<Point2D> bound) {
