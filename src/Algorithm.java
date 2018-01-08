@@ -39,11 +39,11 @@ public class Algorithm {
                 System.out.println("Outside boundary, stopping");
                 break;
             }
-            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)));
-            if(right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude() > maxLength) {
+            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)) * robot.width, Math.sin(Math.toRadians(angle)) * robot.width);
+            if (right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude() > maxLength) {
                 maxLength = right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude();
             }
-        } while(Raycast.lineContains(startPoint,cast.getHitPoint(),currentPoint));
+        } while (Raycast.lineContains(startPoint, cast.getHitPoint(), currentPoint));
         System.out.println("Max Length: " + maxLength);
         return maxLength;
     }

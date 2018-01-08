@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public class Boundary extends UIObject {
     ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
@@ -21,7 +22,7 @@ public class Boundary extends UIObject {
         System.arraycopy(colors, 0, colorCycle, 0, colorCycle.length);
     }
 
-    public static String saveLocation = "out.txt";
+    public static String defaultSave = "default";
 
     public ArrayList<Point2D> getOuterBound() {
         return bounds.get(0);
@@ -32,6 +33,8 @@ public class Boundary extends UIObject {
     }
 
     public void save(String fileName) {
+        fileName = "saves/" + fileName;
+
         try {
             PrintWriter pw = new PrintWriter(fileName);
 
@@ -52,10 +55,12 @@ public class Boundary extends UIObject {
     }
 
     public void load(String fileName) {
+        fileName = "saves/" + fileName;
+
         String line = null;
         try {
             // Clear the current boundary before loading the new one in
-            bounds.clear();
+            clear();
 
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -79,6 +84,8 @@ public class Boundary extends UIObject {
     }
 
     public void clear() {
+        UIObject.uiObjects.clear();
+        UIObject.uiObjects.add(this);
         bounds.clear();
     }
 
