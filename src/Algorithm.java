@@ -20,6 +20,7 @@ public class Algorithm {
 
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
         Raycast cast;
+        boolean side = false;
 
         try {
             cast = new Raycast(startPoint, angle);
@@ -35,11 +36,19 @@ public class Algorithm {
             try {
                 right = new Raycast(currentPoint, angle + 90);
                 left = new Raycast(currentPoint, angle - 90);
+                if(side) {
+                    robot.pathNodes.add(right.getHitPoint());
+                    robot.pathNodes.add(left.getHitPoint());
+                } else {
+                    robot.pathNodes.add(left.getHitPoint());
+                    robot.pathNodes.add(right.getHitPoint());
+                }
+                side = !side;
             } catch (NoHitException e) {
                 System.out.println("Outside boundary, stopping");
                 break;
             }
-            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)));
+            currentPoint = currentPoint.add(robot.length*Math.cos(Math.toRadians(angle)), robot.length*Math.sin(Math.toRadians(angle)));
             if(right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude() > maxLength) {
                 maxLength = right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude();
             }
