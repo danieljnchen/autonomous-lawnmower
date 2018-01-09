@@ -33,11 +33,10 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
 
         Label label1 = new Label("Comb angle (deg)");
-        label1.setLayoutX(100);
+        label1.setLayoutY(40);
         TextField comb_angle = new TextField();
         comb_angle.setText("0");
-        comb_angle.setLayoutX(100);
-        comb_angle.setLayoutY(20);
+        comb_angle.setLayoutY(60);
         root.getChildren().add(comb_angle);
         root.getChildren().add(label1);
 
