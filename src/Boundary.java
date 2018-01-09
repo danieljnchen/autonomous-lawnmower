@@ -87,6 +87,7 @@ public class Boundary extends UIObject {
         UIObject.uiObjects.clear();
         UIObject.uiObjects.add(this);
         UIObject.uiObjects.add(Main.robot);
+        Main.robot.pathNodes.clear();
         bounds.clear();
     }
 
