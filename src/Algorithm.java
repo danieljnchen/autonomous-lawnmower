@@ -16,6 +16,33 @@ public class Algorithm {
         raycastComb(new Point2D(200, 300), -45);
     }
 
+    public void raycastIterative(Point2D startPoint, double angle, boolean side) {
+        Raycast cast;
+
+        try {
+            cast = new Raycast(startPoint, angle);
+        } catch(NoHitException e) {
+            e.printStackTrace();
+        }
+
+        Raycast right, left;
+        try {
+            right = new Raycast(startPoint, angle + 90);
+            left = new Raycast(startPoint, angle - 90);
+            if(side) {
+                robot.pathNodes.add(right.getHitPoint());
+                robot.pathNodes.add(left.getHitPoint());
+            } else {
+                robot.pathNodes.add(left.getHitPoint());
+                robot.pathNodes.add(right.getHitPoint());
+            }
+            raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(new Point2D(robot.width*Math.cos(Math.toRadians(angle)), robot.width*Math.sin(Math.toRadians(angle)))), angle, !side);
+        } catch(NoHitException e) {
+            e.printStackTrace();
+            return;
+        }
+        return;
+    }
     public double raycastComb(Point2D startPoint, double angle) {
 
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
