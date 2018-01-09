@@ -39,18 +39,22 @@ public class Editor extends Application {
         stage.setScene(new Scene(root));
         stage.show();
 
+        TextField boundary_name = new TextField();
+        boundary_name.setLayoutX(400);
+        root.getChildren().add(boundary_name);
+
         Button new_perimeter = new Button("New perimeter");
         new_perimeter.setOnAction(actionEvent -> boundary.bounds.add(new ArrayList<>()));
         root.getChildren().add(new_perimeter);
 
         Button load_boundary = new Button("Load boundary");
         load_boundary.setLayoutX(100);
-        load_boundary.setOnAction(actionEvent -> boundary.load(Boundary.saveLocation));
+        load_boundary.setOnAction(actionEvent -> boundary.load(boundary_name.getText()));
         root.getChildren().add(load_boundary);
 
         Button save_boundary = new Button("Save boundary");
         save_boundary.setLayoutX(200);
-        save_boundary.setOnAction(actionEvent -> boundary.save(Boundary.saveLocation));
+        save_boundary.setOnAction(actionEvent -> boundary.save(boundary_name.getText()));
         root.getChildren().add(save_boundary);
 
         Button clear_boundary = new Button("Clear boundary");
@@ -107,7 +111,7 @@ public class Editor extends Application {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonSave) {
-            boundary.save(Boundary.saveLocation);
+            boundary.save(Boundary.defaultSave);
             System.exit(0);
         } else if (result.get() == buttonNoSave) {
             System.exit(0);
