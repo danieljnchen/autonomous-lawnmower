@@ -86,6 +86,7 @@ public class Boundary extends UIObject {
     public void clear() {
         UIObject.uiObjects.clear();
         UIObject.uiObjects.add(this);
+        UIObject.uiObjects.add(Main.robot);
         bounds.clear();
     }
 
