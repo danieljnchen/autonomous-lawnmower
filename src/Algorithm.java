@@ -33,6 +33,7 @@ public class Algorithm {
         do {
             Raycast right;
             Raycast left;
+
             try {
                 right = new Raycast(currentPoint, angle + 90);
                 left = new Raycast(currentPoint, angle - 90);
@@ -48,7 +49,9 @@ public class Algorithm {
                 System.out.println("Outside boundary, stopping");
                 break;
             }
-            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)) * robot.width, Math.sin(Math.toRadians(angle)) * robot.width);
+
+            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)) * robot.width * 2, Math.sin(Math.toRadians(angle)) * robot.width * 2);
+
             if (right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude() > maxLength) {
                 maxLength = right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude();
             }
