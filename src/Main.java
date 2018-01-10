@@ -59,11 +59,11 @@ public class Main extends Application {
         boundary.load(boundary_select.getValue());
 
         // Create comb on mouse click
-        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-                algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText())));
-
         //canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-        //        algorithm.raycastIterative(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
+        //        algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText())));
+
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
+                algorithm.raycastIterative(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
 
         new AnimationTimer()
         {

@@ -97,6 +97,19 @@ public class Raycast extends UIObject {
         return hitPoints.get(index);
     }
 
+    public int getNumHit() {
+        return hitPoints.size();
+    }
+
+    public Point2D getOuterHitPoint() {
+        for(int i = 0; i<hitPoints.size(); ++i) {
+            if(Main.boundary.getOuterBound().contains(hitPoints.get(i))) {
+                return hitPoints.get(i);
+            }
+        }
+        return Point2D.ZERO;
+    }
+
     public void draw(GraphicsContext gc) {
         gc.setStroke(Color.BLUE);
         gc.setFill(Color.DARKBLUE);

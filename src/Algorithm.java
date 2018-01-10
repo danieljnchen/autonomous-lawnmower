@@ -21,15 +21,18 @@ public class Algorithm {
 
         try {
             cast = new Raycast(startPoint, angle);
+            if(cast.getHitPoint().distance(startPoint) <= robot.width) {
+                Main.boundary.getOuterBound();
+            }
         } catch(NoHitException e) {
             e.printStackTrace();
         }
 
         Raycast right, left;
         try {
-            right = new Raycast(startPoint, angle + 90);
+            right = new Raycast(startPoint, angle + 90); //raycast to the left and the right
             left = new Raycast(startPoint, angle - 90);
-            if(side) {
+            if(side) { //alternate so robot follows a zigzag path
                 robot.pathNodes.add(right.getHitPoint());
                 robot.pathNodes.add(left.getHitPoint());
             } else {
