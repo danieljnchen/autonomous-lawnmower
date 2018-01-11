@@ -63,7 +63,7 @@ public class Main extends Application {
         //        algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText())));
 
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-                algorithm.raycastIterative(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
+                algorithm.raycastIterativeStart(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
 
         new AnimationTimer()
         {

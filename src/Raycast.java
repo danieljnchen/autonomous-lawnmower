@@ -30,7 +30,7 @@ public class Raycast extends UIObject {
     private void start(Point2D startPoint, double angle, Boundary boundary) throws NoHitException {
         for(int i = 0; i < boundary.bounds.size(); ++i) {
             for (int index = 0; index <= boundary.bounds.get(i).size(); index++) {
-                Point2D point1 = boundary.bounds.get(i).get(index % boundary.bounds.get(i).size());
+                Point2D point1 = boundary.bounds.get(i).get(index);
                 Point2D point2 = boundary.bounds.get(i).get((index + 1) % boundary.bounds.get(i).size());
 
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
