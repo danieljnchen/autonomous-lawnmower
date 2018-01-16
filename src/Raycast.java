@@ -110,6 +110,10 @@ public class Raycast extends UIObject {
         return Point2D.ZERO;
     }
 
+    public ArrayList<Point2D> getHitPoints() {
+        return hitPoints;
+    }
+
     public void draw(GraphicsContext gc) {
         gc.setStroke(Color.BLUE);
         gc.setFill(Color.DARKBLUE);
