@@ -24,14 +24,21 @@ public class Raycast extends UIObject {
         this.startPoint = startPoint;
         this.angle = angle;
 
-        start(startPoint, angle, Main.boundary);
+        start(startPoint, angle, Main.boundary.bounds);
     }
 
-    private void start(Point2D startPoint, double angle, Boundary boundary) throws NoHitException {
-        for(int i = 0; i < boundary.bounds.size(); ++i) {
-            for (int index = 0; index <= boundary.bounds.get(i).size(); index++) {
-                Point2D point1 = boundary.bounds.get(i).get(index);
-                Point2D point2 = boundary.bounds.get(i).get((index + 1) % boundary.bounds.get(i).size());
+    Raycast(Point2D startPoint, double angle, ArrayList<ArrayList<Point2D>> bounds) throws NoHitException {
+        this.startPoint = startPoint;
+        this.angle = angle;
+
+        start(startPoint, angle, bounds);
+    }
+
+    private void start(Point2D startPoint, double angle, ArrayList<ArrayList<Point2D>> bounds) throws NoHitException {
+        for(int i = 0; i < bounds.size(); ++i) {
+            for (int index = 0; index <= bounds.get(i).size(); index++) {
+                Point2D point1 = bounds.get(i).get(index);
+                Point2D point2 = bounds.get(i).get((index + 1) % bounds.get(i).size());
 
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 

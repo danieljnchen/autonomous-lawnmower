@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 
 public class Boundary extends UIObject {
     ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
-    private Color[] colorCycle = { Color.BLACK, Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON };
+    private Color[] colorCycle = {Color.BLACK, Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON};
 
     Boundary() {
         Color[] colors = new Color[colorCycle.length];
@@ -30,6 +30,26 @@ public class Boundary extends UIObject {
 
     public ArrayList<ArrayList<Point2D>> getInnerBounds() {
         return (ArrayList<ArrayList<Point2D>>) bounds.subList(1, bounds.size() - 1);
+    }
+
+    public ArrayList<Point2D> convexBound(ArrayList<Point2D> bound) {
+        ArrayList<ArrayList<Point2D>> boundsIn = new ArrayList<>();
+        boundsIn.add(bound);
+
+        for (int i = 0; i < bound.size(); ++i) {
+            for (int j = 0; j < bound.size(); ++j) {
+                try {
+                    Point2D anglePoint = bound.get(j).subtract(bound.get(i));
+                    double angle = Math.toDegrees(Math.atan2(anglePoint.getY(), anglePoint.getX()));
+                    Raycast concaveCheck = new Raycast(bound.get(i), angle, boundsIn);
+                    if ((concaveCheck.getNumHit() - 1) % 2 == 0) {
+                        //bound is concave, bound.get(i) is on an 'intrusion'
+                    }
+                } catch (NoHitException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public void save(String fileName) {
@@ -65,7 +85,7 @@ public class Boundary extends UIObject {
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-            while((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 if (line.equals("Bound")) {
                     bounds.add(new ArrayList<>());
                     continue;
