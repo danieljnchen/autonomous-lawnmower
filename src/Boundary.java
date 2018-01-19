@@ -9,6 +9,8 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 
 public class Boundary extends UIObject {
+    public static final int CONCAVE = 0;
+    public static final int CONVEX = 1;
     ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
     private Color[] colorCycle = {Color.BLACK, Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON};
 
@@ -32,7 +34,7 @@ public class Boundary extends UIObject {
         return (ArrayList<ArrayList<Point2D>>) bounds.subList(1, bounds.size() - 1);
     }
 
-    public ArrayList<Point2D> convexBound(ArrayList<Point2D> bound) {
+    public ArrayList<Point2D> convavitySwitch (ArrayList<Point2D> bound, int targetConcavity) {
         ArrayList<ArrayList<Point2D>> boundsIn = new ArrayList<>();
         boundsIn.add(bound);
 
@@ -42,7 +44,7 @@ public class Boundary extends UIObject {
                     Point2D anglePoint = bound.get(j).subtract(bound.get(i));
                     double angle = Math.toDegrees(Math.atan2(anglePoint.getY(), anglePoint.getX()));
                     Raycast concaveCheck = new Raycast(bound.get(i), angle, boundsIn);
-                    if ((concaveCheck.getNumHit() - 1) % 2 == 0) {
+                    if ((concaveCheck.getNumHit()-1) % 2 == targetConcavity) {
                         //bound is concave, bound.get(i) is on an 'intrusion'
                     }
                 } catch (NoHitException e) {
@@ -50,6 +52,7 @@ public class Boundary extends UIObject {
                 }
             }
         }
+        return new ArrayList<Point2D>();
     }
 
     public void save(String fileName) {
