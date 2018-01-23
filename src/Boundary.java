@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 public class Boundary extends UIObject {
     public static final int CONCAVE = 0;
@@ -34,9 +33,12 @@ public class Boundary extends UIObject {
         return (ArrayList<ArrayList<Point2D>>) bounds.subList(1, bounds.size() - 1);
     }
 
-    public ArrayList<Point2D> convavitySwitch (ArrayList<Point2D> bound, int targetConcavity) {
+    /*
+    public ArrayList<Point2D> makeConcave (ArrayList<Point2D> bound) {
         ArrayList<ArrayList<Point2D>> boundsIn = new ArrayList<>();
         boundsIn.add(bound);
+        int index1 = -1;
+        int index2 = -1;
 
         for (int i = 0; i < bound.size(); ++i) {
             for (int j = 0; j < bound.size(); ++j) {
@@ -44,16 +46,24 @@ public class Boundary extends UIObject {
                     Point2D anglePoint = bound.get(j).subtract(bound.get(i));
                     double angle = Math.toDegrees(Math.atan2(anglePoint.getY(), anglePoint.getX()));
                     Raycast concaveCheck = new Raycast(bound.get(i), angle, boundsIn);
-                    if ((concaveCheck.getNumHit()-1) % 2 == targetConcavity) {
-                        //bound is concave, bound.get(i) is on an 'intrusion'
+                    if(index1 == -1) {
+                        if (concaveCheck.getNumHit() == 2) {
+                            index1 = i;
+                            break;
+                        }
+                    } else if(index2 == -1) {
+                        if(concaveCheck.getNumHit() != 2) {
+                            index2 = i-1;
+                        }
                     }
                 } catch (NoHitException e) {
                     e.printStackTrace();
                 }
             }
         }
+
         return new ArrayList<Point2D>();
-    }
+    }*/
 
     public void save(String fileName) {
         fileName = "saves/" + fileName;

@@ -14,7 +14,7 @@ public class Algorithm {
         raycastComb(new Point2D(200, 300), -45);
     }
 
-    public void raycastIterativeStart(Point2D startPoint, double angle, boolean side) {
+    /*public void raycastIterativeStart(Point2D startPoint, double angle, boolean side) {
         ArrayList<ArrayList<Point2D>> pathNodes = new ArrayList<>();
         raycastIterative(startPoint, angle, side, pathNodes, 0);
         ArrayList<Point2D> pathNodesOut = new ArrayList<>();
@@ -25,38 +25,29 @@ public class Algorithm {
             }
         }
         robot.pathNodes.addAll(pathNodesOut);
-    }
-    //TODO split raycastIterative into different clusters
-    public void raycastIterative(Point2D startPoint, double angle, boolean side, ArrayList<ArrayList<Point2D>> pathNodesOut, int cluster) {
+    }*/
+    public void raycastIterative(Point2D startPoint, double angle, boolean side) {
         Raycast cast;
         Raycast right, left;
         Point2D nextStartPoint = startPoint.add(new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle))));
-        while(pathNodesOut.size()< cluster) {
-            pathNodesOut.add(new ArrayList<>());
-        }
         try {
             right = new Raycast(startPoint, angle + 90); //raycast to the left and the right
             left = new Raycast(startPoint, angle - 90);
-            if(cluster != 0) {
-                if(left.getNumHit() == 1 || right.getNumHit() == 1) {
-                    return;
-                }
-            }
             if(side) { //alternate so robot follows a zigzag path
-                pathNodesOut.get(cluster).add(right.getHitPoint());
-                pathNodesOut.get(cluster).add(left.getHitPoint());
+                robot.pathNodes.add(right.getHitPoint());
+                robot.pathNodes.add(left.getHitPoint());
             } else {
-                pathNodesOut.get(cluster).add(left.getHitPoint());
-                pathNodesOut.get(cluster).add(right.getHitPoint());
+                robot.pathNodes.add(left.getHitPoint());
+                robot.pathNodes.add(right.getHitPoint());
             }
             cast = new Raycast(startPoint, angle);
             if(cast.getHitPoint().distance(startPoint) <= robot.width) {
                 right = new Raycast(nextStartPoint, angle + 90);
                 left = new Raycast(nextStartPoint, angle - 90);
-                raycastIterative(left.getOuterHitPoint().midpoint(left.getHitPoint()), angle, !side, pathNodesOut, cluster+1);
-                raycastIterative(right.getOuterHitPoint().midpoint(right.getHitPoint()), angle, !side, pathNodesOut, cluster+2);
+                raycastIterative(left.getOuterHitPoint().midpoint(left.getHitPoint()), angle, !side);
+                raycastIterative(right.getOuterHitPoint().midpoint(right.getHitPoint()), angle, !side);
             } else {
-                raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(nextStartPoint), angle, !side, pathNodesOut, cluster);
+                raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(nextStartPoint), angle, !side);
             }
         } catch(NoHitException e) {
             e.printStackTrace();
