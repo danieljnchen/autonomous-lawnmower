@@ -40,7 +40,7 @@ public class Editor extends Application {
         stage.show();
 
         TextField boundary_name = new TextField();
-        boundary_name.setLayoutX(400);
+        boundary_name.setLayoutX(500);
         root.getChildren().add(boundary_name);
 
         Button new_perimeter = new Button("New perimeter");
@@ -48,17 +48,17 @@ public class Editor extends Application {
         root.getChildren().add(new_perimeter);
 
         Button load_boundary = new Button("Load boundary");
-        load_boundary.setLayoutX(100);
+        load_boundary.setLayoutX(125);
         load_boundary.setOnAction(actionEvent -> boundary.load(boundary_name.getText()));
         root.getChildren().add(load_boundary);
 
         Button save_boundary = new Button("Save boundary");
-        save_boundary.setLayoutX(200);
+        save_boundary.setLayoutX(250);
         save_boundary.setOnAction(actionEvent -> boundary.save(boundary_name.getText()));
         root.getChildren().add(save_boundary);
 
         Button clear_boundary = new Button("Clear boundary");
-        clear_boundary.setLayoutX(300);
+        clear_boundary.setLayoutX(375);
         clear_boundary.setOnAction(actionEvent -> boundary.clear());
         root.getChildren().add(clear_boundary);
 

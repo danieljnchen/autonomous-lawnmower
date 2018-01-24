@@ -3,9 +3,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 
 public class Raycast extends UIObject {
+    private Boundary boundary;
+
     public final Point2D startPoint;
     private double angle;
 
@@ -21,13 +23,15 @@ public class Raycast extends UIObject {
      * @param angle in degrees
      */
     Raycast(Point2D startPoint, double angle) throws NoHitException {
+        this.boundary = Main.boundary;
+
         this.startPoint = startPoint;
         this.angle = angle;
 
-        start(startPoint, angle, Main.boundary);
+        start(startPoint, angle);
     }
 
-    private void start(Point2D startPoint, double angle, Boundary boundary) throws NoHitException {
+    private void start(Point2D startPoint, double angle) throws NoHitException {
         for(int i = 0; i < boundary.bounds.size(); ++i) {
             for (int index = 0; index <= boundary.bounds.get(i).size(); index++) {
                 Point2D point1 = boundary.bounds.get(i).get(index % boundary.bounds.get(i).size());
@@ -95,6 +99,25 @@ public class Raycast extends UIObject {
 
     public Point2D getHitPoint() {
         return hitPoints.get(index);
+    }
+
+    private void sortPoints() {
+        double[][] distances1 = new double[points1.size()][2];
+        double[][] distances2 = new double[points1.size()][2];
+
+        for (int i = 0; i < distances1.length; i++) {
+            distances1[i][0] = points1.get(i).distance(startPoint);
+            distances1[i][1] = i;
+        }
+
+        for (int i = 0; i < distances2.length; i++) {
+            distances1[i][0] = points1.get(i).distance(startPoint);
+            distances1[i][1] = i;
+        }
+
+        Arrays.sort(distances1);
+
+        System.out.println(Arrays.deepToString(distances1));
     }
 
     public void draw(GraphicsContext gc) {

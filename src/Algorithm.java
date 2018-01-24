@@ -1,5 +1,4 @@
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 
 import java.util.ArrayList;
 
@@ -10,10 +9,6 @@ public class Algorithm {
     Algorithm(Robot robot, Boundary boundary) {
         this.robot = robot;
         this.boundary = boundary;
-    }
-
-    public void generatePath() {
-        raycastComb(new Point2D(200, 300), -45);
     }
 
     public double raycastComb(Point2D startPoint, double angle) {
@@ -60,8 +55,49 @@ public class Algorithm {
         return maxLength;
     }
 
-    private void aroundBound(ArrayList<Point2D> bound) {
+    public void followBoundary(ArrayList<Point2D> bound) {
         robot.pathNodes.addAll(bound);
         robot.pathNodes.add(bound.get(0));
+    }
+
+    public void followBoundary(ArrayList<Point2D> bound, int indexStart, int indexStop) {
+        for (int i = indexStart; i < indexStop; i++) {
+            robot.pathNodes.add(bound.get(i));
+        }
+    }
+
+    public boolean crossesPoint(Point2D start, Point2D end, Point2D targetPoint) {
+        try {
+            Raycast direct = new Raycast(new Point2D(start.getX(), start.getY()), 0);
+
+            return direct.startPoint.distance(direct.getHitPoint()) >= direct.startPoint.distance(targetPoint);
+        } catch (NoHitException e) {
+            return true;
+        }
+    }
+
+    public void toPoint(Point2D end) {
+        Point2D start = robot.pathNodes.get(robot.pathNodes.size()-1);
+        Point2D point = new Point2D(start.getX(), start.getY());
+
+        while (point.distance(end) < 1) {
+            Point2D delta = end.subtract(start);
+            double angle = Math.atan2(delta.getY(), delta.getX());
+
+            try {
+                // Raycast from the current point to the end point; if it's a clear shot, go straight to end
+                Raycast cast = new Raycast(point, angle);
+                if (crossesPoint(start, end, cast.getHitPoint())) {
+                    followBoundary(boundary.getInnerBounds().get(0));
+                } else {
+                    robot.pathNodes.add(start);
+                    robot.pathNodes.add(end);
+                }
+            } catch (NoHitException e) {
+                robot.pathNodes.add(start);
+                robot.pathNodes.add(end);
+                return;
+            }
+        }
     }
 }

@@ -23,11 +23,10 @@ class Robot extends UIObject {
                 curNodeDest++;
             }
         } else {
-            double dx = node.getX() - pos.getX();
-            double dy = node.getY() - pos.getY();
-            double angle = Math.atan2(dy, dx);
+            Point2D delta = node.subtract(pos);
+            double angle = Math.atan2(delta.getY(), delta.getX());
 
-            pos = new Point2D(pos.getX() + Math.cos(angle), pos.getY() + Math.sin(angle));
+            pos.add(Math.cos(angle), Math.sin(angle));
 
         }
     }
