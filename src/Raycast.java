@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Raycast extends UIObject {
-    private Boundary boundary;
-
     public final Point2D startPoint;
     private double angle;
 
     private int index;
 
     private ArrayList<Point2D> hitPoints = new ArrayList<>();
-    private ArrayList<Point2D> points1 = new ArrayList<>();
-    private ArrayList<Point2D> points2 = new ArrayList<>();
+    private ArrayList<Point2D> segmentPoints1 = new ArrayList<>();
+    private ArrayList<Point2D> segmentPoints2 = new ArrayList<>();
+    private ArrayList<Integer> hitPointBound = new ArrayList<>();
 
     /***
      * Raycasts a ray at the specified angle. Contains the point the ray intersects with a boundary.
@@ -23,26 +22,35 @@ public class Raycast extends UIObject {
      * @param angle in degrees
      */
     Raycast(Point2D startPoint, double angle) throws NoHitException {
-        this.boundary = Main.boundary;
-
         this.startPoint = startPoint;
         this.angle = angle;
 
-        start(startPoint, angle);
+        start(startPoint, angle, Main.boundary.bounds);
     }
 
-    private void start(Point2D startPoint, double angle) throws NoHitException {
-        for(int i = 0; i < boundary.bounds.size(); ++i) {
-            for (int index = 0; index <= boundary.bounds.get(i).size(); index++) {
-                Point2D point1 = boundary.bounds.get(i).get(index % boundary.bounds.get(i).size());
-                Point2D point2 = boundary.bounds.get(i).get((index + 1) % boundary.bounds.get(i).size());
+    Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bounds) throws NoHitException {
+        this.startPoint = startPoint;
+        this.angle = angle;
+
+        ArrayList<ArrayList<Point2D>> bound = new ArrayList<>();
+        bound.add(bounds);
+
+        start(startPoint, angle, bound);
+    }
+
+    private void start(Point2D startPoint, double angle, ArrayList<ArrayList<Point2D>> bounds) throws NoHitException {
+        for(int i = 0; i < bounds.size(); ++i) {
+            for (int index = 0; index <= bounds.get(i).size(); index++) {
+                Point2D point1 = bounds.get(i).get(index % bounds.get(i).size());
+                Point2D point2 = bounds.get(i).get((index + 1) % bounds.get(i).size());
 
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
                 if (hitPoint != null) {
-                    points1.add(point1);
-                    points2.add(point2);
+                    segmentPoints1.add(point1);
+                    segmentPoints2.add(point2);
                     hitPoints.add(hitPoint);
+                    hitPointBound.add(i);
                 }
             }
         }
@@ -101,17 +109,38 @@ public class Raycast extends UIObject {
         return hitPoints.get(index);
     }
 
+    public int getNumHit() {
+        return hitPoints.size();
+    }
+
+    public Point2D getOuterHitPoint() {
+        for(int i = 0; i<hitPoints.size(); ++i) {
+            if(Main.boundary.getOuterBound().contains(hitPoints.get(i))) {
+                return hitPoints.get(i);
+            }
+        }
+        return Point2D.ZERO;
+    }
+
+    public int getHitPointBoundary(int hitPointIndex) {
+        return hitPointBound.get(hitPointIndex);
+    }
+
+    public ArrayList<Point2D> getHitPoints() {
+        return hitPoints;
+    }
+
     private void sortPoints() {
-        double[][] distances1 = new double[points1.size()][2];
-        double[][] distances2 = new double[points1.size()][2];
+        double[][] distances1 = new double[segmentPoints1.size()][2];
+        double[][] distances2 = new double[segmentPoints1.size()][2];
 
         for (int i = 0; i < distances1.length; i++) {
-            distances1[i][0] = points1.get(i).distance(startPoint);
+            distances1[i][0] = segmentPoints1.get(i).distance(startPoint);
             distances1[i][1] = i;
         }
 
         for (int i = 0; i < distances2.length; i++) {
-            distances1[i][0] = points1.get(i).distance(startPoint);
+            distances1[i][0] = segmentPoints1.get(i).distance(startPoint);
             distances1[i][1] = i;
         }
 
@@ -127,7 +156,7 @@ public class Raycast extends UIObject {
 
         if (index != -1) {
             // Target line segment
-            gc.strokeLine(points1.get(index).getX(), points1.get(index).getY(), points2.get(index).getX(), points2.get(index).getY());
+            gc.strokeLine(segmentPoints1.get(index).getX(), segmentPoints1.get(index).getY(), segmentPoints2.get(index).getX(), segmentPoints2.get(index).getY());
 
             // Hit point
             gc.fillOval(getHitPoint().getX()-2,getHitPoint().getY()-2, 4, 4);
