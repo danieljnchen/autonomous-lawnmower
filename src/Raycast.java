@@ -12,8 +12,9 @@ public class Raycast extends UIObject {
     private int index;
 
     private ArrayList<Point2D> hitPoints = new ArrayList<>();
-    private ArrayList<Point2D> points1 = new ArrayList<>();
-    private ArrayList<Point2D> points2 = new ArrayList<>();
+    private ArrayList<Point2D> segmentPoints1 = new ArrayList<>();
+    private ArrayList<Point2D> segmentPoints2 = new ArrayList<>();
+    private ArrayList<Integer> hitPointBound = new ArrayList<>();
 
     /***
      * Raycasts a ray at the specified angle. Contains the point the ray intersects with a boundary.
@@ -27,11 +28,14 @@ public class Raycast extends UIObject {
         start(startPoint, angle, Main.boundary.bounds);
     }
 
-    Raycast(Point2D startPoint, double angle, ArrayList<ArrayList<Point2D>> bounds) throws NoHitException {
+    Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bounds) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
 
-        start(startPoint, angle, bounds);
+        ArrayList<ArrayList<Point2D>> bound = new ArrayList<>();
+        bound.add(bounds);
+
+        start(startPoint, angle, bound);
     }
 
     private void start(Point2D startPoint, double angle, ArrayList<ArrayList<Point2D>> bounds) throws NoHitException {
@@ -43,9 +47,10 @@ public class Raycast extends UIObject {
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
                 if (hitPoint != null) {
-                    points1.add(point1);
-                    points2.add(point2);
+                    segmentPoints1.add(point1);
+                    segmentPoints2.add(point2);
                     hitPoints.add(hitPoint);
+                    hitPointBound.add(i);
                 }
             }
         }
@@ -117,6 +122,10 @@ public class Raycast extends UIObject {
         return Point2D.ZERO;
     }
 
+    public int getHitPointBoundary(int hitPointIndex) {
+        return hitPointBound.get(hitPointIndex);
+    }
+
     public ArrayList<Point2D> getHitPoints() {
         return hitPoints;
     }
@@ -128,7 +137,7 @@ public class Raycast extends UIObject {
 
         if (index != -1) {
             // Target line segment
-            gc.strokeLine(points1.get(index).getX(), points1.get(index).getY(), points2.get(index).getX(), points2.get(index).getY());
+            gc.strokeLine(segmentPoints1.get(index).getX(), segmentPoints1.get(index).getY(), segmentPoints2.get(index).getX(), segmentPoints2.get(index).getY());
 
             // Hit point
             gc.fillOval(getHitPoint().getX()-2,getHitPoint().getY()-2, 4, 4);

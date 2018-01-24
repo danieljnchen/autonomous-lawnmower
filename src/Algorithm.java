@@ -10,29 +10,17 @@ public class Algorithm {
         this.boundary = boundary;
     }
 
-    public void generatePath() {
+    /*public void generatePath() {
         raycastComb(new Point2D(200, 300), -45);
-    }
-
-    /*public void raycastIterativeStart(Point2D startPoint, double angle, boolean side) {
-        ArrayList<ArrayList<Point2D>> pathNodes = new ArrayList<>();
-        raycastIterative(startPoint, angle, side, pathNodes, 0);
-        ArrayList<Point2D> pathNodesOut = new ArrayList<>();
-        for(int i = 0; i<pathNodes.size(); ++i) {
-            pathNodesOut.addAll(pathNodes.get(i));
-            if(i<(pathNodes.size()-1)) {
-                //pathNodes.addAll(traverse(pathNodes.get(i).get(pathNodes.get(i).size()-1), pathNodes.get(i+1).get(0)));
-            }
-        }
-        robot.pathNodes.addAll(pathNodesOut);
     }*/
+
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
         Raycast cast;
         Raycast right, left;
-        Point2D nextStartPoint = startPoint.add(new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle))));
+        Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
         try {
-            right = new Raycast(startPoint, angle + 90); //raycast to the left and the right
-            left = new Raycast(startPoint, angle - 90);
+            right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound()); //raycast to the left and the right
+            left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
             if(side) { //alternate so robot follows a zigzag path
                 robot.pathNodes.add(right.getHitPoint());
                 robot.pathNodes.add(left.getHitPoint());
@@ -40,22 +28,18 @@ public class Algorithm {
                 robot.pathNodes.add(left.getHitPoint());
                 robot.pathNodes.add(right.getHitPoint());
             }
-            cast = new Raycast(startPoint, angle);
+            cast = new Raycast(startPoint, angle, Main.boundary.getOuterBound());
             if(cast.getHitPoint().distance(startPoint) <= robot.width) {
-                right = new Raycast(nextStartPoint, angle + 90);
-                left = new Raycast(nextStartPoint, angle - 90);
-                raycastIterative(left.getOuterHitPoint().midpoint(left.getHitPoint()), angle, !side);
-                raycastIterative(right.getOuterHitPoint().midpoint(right.getHitPoint()), angle, !side);
-            } else {
-                raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(nextStartPoint), angle, !side);
+                distanceNext = distanceNext.multiply(cast.getHitPoint().distance(startPoint));
             }
+            raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(distanceNext), angle, !side);
         } catch(NoHitException e) {
             e.printStackTrace();
             return;
         }
         return;
     }
-    public double raycastComb(Point2D startPoint, double angle) {
+    /*public double raycastComb(Point2D startPoint, double angle) {
 
         Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
         Raycast cast;
@@ -97,7 +81,7 @@ public class Algorithm {
         } while (Raycast.lineContains(startPoint, cast.getHitPoint(), currentPoint));
         System.out.println("Max Length: " + maxLength);
         return maxLength;
-    }
+    }*/
 
     private void aroundBound(ArrayList<Point2D> bound) {
         robot.pathNodes.addAll(bound);
