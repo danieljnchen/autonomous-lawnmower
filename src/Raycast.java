@@ -151,7 +151,7 @@ public class Raycast extends UIObject {
      * Sorts hit points by distance from the start of the raycast
      */
     private void sortPoints() {
-
+        // TODO sort points by distance
     }
 
     public void draw(GraphicsContext gc) {
