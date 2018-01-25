@@ -15,26 +15,28 @@ public class Algorithm {
         Raycast cast;
         Raycast right, left;
         Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
+
         try {
             right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound()); //raycast to the left and the right
             left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
-            if(side) { //alternate so robot follows a zigzag path
+
+            if (side) { //alternate so robot follows a zigzag path
                 robot.pathNodes.add(right.getHitPoint());
                 robot.pathNodes.add(left.getHitPoint());
             } else {
                 robot.pathNodes.add(left.getHitPoint());
                 robot.pathNodes.add(right.getHitPoint());
             }
+
             cast = new Raycast(startPoint, angle, Main.boundary.getOuterBound());
-            if(cast.getHitPoint().distance(startPoint) <= robot.width) {
+            if (cast.getHitPoint().distance(startPoint) <= robot.width) {
                 distanceNext = distanceNext.multiply(cast.getHitPoint().distance(startPoint));
             }
+
             raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(distanceNext), angle, !side);
-        } catch(NoHitException e) {
+        } catch (NoHitException e) {
             e.printStackTrace();
-            return;
         }
-        return;
     }
 
     /*public double raycastComb(Point2D startPoint, double angle) {
@@ -92,38 +94,33 @@ public class Algorithm {
         }
     }
 
-    public boolean crossesPoint(Point2D start, Point2D end, Point2D targetPoint) {
+    public void toPoint(Point2D end) {
+        // Always start at the last path node
+        Point2D start = robot.pathNodes.get(robot.pathNodes.size() - 1);
+
+        Point2D delta = end.subtract(start);
+        double angle = Math.atan2(delta.getY(), delta.getX());
+
         try {
-            Raycast direct = new Raycast(new Point2D(start.getX(), start.getY()), 0);
+            Raycast direct = new Raycast(end, angle);
+
+            Point2D otherSide = direct.getHitPoint(1);
+        } catch (NoHitException e) {
+            // If we haven't hit anything, just go straight to the end point
+            robot.pathNodes.add(end);
+        }
+    }
+
+    public static boolean crossesPoint(Point2D start, Point2D end, Point2D targetPoint) {
+        Point2D delta = end.subtract(start);
+        double angle = Math.atan2(delta.getY(), delta.getX());
+
+        try {
+            Raycast direct = new Raycast(new Point2D(start.getX(), start.getY()), angle);
 
             return direct.startPoint.distance(direct.getHitPoint()) >= direct.startPoint.distance(targetPoint);
         } catch (NoHitException e) {
             return true;
-        }
-    }
-
-    public void toPoint(Point2D end) {
-        Point2D start = robot.pathNodes.get(robot.pathNodes.size()-1);
-        Point2D point = new Point2D(start.getX(), start.getY());
-
-        while (point.distance(end) < 1) {
-            Point2D delta = end.subtract(start);
-            double angle = Math.atan2(delta.getY(), delta.getX());
-
-            try {
-                // Raycast from the current point to the end point; if it's a clear shot, go straight to end
-                Raycast cast = new Raycast(point, angle);
-                if (crossesPoint(start, end, cast.getHitPoint())) {
-                    followBoundary(boundary.getInnerBounds().get(0));
-                } else {
-                    robot.pathNodes.add(start);
-                    robot.pathNodes.add(end);
-                }
-            } catch (NoHitException e) {
-                robot.pathNodes.add(start);
-                robot.pathNodes.add(end);
-                return;
-            }
         }
     }
 }

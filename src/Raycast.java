@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Raycast extends UIObject {
     public final Point2D startPoint;
-    private double angle;
+    private final double angle;
 
     private int index;
 
@@ -39,10 +39,10 @@ public class Raycast extends UIObject {
     }
 
     private void start(Point2D startPoint, double angle, ArrayList<ArrayList<Point2D>> bounds) throws NoHitException {
-        for(int i = 0; i < bounds.size(); ++i) {
-            for (int index = 0; index <= bounds.get(i).size(); index++) {
-                Point2D point1 = bounds.get(i).get(index % bounds.get(i).size());
-                Point2D point2 = bounds.get(i).get((index + 1) % bounds.get(i).size());
+        for (int i = 0; i < bounds.size(); i++) {
+            for (int j = 0; j <= bounds.get(i).size(); j++) {
+                Point2D point1 = bounds.get(i).get(j % bounds.get(i).size());
+                Point2D point2 = bounds.get(i).get((j + 1) % bounds.get(i).size());
 
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
@@ -75,51 +75,66 @@ public class Raycast extends UIObject {
 
         double scalar1, scalar2;
         Point2D out;
-        if((Math.abs(vector1.getX()) < .0001) && (Math.abs(vector2.getY()) < .0001)) {
-            out = new Point2D(line1initial.getX(),line2initial.getY());
-        } else if(Math.abs(vector1.getX()) < .0001) {
-            out = new Point2D(line1initial.getX(),line2initial.getY() + (line1initial.getX()-line2initial.getX())/vector2.getX()*vector2.getY());
-        } else if(Math.abs(vector2.getY()) < .0001) {
-            out = new Point2D(line1initial.getX() + (line2initial.getY()-line1initial.getY())/vector1.getY()*vector1.getX(),line2initial.getY());
+
+        if ((Math.abs(vector1.getX()) < .0001) && (Math.abs(vector2.getY()) < .0001)) {
+            out = new Point2D(line1initial.getX(), line2initial.getY());
+        } else if (Math.abs(vector1.getX()) < .0001) {
+            out = new Point2D(line1initial.getX(), line2initial.getY() + (line1initial.getX() - line2initial.getX()) / vector2.getX() * vector2.getY());
+        } else if (Math.abs(vector2.getY()) < .0001) {
+            out = new Point2D(line1initial.getX() + (line2initial.getY() - line1initial.getY()) / vector1.getY() * vector1.getX(), line2initial.getY());
         } else {
             scalar2 = (vector1.getY() / vector1.getX() * (line2initial.getX() - line1initial.getX()) - (line2initial.getY() - line1initial.getY()))
                     / (vector2.getY() * (1 - (vector1.getY() * vector2.getX()) / (vector1.getX() * vector2.getY())));
             scalar1 = (line2initial.getX() - line1initial.getX() + scalar2 * vector2.getX()) / vector1.getX();
             out = new Point2D(line1initial.getX() + vector1.getX() * scalar1, line1initial.getY() + vector1.getY() * scalar1);
         }
-        if(lineContains(line1initial, line1terminal, out) && lineContains(line2initial, line2terminal, out)) {
+
+        if (lineContains(line1initial, line1terminal, out) && lineContains(line2initial, line2terminal, out)) {
             return out;
         } else {
             return null;
         }
     }
 
-    public static boolean lineContains(Point2D lineInitial, Point2D lineTerminal, Point2D point) {
+    private static boolean lineContains(Point2D lineInitial, Point2D lineTerminal, Point2D point) {
         Point2D vectorLine = lineTerminal.subtract(lineInitial);
         Point2D vectorPoint = point.subtract(lineInitial);
-        if(Math.abs(vectorLine.angle(vectorPoint)) < .0001) {
-            if (vectorLine.magnitude() >= vectorPoint.magnitude()) {
-                return true;
-            }
+
+        if (Math.abs(vectorLine.angle(vectorPoint)) < .0001) {
+            return vectorLine.magnitude() >= vectorPoint.magnitude();
         }
+
         return false;
     }
 
+    public int getNumHits() {
+        return hitPoints.size();
+    }
+
+    /**
+     * Returns the hit point nearest to the start of the raycast
+     * @return
+     */
     public Point2D getHitPoint() {
         return hitPoints.get(index);
     }
 
-    public int getNumHit() {
-        return hitPoints.size();
+    /**
+     * Returns the hit point the index points to. For example, index 0 will retrieve the first hit point
+     * @return
+     */
+    public Point2D getHitPoint(int index) {
+        return hitPoints.get(index);
     }
 
     public Point2D getOuterHitPoint() {
-        for(int i = 0; i<hitPoints.size(); ++i) {
-            if(Main.boundary.getOuterBound().contains(hitPoints.get(i))) {
-                return hitPoints.get(i);
+        for (Point2D hitPoint : hitPoints) {
+            if (Main.boundary.getOuterBound().contains(hitPoint)) {
+                return hitPoint;
             }
         }
-        return Point2D.ZERO;
+
+        return null;
     }
 
     public int getHitPointBoundary(int hitPointIndex) {
@@ -130,23 +145,11 @@ public class Raycast extends UIObject {
         return hitPoints;
     }
 
+    /**
+     * Sorts hit points by distance from the start of the raycast
+     */
     private void sortPoints() {
-        double[][] distances1 = new double[segmentPoints1.size()][2];
-        double[][] distances2 = new double[segmentPoints1.size()][2];
 
-        for (int i = 0; i < distances1.length; i++) {
-            distances1[i][0] = segmentPoints1.get(i).distance(startPoint);
-            distances1[i][1] = i;
-        }
-
-        for (int i = 0; i < distances2.length; i++) {
-            distances1[i][0] = segmentPoints1.get(i).distance(startPoint);
-            distances1[i][1] = i;
-        }
-
-        Arrays.sort(distances1);
-
-        System.out.println(Arrays.deepToString(distances1));
     }
 
     public void draw(GraphicsContext gc) {
@@ -159,7 +162,7 @@ public class Raycast extends UIObject {
             gc.strokeLine(segmentPoints1.get(index).getX(), segmentPoints1.get(index).getY(), segmentPoints2.get(index).getX(), segmentPoints2.get(index).getY());
 
             // Hit point
-            gc.fillOval(getHitPoint().getX()-2,getHitPoint().getY()-2, 4, 4);
+            gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
 
             // Raycast line
             gc.strokeLine(startPoint.getX(), startPoint.getY(), hitPoints.get(index).getX(), hitPoints.get(index).getY());
