@@ -3,11 +3,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class Raycast extends UIObject {
     public final Point2D startPoint;
     private final double angle;
+    private final ArrayList<ArrayList<Point2D>> bounds;
 
     private int index;
 
@@ -24,8 +25,9 @@ public class Raycast extends UIObject {
     Raycast(Point2D startPoint, double angle) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
+        this.bounds = Main.boundary.bounds;
 
-        start(startPoint, angle, Main.boundary.bounds);
+        start(startPoint, angle, bounds);
     }
 
     Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bounds) throws NoHitException {
@@ -34,6 +36,8 @@ public class Raycast extends UIObject {
 
         ArrayList<ArrayList<Point2D>> bound = new ArrayList<>();
         bound.add(bounds);
+
+        this.bounds = bound;
 
         start(startPoint, angle, bound);
     }
@@ -96,7 +100,7 @@ public class Raycast extends UIObject {
         }
     }
 
-    private static boolean lineContains(Point2D lineInitial, Point2D lineTerminal, Point2D point) {
+    public static boolean lineContains(Point2D lineInitial, Point2D lineTerminal, Point2D point) {
         Point2D vectorLine = lineTerminal.subtract(lineInitial);
         Point2D vectorPoint = point.subtract(lineInitial);
 
@@ -112,37 +116,35 @@ public class Raycast extends UIObject {
     }
 
     /**
-     * Returns the hit point nearest to the start of the raycast
-     * @return
-     */
-    public Point2D getHitPoint() {
-        return hitPoints.get(index);
-    }
-
-    /**
      * Returns the hit point the index points to. For example, index 0 will retrieve the first hit point
      * @return
      */
+
+    public Point2D getHitPoint() {
+        return getHitPoint(0);
+    }
+
     public Point2D getHitPoint(int index) {
         return hitPoints.get(index);
     }
 
-    public Point2D getOuterHitPoint() {
-        for (Point2D hitPoint : hitPoints) {
-            if (Main.boundary.getOuterBound().contains(hitPoint)) {
-                return hitPoint;
-            }
-        }
-
-        return null;
+    public int[] getHitPointSegment() {
+        return getHitPointSegment(0);
     }
 
-    public int getHitPointBoundary(int hitPointIndex) {
-        return hitPointBound.get(hitPointIndex);
+    public int[] getHitPointSegment(int index) {
+        return new int[] {
+                bounds.get(getHitPointBoundary(index)).indexOf(segmentPoints1.get(index)),
+                bounds.get(getHitPointBoundary(index)).indexOf(segmentPoints2.get(index))
+        };
     }
 
-    public ArrayList<Point2D> getHitPoints() {
-        return hitPoints;
+    public int getHitPointBoundary() {
+        return getHitPointBoundary(0);
+    }
+
+    public int getHitPointBoundary(int index) {
+        return hitPointBound.get(index);
     }
 
     /**
