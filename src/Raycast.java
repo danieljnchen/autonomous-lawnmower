@@ -4,10 +4,14 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class Raycast extends UIObject {
+
     public final Point2D startPoint;
     private final double angle;
+    private ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
 
     private int index;
 
@@ -24,21 +28,21 @@ public class Raycast extends UIObject {
     Raycast(Point2D startPoint, double angle) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
+        this.bounds = Main.boundary.bounds;
 
-        start(startPoint, angle, Main.boundary.bounds);
+        start(startPoint, angle);
     }
 
     Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bounds) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
 
-        ArrayList<ArrayList<Point2D>> bound = new ArrayList<>();
-        bound.add(bounds);
+        this.bounds.add(bounds);
 
-        start(startPoint, angle, bound);
+        start(startPoint, angle);
     }
 
-    private void start(Point2D startPoint, double angle, ArrayList<ArrayList<Point2D>> bounds) throws NoHitException {
+    private void start(Point2D startPoint, double angle) throws NoHitException {
         for (int i = 0; i < bounds.size(); i++) {
             for (int j = 0; j <= bounds.get(i).size(); j++) {
                 Point2D point1 = bounds.get(i).get(j % bounds.get(i).size());
@@ -55,14 +59,24 @@ public class Raycast extends UIObject {
             }
         }
 
+        System.out.println(hitPoints.toString());
         if (hitPoints.size() != 0) {
-            Point2D hitPoint = hitPoints.get(0);
+            /*Point2D hitPoint = hitPoints.get(0);
+            hitPointSort.add(new Point2D(0, hitPoint.distance(startPoint)));
             for (int i = 1; i < hitPoints.size(); i++) {
+
                 if (startPoint.distance(hitPoints.get(i)) < startPoint.distance(hitPoint)) {
                     hitPoint = hitPoints.get(i);
                     index = i;
                 }
-            }
+            }*/
+            hitPoints.sort((point1, point2) -> {
+                double distance1 = point1.distance(startPoint);
+                double distance2 = point2.distance(startPoint);
+                return (int) (distance1 - distance2);
+            });
+            index = 0;
+            System.out.println(hitPoints.toString());
         } else {
             index = -1;
             throw new NoHitException(this + " did not hit a target");
@@ -125,16 +139,6 @@ public class Raycast extends UIObject {
      */
     public Point2D getHitPoint(int index) {
         return hitPoints.get(index);
-    }
-
-    public Point2D getOuterHitPoint() {
-        for (Point2D hitPoint : hitPoints) {
-            if (Main.boundary.getOuterBound().contains(hitPoint)) {
-                return hitPoint;
-            }
-        }
-
-        return null;
     }
 
     public int getHitPointBoundary(int hitPointIndex) {

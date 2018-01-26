@@ -29,9 +29,9 @@ public class Algorithm {
             }
 
             cast = new Raycast(startPoint, angle, Main.boundary.getOuterBound());
-            if (cast.getHitPoint().distance(startPoint) <= robot.width) {
+            /*if (cast.getHitPoint().distance(startPoint) <= robot.width) {
                 distanceNext = distanceNext.multiply(cast.getHitPoint().distance(startPoint));
-            }
+            }*/
 
             raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(distanceNext), angle, !side);
         } catch (NoHitException e) {
