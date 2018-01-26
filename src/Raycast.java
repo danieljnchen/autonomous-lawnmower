@@ -3,9 +3,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Comparator;
-import java.util.List;
 
 public class Raycast extends UIObject {
 
