@@ -39,51 +39,7 @@ public class Algorithm {
         }
     }
 
-    /*public double raycastComb(Point2D startPoint, double angle) {
-
-        Point2D currentPoint = new Point2D(startPoint.getX(), startPoint.getY());
-        Raycast cast;
-        boolean side = false;
-
-        try {
-            cast = new Raycast(startPoint, angle);
-        } catch (NoHitException e) {
-            e.printStackTrace();
-            return -1;
-        }
-
-        double maxLength = 0;
-        do {
-            Raycast right;
-            Raycast left;
-
-            try {
-                right = new Raycast(currentPoint, angle + 90);
-                left = new Raycast(currentPoint, angle - 90);
-                if(side) {
-                    robot.pathNodes.add(right.getHitPoint());
-                    robot.pathNodes.add(left.getHitPoint());
-                } else {
-                    robot.pathNodes.add(left.getHitPoint());
-                    robot.pathNodes.add(right.getHitPoint());
-                }
-                side = !side;
-            } catch (NoHitException e) {
-                System.out.println("Outside boundary, stopping");
-                break;
-            }
-
-            currentPoint = currentPoint.add(Math.cos(Math.toRadians(angle)) * robot.width * 2, Math.sin(Math.toRadians(angle)) * robot.width * 2);
-
-            if (right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude() > maxLength) {
-                maxLength = right.getHitPoint().subtract(currentPoint).magnitude() + left.getHitPoint().subtract(currentPoint).magnitude();
-            }
-        } while (Raycast.lineContains(startPoint, cast.getHitPoint(), currentPoint));
-        System.out.println("Max Length: " + maxLength);
-        return maxLength;
-    }*/
-
-    public void followBoundary(ArrayList<Point2D> bound) {
+    public void aroundBoundary(ArrayList<Point2D> bound) {
         robot.pathNodes.addAll(bound);
         robot.pathNodes.add(bound.get(0));
     }
@@ -102,25 +58,19 @@ public class Algorithm {
         double angle = Math.atan2(delta.getY(), delta.getX());
 
         try {
-            Raycast direct = new Raycast(end, angle);
-
+            Raycast direct = new Raycast(start, angle);
             Point2D otherSide = direct.getHitPoint(1);
+
+            followBoundary(
+                boundary.bounds.get(direct.getHitPointBoundary()),
+                direct.getHitPointSegment()[1],
+                direct.getHitPointSegment(1)[0]
+            );
+            robot.pathNodes.add(otherSide);
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
-            robot.pathNodes.add(end);
         }
-    }
 
-    public static boolean crossesPoint(Point2D start, Point2D end, Point2D targetPoint) {
-        Point2D delta = end.subtract(start);
-        double angle = Math.atan2(delta.getY(), delta.getX());
-
-        try {
-            Raycast direct = new Raycast(new Point2D(start.getX(), start.getY()), angle);
-
-            return direct.startPoint.distance(direct.getHitPoint()) >= direct.startPoint.distance(targetPoint);
-        } catch (NoHitException e) {
-            return true;
-        }
+        robot.pathNodes.add(end);
     }
 }

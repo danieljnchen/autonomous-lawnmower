@@ -11,8 +11,9 @@ class Robot extends UIObject {
     ArrayList<Point2D> pathNodes = new ArrayList<>();
     private int curNodeDest = 1;
 
-    private void startPath() {
-        pos = pathNodes.get(0);
+    public void reset() {
+        pathNodes.clear();
+        pos = Point2D.ZERO;
     }
 
     private void approachNextNode() {
