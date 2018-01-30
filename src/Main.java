@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -17,6 +18,7 @@ public class Main extends Application {
     public static Robot robot = new Robot();
     public static Boundary boundary = new Boundary();
     private static Algorithm algorithm = new Algorithm(robot, boundary);
+    public static Mouse mouse = new Mouse();
 
     public static void main(String[] args) {
         launch(args);
@@ -58,17 +60,27 @@ public class Main extends Application {
         boundary_select.setValue(boundary_select.getItems().get(0));
         boundary.load(boundary_select.getValue());
 
+        //Track the mouse
+        Text text = new Text();
+        text.setX(100);
+        text.setY(200);
+        root.getChildren().add(text);
+        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> {
+            mouse.setPos(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+            text.setText(mouseEvent.getSceneX() + ", " + mouseEvent.getSceneY());
+        });
+
         // Create comb on mouse click
-        //canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-        //        algorithm.raycastIterative(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
+                algorithm.raycastIterative(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
+        /*canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
         {
             try {
                 new Raycast(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()));
             } catch(NoHitException e) {
                 e.printStackTrace();
             }
-        });
+        });*/
 
         new AnimationTimer()
         {

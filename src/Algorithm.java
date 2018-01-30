@@ -35,7 +35,8 @@ public class Algorithm {
 
             raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(distanceNext), angle, !side);
         } catch (NoHitException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("NoHitException");
         }
     }
 
