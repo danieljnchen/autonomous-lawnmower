@@ -3,6 +3,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Raycast extends UIObject {
 
@@ -10,12 +11,13 @@ public class Raycast extends UIObject {
     private final double angle;
     private ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
 
-    private int index;
+    private Object[] castData = new Object[4];
 
-    private ArrayList<Point2D> hitPoints = new ArrayList<>();
+    /*private ArrayList<Point2D> hitPoints = new ArrayList<>();
     private ArrayList<Point2D> segmentPoints1 = new ArrayList<>();
     private ArrayList<Point2D> segmentPoints2 = new ArrayList<>();
-    private ArrayList<Integer> hitPointBound = new ArrayList<>();
+    private ArrayList<Integer> hitPointBound = new ArrayList<>();*/
+    private ArrayList<RaycastObject> hitPointInfo = new ArrayList<>();
 
     /***
      * Raycasts a ray at the specified angle. Contains the point the ray intersects with a boundary.
@@ -39,24 +41,29 @@ public class Raycast extends UIObject {
     }
 
     private void start(Point2D startPoint, double angle) throws NoHitException {
+
         for (int i = 0; i < bounds.size(); i++) {
-            for (int j = 0; j <= bounds.get(i).size(); j++) {
-                Point2D point1 = bounds.get(i).get(j % bounds.get(i).size());
+            for (int j = 0; j < bounds.get(i).size(); j++) {
+                Point2D point1 = bounds.get(i).get(j);
                 Point2D point2 = bounds.get(i).get((j + 1) % bounds.get(i).size());
 
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
                 if (hitPoint != null) {
-                    segmentPoints1.add(point1);
+                    /*segmentPoints1.add(point1);
                     segmentPoints2.add(point2);
                     hitPoints.add(hitPoint);
-                    hitPointBound.add(i);
+                    hitPointBound.add(i);*/
+                    hitPointInfo.add(new RaycastObject(hitPoint, point1, j, point2, (j+1)*bounds.get(i).size(), i));
                 }
             }
         }
 
-        System.out.println(hitPoints.toString());
-        if (hitPoints.size() != 0) {
+        if (hitPointInfo.size() != 0) {
+            System.out.println("Initial order:");
+            for (RaycastObject r : hitPointInfo) {
+                System.out.println(r.getHitPoint());
+            }
             /*Point2D hitPoint = hitPoints.get(0);
             hitPointSort.add(new Point2D(0, hitPoint.distance(startPoint)));
             for (int i = 1; i < hitPoints.size(); i++) {
@@ -66,15 +73,17 @@ public class Raycast extends UIObject {
                     index = i;
                 }
             }*/
-            hitPoints.sort((point1, point2) -> {
-                double distance1 = point1.distance(startPoint);
-                double distance2 = point2.distance(startPoint);
+            hitPointInfo.sort((raycastObject1, raycastObject2) -> {
+                double distance1 = raycastObject1.getHitPoint().distance(startPoint);
+                double distance2 = raycastObject2.getHitPoint().distance(startPoint);
                 return (int) (distance1 - distance2);
             });
-            index = 0;
-            System.out.println(hitPoints.toString());
+        System.out.println("Sorted order:");
+        for (RaycastObject r : hitPointInfo) {
+            System.out.println(r.getHitPoint());
+        }
+
         } else {
-            index = -1;
             throw new NoHitException(this + " did not hit a target");
         }
     }
@@ -118,7 +127,7 @@ public class Raycast extends UIObject {
     }
 
     public int getNumHits() {
-        return hitPoints.size();
+        return hitPointInfo.size();
     }
 
     /**
@@ -131,7 +140,7 @@ public class Raycast extends UIObject {
     }
 
     public Point2D getHitPoint(int index) {
-        return hitPoints.get(index);
+        return hitPointInfo.get(index).getHitPoint();
     }
 
     public int[] getHitPointSegment() {
@@ -140,8 +149,8 @@ public class Raycast extends UIObject {
 
     public int[] getHitPointSegment(int index) {
         return new int[] {
-                bounds.get(getHitPointBoundary(index)).indexOf(segmentPoints1.get(index)),
-                bounds.get(getHitPointBoundary(index)).indexOf(segmentPoints2.get(index))
+                hitPointInfo.get(index).getSegmentPoint1Index(),
+                hitPointInfo.get(index).getSegmentPoint2Index()
         };
     }
 
@@ -150,7 +159,7 @@ public class Raycast extends UIObject {
     }
 
     public int getHitPointBoundary(int index) {
-        return hitPointBound.get(index);
+        return hitPointInfo.get(index).getHitPointBound();
     }
 
     public void draw(GraphicsContext gc) {
@@ -158,15 +167,16 @@ public class Raycast extends UIObject {
         gc.setFill(Color.DARKBLUE);
         gc.setLineWidth(1);
 
-        if (index != -1) {
+        if (hitPointInfo.size() != 0) {
+            RaycastObject raycastObject = hitPointInfo.get(0);
             // Target line segment
-            gc.strokeLine(segmentPoints1.get(index).getX(), segmentPoints1.get(index).getY(), segmentPoints2.get(index).getX(), segmentPoints2.get(index).getY());
+            gc.strokeLine(raycastObject.getSegmentPoint1().getX(), raycastObject.getSegmentPoint1().getY(), raycastObject.getSegmentPoint2().getX(), raycastObject.getSegmentPoint2().getY());
 
             // Hit point
             gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
 
             // Raycast line
-            gc.strokeLine(startPoint.getX(), startPoint.getY(), hitPoints.get(index).getX(), hitPoints.get(index).getY());
+            gc.strokeLine(startPoint.getX(), startPoint.getY(), raycastObject.getHitPoint().getX(), raycastObject.getHitPoint().getY());
         } else {
             //gc.strokeLine(startPoint.getX(), startPoint.getY(), startPoint.getX() + 5000 * Math.cos(Math.toRadians(angle)), startPoint.getY() + 5000 * Math.sin(Math.toRadians(angle)));
         }
