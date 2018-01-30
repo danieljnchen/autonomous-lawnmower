@@ -11,12 +11,6 @@ public class Raycast extends UIObject {
     private final double angle;
     private ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
 
-    private Object[] castData = new Object[4];
-
-    /*private ArrayList<Point2D> hitPoints = new ArrayList<>();
-    private ArrayList<Point2D> segmentPoints1 = new ArrayList<>();
-    private ArrayList<Point2D> segmentPoints2 = new ArrayList<>();
-    private ArrayList<Integer> hitPointBound = new ArrayList<>();*/
     private ArrayList<RaycastObject> hitPointInfo = new ArrayList<>();
 
     /***
@@ -50,39 +44,17 @@ public class Raycast extends UIObject {
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
                 if (hitPoint != null) {
-                    /*segmentPoints1.add(point1);
-                    segmentPoints2.add(point2);
-                    hitPoints.add(hitPoint);
-                    hitPointBound.add(i);*/
                     hitPointInfo.add(new RaycastObject(hitPoint, point1, j, point2, (j+1)*bounds.get(i).size(), i));
                 }
             }
         }
 
         if (hitPointInfo.size() != 0) {
-            System.out.println("Initial order:");
-            for (RaycastObject r : hitPointInfo) {
-                System.out.println(r.getHitPoint());
-            }
-            /*Point2D hitPoint = hitPoints.get(0);
-            hitPointSort.add(new Point2D(0, hitPoint.distance(startPoint)));
-            for (int i = 1; i < hitPoints.size(); i++) {
-
-                if (startPoint.distance(hitPoints.get(i)) < startPoint.distance(hitPoint)) {
-                    hitPoint = hitPoints.get(i);
-                    index = i;
-                }
-            }*/
             hitPointInfo.sort((raycastObject1, raycastObject2) -> {
                 double distance1 = raycastObject1.getHitPoint().distance(startPoint);
                 double distance2 = raycastObject2.getHitPoint().distance(startPoint);
                 return (int) (distance1 - distance2);
             });
-        System.out.println("Sorted order:");
-        for (RaycastObject r : hitPointInfo) {
-            System.out.println(r.getHitPoint());
-        }
-
         } else {
             throw new NoHitException(this + " did not hit a target");
         }
