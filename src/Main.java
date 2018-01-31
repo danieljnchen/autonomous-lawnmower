@@ -60,19 +60,12 @@ public class Main extends Application {
         boundary_select.setValue(boundary_select.getItems().get(0));
         boundary.load(boundary_select.getValue());
 
-        //Track the mouse
-        Text text = new Text();
-        text.setX(100);
-        text.setY(200);
-        root.getChildren().add(text);
-        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> {
-            mouse.setPos(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-            text.setText(mouseEvent.getSceneX() + ", " + mouseEvent.getSceneY());
-        });
+        //Track mouse
+        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> mouse.setPos(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
 
         // Create comb on mouse click
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-                algorithm.raycastIterative(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
+                algorithm.raycastIterative(mouse.getClosestPoint().add(robot.width*Math.cos(Math.toRadians(Double.parseDouble(comb_angle.getText()))), robot.width*Math.sin(Math.toRadians(Double.parseDouble(comb_angle.getText())))), Double.parseDouble(comb_angle.getText()), false));
         /*canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
         {
             try {

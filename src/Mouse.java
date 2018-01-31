@@ -3,34 +3,33 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Mouse extends UIObject {
-    private double xPos;
-    private double yPos;
+    Point2D position;
 
     public Mouse() {
-        xPos = 0;
-        yPos = 0;
+        position = Point2D.ZERO;
     }
 
     public double getX() {
-        return xPos;
+        return position.getX();
     }
 
     public double getY() {
-        return yPos;
+        return position.getY();
     }
 
     public void setPos(double xPos, double yPos) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+        position = new Point2D(xPos,yPos);
     }
 
     public Point2D getClosestPoint() {
-        double distance = 10000;
-        Point2D closest = Point2D.ZERO;
+        Point2D closest = Main.boundary.bounds.get(0).get(0);
+        double distance = closest.distance(position);
         for(int i = 0; i<Main.boundary.bounds.size(); ++i) {
             for(int j = 0; j<Main.boundary.bounds.get(i).size(); ++j) {
-                if(Main.boundary.bounds.get(i).get(j).distance(new Point2D(xPos,yPos)) < distance) {
-                    closest = Main.boundary.bounds.get(i).get(j);
+                Point2D test = Main.boundary.bounds.get(i).get(j);
+                if(position.distance(test) < distance) {
+                    closest = test;
+                    distance = position.distance(test);
                 }
             }
         }
@@ -38,10 +37,10 @@ public class Mouse extends UIObject {
     }
 
     public void draw(GraphicsContext gc) {
-        /*gc.setFill(Color.CRIMSON);
+        gc.setFill(Color.CRIMSON);
         Point2D closest = getClosestPoint();
-        System.out.println(closest.toString());
-        gc.fillOval(closest.getX() - 2,closest.getY() - 2,10,10);*/
-        System.out.println("Mouse drawn");
+        //System.out.println(xPos + ", " + yPos);
+        //System.out.println(closest.toString());
+        gc.fillOval(closest.getX() - 4,closest.getY() - 4,8,8);
     }
 }

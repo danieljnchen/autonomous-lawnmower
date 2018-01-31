@@ -49,7 +49,7 @@ class Robot extends UIObject {
                 pos = pathNodes.get(0);
             }
             gc.fillOval(pathNodes.get(pathNodes.size()-1).getX(), pathNodes.get(pathNodes.size()-1).getY(), 5, 5);
-            approachNextNode();
+            //approachNextNode();
         }
     }
 }
