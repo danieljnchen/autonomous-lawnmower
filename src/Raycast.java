@@ -44,7 +44,7 @@ public class Raycast extends UIObject {
                 Point2D hitPoint = intersection(startPoint, startPoint.add(5000 * Math.cos(Math.toRadians(angle)), 5000 * Math.sin(Math.toRadians(angle))), point1, point2);
 
                 if (hitPoint != null) {
-                    hitPointInfo.add(new RaycastObject(hitPoint, point1, j, point2, (j+1)*bounds.get(i).size(), i));
+                    hitPointInfo.add(new RaycastObject(hitPoint, point1, j, point2, (j+1)%bounds.get(i).size(), i));
                 }
             }
         }
@@ -111,18 +111,18 @@ public class Raycast extends UIObject {
         return getHitPoint(0);
     }
 
-    public Point2D getHitPoint(int index) {
-        return hitPointInfo.get(index).getHitPoint();
+    public Point2D getHitPoint(int hitIndex) {
+        return hitPointInfo.get(hitIndex).getHitPoint();
     }
 
     public int[] getHitPointSegment() {
         return getHitPointSegment(0);
     }
 
-    public int[] getHitPointSegment(int index) {
+    public int[] getHitPointSegment(int hitIndex) {
         return new int[] {
-                hitPointInfo.get(index).getSegmentPoint1Index(),
-                hitPointInfo.get(index).getSegmentPoint2Index()
+                hitPointInfo.get(hitIndex).getSegmentPoint1Index(),
+                hitPointInfo.get(hitIndex).getSegmentPoint2Index()
         };
     }
 
@@ -130,8 +130,8 @@ public class Raycast extends UIObject {
         return getHitPointBoundary(0);
     }
 
-    public int getHitPointBoundary(int index) {
-        return hitPointInfo.get(index).getHitPointBound();
+    public int getHitPointBoundary(int hitIndex) {
+        return hitPointInfo.get(hitIndex).getHitPointBound();
     }
 
     public void draw(GraphicsContext gc) {
