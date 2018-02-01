@@ -19,11 +19,11 @@ public class Algorithm {
             Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
 
             if (side) { //alternate so robot follows a zigzag path
-                toPoint(right.getHitPoint(right.getNumHits()-1));
-                toPoint(left.getHitPoint(left.getNumHits()-1));
+                robot.pathNodes.add(right.getHitPoint());
+                toPoint(left.getHitPoint());
             } else {
-                toPoint(left.getHitPoint(left.getNumHits()-1));
-                toPoint(right.getHitPoint(right.getNumHits()-1));
+                robot.pathNodes.add(left.getHitPoint());
+                toPoint(right.getHitPoint());
             }
 
             Raycast next = new Raycast(startPoint, angle, Main.boundary.getOuterBound());
@@ -42,8 +42,14 @@ public class Algorithm {
     }
 
     public void followBoundary(ArrayList<Point2D> bound, int indexStart, int indexStop) {
-        for (int i = indexStart; i < indexStop; i++) {
-            robot.pathNodes.add(bound.get(i));
+        if (indexStart < indexStop) {
+            for (int i = indexStart; i < indexStop; i++) {
+                robot.pathNodes.add(bound.get(i));
+            }
+        } else {
+            for (int i = indexStart; i > indexStop; i--) {
+                robot.pathNodes.add(bound.get(i));
+            }
         }
     }
 
@@ -57,11 +63,21 @@ public class Algorithm {
             Point2D delta = end.subtract(start);
             double angle = Math.atan2(delta.getY(), delta.getX());
 
-            Raycast direct = new Raycast(start, angle);
+            Raycast direct = new Raycast(start, Math.toDegrees(angle));
 
+            if (direct.getNumHits() > 1) {
+                robot.pathNodes.add(direct.getHitPoint());
+
+                // Go around boundary
+                followBoundary(boundary.bounds.get(direct.getHitPointBoundary()), direct.getHitPointSegment(0)[1], direct.getHitPointSegment(1)[0]);
+
+                robot.pathNodes.add(direct.getHitPoint(1));
+            }
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
+            System.out.println("NoHit");
         }
 
+        robot.pathNodes.add(end);
     }
 }
