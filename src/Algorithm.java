@@ -19,11 +19,11 @@ public class Algorithm {
             Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
 
             if (side) { //alternate so robot follows a zigzag path
-                robot.pathNodes.add(right.getHitPoint());
-                robot.pathNodes.add(left.getHitPoint());
+                toPoint(right.getHitPoint(right.getNumHits()-1));
+                toPoint(left.getHitPoint(left.getNumHits()-1));
             } else {
-                robot.pathNodes.add(left.getHitPoint());
-                robot.pathNodes.add(right.getHitPoint());
+                toPoint(left.getHitPoint(left.getNumHits()-1));
+                toPoint(right.getHitPoint(right.getNumHits()-1));
             }
 
             Raycast next = new Raycast(startPoint, angle, Main.boundary.getOuterBound());
@@ -47,26 +47,20 @@ public class Algorithm {
     }
 
     public void toPoint(Point2D end) {
+        if (robot.pathNodes.size() == 0) robot.pathNodes.add(Point2D.ZERO);
+
         // Always start at the last path node
         Point2D start = robot.pathNodes.get(robot.pathNodes.size() - 1);
 
-        Point2D delta = end.subtract(start);
-        double angle = Math.atan2(delta.getY(), delta.getX());
-
         try {
-            Raycast direct = new Raycast(start, angle);
-            Point2D otherSide = direct.getHitPoint(1);
+            Point2D delta = end.subtract(start);
+            double angle = Math.atan2(delta.getY(), delta.getX());
 
-            followBoundary(
-                boundary.bounds.get(direct.getHitPointBoundary()),
-                direct.getHitPointSegment()[1],
-                direct.getHitPointSegment(1)[0]
-            );
-            robot.pathNodes.add(otherSide);
+            Raycast direct = new Raycast(start, angle);
+
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
         }
 
-        robot.pathNodes.add(end);
     }
 }
