@@ -19,11 +19,11 @@ public class Algorithm {
             Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
 
             if (side) { //alternate so robot follows a zigzag path
-                robot.pathNodes.add(right.getHitPoint());
-                toPoint(left.getHitPoint());
+                robot.pathNodes.add(right.getHitPoint(right.getNumHits()-1));
+                toPoint(left.getHitPoint(left.getNumHits()-1));
             } else {
-                robot.pathNodes.add(left.getHitPoint());
-                toPoint(right.getHitPoint());
+                robot.pathNodes.add(left.getHitPoint(left.getNumHits()-1));
+                toPoint(right.getHitPoint(right.getNumHits()-1));
             }
 
             Raycast next = new Raycast(startPoint, angle, Main.boundary.getOuterBound());
