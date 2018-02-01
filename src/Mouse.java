@@ -3,12 +3,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Mouse extends UIObject {
-    private Point2D position;
-    private Point2D closest;
-
-    public Mouse() {
-        position = Point2D.ZERO;
-    }
+    private Point2D position = Point2D.ZERO;
+    private Point2D closest = Point2D.ZERO;
 
     public double getX() {
         return position.getX();
