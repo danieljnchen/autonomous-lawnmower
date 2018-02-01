@@ -1,6 +1,5 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -17,6 +16,7 @@ public class Main extends Application {
     public static Robot robot = new Robot();
     public static Boundary boundary = new Boundary();
     private static Algorithm algorithm = new Algorithm(robot, boundary);
+    public static Mouse mouse = new Mouse();
 
     public static void main(String[] args) {
         launch(args);
@@ -58,9 +58,15 @@ public class Main extends Application {
         boundary_select.setValue(boundary_select.getItems().get(0));
         boundary.load(boundary_select.getValue());
 
+        //Track mouse
+        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> mouse.setPos(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+
         // Create comb on mouse click
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-                algorithm.raycastIterative(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()), false));
+                algorithm.raycastIterative(mouse.getClosestPoint().add(
+                        robot.width*Math.cos(Math.toRadians(Double.parseDouble(comb_angle.getText())))/2,
+                        robot.width*Math.sin(Math.toRadians(Double.parseDouble(comb_angle.getText())))/2),
+                        Double.parseDouble(comb_angle.getText()), false));
         /*canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
         {
             try {

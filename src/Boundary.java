@@ -120,6 +120,7 @@ public class Boundary extends UIObject {
         UIObject.uiObjects.clear();
         UIObject.uiObjects.add(this);
         UIObject.uiObjects.add(Main.robot);
+        UIObject.uiObjects.add(Main.mouse);
         Main.robot.reset();
         bounds.clear();
     }
