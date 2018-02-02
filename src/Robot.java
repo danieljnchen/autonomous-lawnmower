@@ -30,7 +30,8 @@ class Robot extends UIObject {
             Point2D delta = node.subtract(pos);
             double angle = Math.atan2(delta.getY(), delta.getX());
 
-            pos.add(Math.cos(angle), Math.sin(angle));
+            pos = pos.add(Math.cos(angle), Math.sin(angle));
+
         }
     }
 
@@ -45,8 +46,13 @@ class Robot extends UIObject {
         for (int i = 0; i < pathNodes.size() - 1; i++) {
             gc.strokeLine(pathNodes.get(i).getX(), pathNodes.get(i).getY(), pathNodes.get(i+1).getX(), pathNodes.get(i+1).getY());
         }
-        gc.fillOval(pathNodes.get(pathNodes.size()-1).getX(), pathNodes.get(pathNodes.size()-1).getY(), 5, 5);
 
-        approachNextNode();
+        if (pathNodes.size() != 0) {
+            if(pos == Point2D.ZERO) {
+                pos = pathNodes.get(0);
+            }
+            gc.fillOval(pathNodes.get(pathNodes.size()-1).getX(), pathNodes.get(pathNodes.size()-1).getY(), 5, 5);
+            approachNextNode();
+        }
     }
 }
