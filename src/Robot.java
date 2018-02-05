@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
 class Robot extends UIObject {
+    private final double speedCoef = 3;
     Point2D pos = Point2D.ZERO; // relative to center of robot
     double length = 15;
     double width = 10;
@@ -23,7 +24,7 @@ class Robot extends UIObject {
         if (!(pathNodes.size() > 1)) return;
 
         Point2D node = pathNodes.get(curNodeDest);
-        if (pos.distance(node) < 1) {
+        if (pos.distance(node) < speedCoef) {
             if (curNodeDest < pathNodes.size() - 1) {
                 curNodeDest++;
             }
@@ -31,7 +32,7 @@ class Robot extends UIObject {
             Point2D delta = node.subtract(pos);
             double angle = Math.atan2(delta.getY(), delta.getX());
 
-            pos = pos.add(Math.cos(angle), Math.sin(angle));
+            pos = pos.add(speedCoef*Math.cos(angle), speedCoef*Math.sin(angle));
 
         }
     }
