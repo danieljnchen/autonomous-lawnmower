@@ -8,6 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -58,8 +59,15 @@ public class Main extends Application {
         boundary_select.setValue(boundary_select.getItems().get(0));
         boundary.load(boundary_select.getValue());
 
+        Text text = new Text();
+        text.setX(400);
+        text.setY(20);
+        root.getChildren().add(text);
         //Track mouse
-        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> mouse.setPos(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> {
+            mouse.setPos(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+            text.setText(mouse.getX() + " " + mouse.getY());
+        });
 
         // Create comb on mouse click
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->

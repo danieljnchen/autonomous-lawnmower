@@ -19,19 +19,38 @@ public class Algorithm {
             Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
 
             if (side) { //alternate so robot follows a zigzag path
-                robot.pathNodes.add(right.getHitPoint(right.getNumHits()-1));
-                toPoint(left.getHitPoint(left.getNumHits()-1));
+                robot.pathNodes.add(right.getHitPoint(right.getNumHits() - 1));
+                toPoint(left.getHitPoint(left.getNumHits() - 1));
             } else {
-                robot.pathNodes.add(left.getHitPoint(left.getNumHits()-1));
-                toPoint(right.getHitPoint(right.getNumHits()-1));
+                robot.pathNodes.add(left.getHitPoint(left.getNumHits() - 1));
+                toPoint(right.getHitPoint(right.getNumHits() - 1));
             }
 
-            Raycast next = new Raycast(startPoint, angle, Main.boundary.getOuterBound());
-            if (next.getHitPoint().distance(startPoint) <= robot.width) return;
+            Raycast next;
+            Point2D nextStartPoint = startPoint;
+            Point2D distBetween = right.getHitPoint().subtract(left.getHitPoint());
+            double maxDistance = 0;
 
-            raycastIterative(right.getHitPoint().midpoint(left.getHitPoint()).add(distanceNext), angle, !side);
+            for (int i = 0; i <= 100; ++i) {
+                try {
+                    Point2D nextStartPointTest = left.getHitPoint().add(distBetween.multiply((double) i / 100));
+                    next = new Raycast(nextStartPointTest, angle, Main.boundary.getOuterBound());
+                    double newDistance = next.getHitPoint().distance(nextStartPointTest);
+                    if (newDistance > maxDistance) {
+                        maxDistance = newDistance;
+                        nextStartPoint = nextStartPointTest;
+                    }
+                } catch (NoHitException e) {
+                }
+            }
+
+            try {
+                next = new Raycast(nextStartPoint, angle);
+            } catch (NoHitException e) {
+            }
+
+            raycastIterative(nextStartPoint.add(distanceNext), angle, !side);
         } catch (NoHitException e) {
-            //e.printStackTrace();
             System.out.println("NoHitException");
         }
     }
