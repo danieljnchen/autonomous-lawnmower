@@ -15,8 +15,10 @@ public class Algorithm {
         Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
 
         try {
-            Raycast right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound()); //raycast to the left and the right
-            Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
+            Raycast right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound(), false); //raycast to the left and the right
+            System.out.println("Right");
+            Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound(), false);
+            System.out.println("Left");
 
             if (side) { //alternate so robot follows a zigzag path
                 robot.pathNodes.add(right.getHitPoint(right.getNumHits() - 1));
@@ -34,7 +36,10 @@ public class Algorithm {
             for (int i = 0; i <= 100; ++i) {
                 try {
                     Point2D nextStartPointTest = left.getHitPoint().add(distBetween.multiply((double) i / 100));
-                    next = new Raycast(nextStartPointTest, angle, Main.boundary.getOuterBound());
+                    next = new Raycast(nextStartPointTest, angle, Main.boundary.getOuterBound(), false);
+                    if(next.getNumHits() % 2 == 0) {
+                        continue;
+                    }
                     double newDistance = next.getHitPoint().distance(nextStartPointTest);
                     if (newDistance > maxDistance) {
                         maxDistance = newDistance;
@@ -45,7 +50,7 @@ public class Algorithm {
             }
 
             try {
-                next = new Raycast(nextStartPoint, angle);
+                next = new Raycast(nextStartPoint, angle, true);
             } catch (NoHitException e) {
             }
 
@@ -82,7 +87,7 @@ public class Algorithm {
             Point2D delta = end.subtract(start);
             double angle = Math.atan2(delta.getY(), delta.getX());
 
-            Raycast direct = new Raycast(start, Math.toDegrees(angle));
+            Raycast direct = new Raycast(start, Math.toDegrees(angle), false);
 
             if (direct.getNumHits() > 1) {
                 robot.pathNodes.add(direct.getHitPoint());
