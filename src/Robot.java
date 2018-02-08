@@ -10,8 +10,12 @@ class Robot extends UIObject {
     double length = 15;
     double width = 10;
 
-    ArrayList<Point2D> pathNodes = new ArrayList<>();
+    private ArrayList<Point2D> pathNodes = new ArrayList<>();
     private int curNodeDest = 1;
+
+    public void queueNodes(ArrayList<Point2D> nodes) {
+        pathNodes.addAll(nodes);
+    }
 
     public void reset() {
         pathNodes.clear();

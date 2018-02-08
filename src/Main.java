@@ -14,9 +14,10 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class Main extends Application {
+
     public static Robot robot = new Robot();
     public static Boundary boundary = new Boundary();
-    private static Algorithm algorithm = new Algorithm(robot, boundary);
+    public static Algorithm algorithm = new Algorithm();
     public static Mouse mouse = new Mouse();
 
     public static void main(String[] args) {
@@ -53,6 +54,10 @@ public class Main extends Application {
             for (File child : directoryListing) {
                 boundary_select.getItems().add(child.getName());
             }
+        }
+
+        if (boundary_select.getItems().size() == 0) {
+
         }
 
         // Load the default

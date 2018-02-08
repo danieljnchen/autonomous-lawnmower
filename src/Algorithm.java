@@ -3,14 +3,19 @@ import javafx.geometry.Point2D;
 import java.util.ArrayList;
 
 public class Algorithm {
-    private Robot robot;
-    private Boundary boundary;
 
-    Algorithm(Robot robot, Boundary boundary) {
-        this.robot = robot;
-        this.boundary = boundary;
+    private final Robot robot;
+
+    private ArrayList<Point2D> pathNodes = new ArrayList<>();
+
+    public Algorithm() {
+        this.robot = Main.robot;
     }
 
+    public void addPathToRobot() {
+        robot.queueNodes(pathNodes);
+    }
+    
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
         Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
 
@@ -19,10 +24,10 @@ public class Algorithm {
             Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound());
 
             if (side) { //alternate so robot follows a zigzag path
-                robot.pathNodes.add(right.getHitPoint(right.getNumHits() - 1));
+                pathNodes.add(right.getHitPoint(right.getNumHits() - 1));
                 toPoint(left.getHitPoint(left.getNumHits() - 1));
             } else {
-                robot.pathNodes.add(left.getHitPoint(left.getNumHits() - 1));
+                pathNodes.add(left.getHitPoint(left.getNumHits() - 1));
                 toPoint(right.getHitPoint(right.getNumHits() - 1));
             }
 
@@ -56,27 +61,69 @@ public class Algorithm {
     }
 
     public void aroundBoundary(ArrayList<Point2D> bound) {
-        robot.pathNodes.addAll(bound);
-        robot.pathNodes.add(bound.get(0));
+        pathNodes.addAll(bound);
+        pathNodes.add(bound.get(0));
     }
 
     public void followBoundary(ArrayList<Point2D> bound, int indexStart, int indexStop) {
         if (indexStart < indexStop) {
+            double distancePositive = 0;
+            double distanceNegative = 0;
+
+            // indexStart to indexStop inner
             for (int i = indexStart; i < indexStop; i++) {
-                robot.pathNodes.add(bound.get(i));
+                distancePositive += bound.get(i).distance(bound.get((i+1)%bound.size()));
+            }
+
+            // indexStart to indexStop outer
+            for (int i = indexStart; i != indexStop; i = ((i-1)%bound.size()+bound.size())%bound.size()) {
+                distanceNegative += bound.get(i).distance(bound.get(((i-1)%bound.size()+bound.size())%bound.size()));
+            }
+            System.out.println(distancePositive);
+            System.out.println(distanceNegative);
+
+            if (distancePositive < distanceNegative) {
+                for (int i = indexStart; i < indexStop; i++) {
+                    pathNodes.add(bound.get(i));
+                }
+            } else {
+                for (int i = indexStart; i > indexStop; i--) {
+                    pathNodes.add(bound.get(i));
+                }
             }
         } else {
+            double distancePositive = 0;
+            double distanceNegative = 0;
+
+            // indexStart to indexStop inner
             for (int i = indexStart; i > indexStop; i--) {
-                robot.pathNodes.add(bound.get(i));
+                distancePositive += bound.get(i).distance(bound.get(((i-1)%bound.size()+bound.size())%bound.size()));
+            }
+
+            // indexStart to indexStop outer
+            for (int i = indexStart; i != indexStop; i = (i+1)%bound.size()) {
+                distanceNegative += bound.get(i).distance(bound.get((i+1)%bound.size()));
+            }
+            System.out.println("iStart iStop inner"+distancePositive);
+            System.out.println("iStart iStop outer"+distanceNegative);
+
+            if (distancePositive < distanceNegative) {
+                for (int i = indexStart; i > indexStop; i--) {
+                    pathNodes.add(bound.get(i));
+                }
+            } else {
+                for (int i = indexStart; i > indexStop; i = (i+1)%bound.size()) {
+                    pathNodes.add(bound.get(i));
+                }
             }
         }
     }
 
     public void toPoint(Point2D end) {
-        if (robot.pathNodes.size() == 0) robot.pathNodes.add(Point2D.ZERO);
+        if (pathNodes.size() == 0) pathNodes.add(Point2D.ZERO);
 
         // Always start at the last path node
-        Point2D start = robot.pathNodes.get(robot.pathNodes.size() - 1);
+        Point2D start = pathNodes.get(pathNodes.size() - 1);
 
         try {
             Point2D delta = end.subtract(start);
@@ -85,18 +132,18 @@ public class Algorithm {
             Raycast direct = new Raycast(start, Math.toDegrees(angle));
 
             if (direct.getNumHits() > 1) {
-                robot.pathNodes.add(direct.getHitPoint());
+                pathNodes.add(direct.getHitPoint());
 
                 // Go around boundary
-                followBoundary(boundary.bounds.get(direct.getHitPointBoundary()), direct.getHitPointSegment(0)[1], direct.getHitPointSegment(1)[0]);
+                followBoundary(Main.boundary.bounds.get(direct.getHitPointBoundary()), direct.getHitPointSegment(0)[1], direct.getHitPointSegment(1)[0]);
 
-                robot.pathNodes.add(direct.getHitPoint(1));
+                pathNodes.add(direct.getHitPoint(1));
             }
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
             System.out.println("NoHit");
         }
 
-        robot.pathNodes.add(end);
+        pathNodes.add(end);
     }
 }
