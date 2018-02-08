@@ -24,8 +24,7 @@ public class Mouse extends UIObject {
         double distance = closest.distance(position);
         for(int angle = 0; angle <= 360; angle+=2) {
             try {
-                Raycast out = new Raycast(position, angle);
-                UIObject.uiObjects.remove(out);
+                Raycast out = new Raycast(position, angle, false);
                 if(out.getHitPoint().distance(position) < distance) {
                     closest = out.getHitPoint();
                     distance = closest.distance(position);

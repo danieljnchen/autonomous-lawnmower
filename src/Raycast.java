@@ -3,7 +3,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Raycast extends UIObject {
 
@@ -12,24 +11,27 @@ public class Raycast extends UIObject {
     private ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
 
     private ArrayList<RaycastObject> hitPointInfo = new ArrayList<>();
+    private boolean render;
 
     /***
      * Raycasts a ray at the specified angle. Contains the point the ray intersects with a boundary.
      * @param startPoint point to start raycast
      * @param angle in degrees
      */
-    Raycast(Point2D startPoint, double angle) throws NoHitException {
+    Raycast(Point2D startPoint, double angle, boolean render) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
         this.bounds = Main.boundary.bounds;
+        this.render = render;
 
         start(startPoint, angle);
     }
 
-    Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bound) throws NoHitException {
+    Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bound, boolean render) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
         this.bounds.add(bound);
+        this.render = render;
 
         start(startPoint, angle);
     }
@@ -135,22 +137,24 @@ public class Raycast extends UIObject {
     }
 
     public void draw(GraphicsContext gc) {
-        gc.setStroke(Color.BLUE);
-        gc.setFill(Color.DARKBLUE);
-        gc.setLineWidth(1);
+        if(render) {
+            gc.setStroke(Color.BLUE);
+            gc.setFill(Color.DARKBLUE);
+            gc.setLineWidth(1);
 
-        if (hitPointInfo.size() != 0) {
-            RaycastObject raycastObject = hitPointInfo.get(0);
-            // Target line segment
-            gc.strokeLine(raycastObject.getSegmentPoint1().getX(), raycastObject.getSegmentPoint1().getY(), raycastObject.getSegmentPoint2().getX(), raycastObject.getSegmentPoint2().getY());
+            if (hitPointInfo.size() != 0) {
+                RaycastObject raycastObject = hitPointInfo.get(0);
+                // Target line segment
+                gc.strokeLine(raycastObject.getSegmentPoint1().getX(), raycastObject.getSegmentPoint1().getY(), raycastObject.getSegmentPoint2().getX(), raycastObject.getSegmentPoint2().getY());
 
-            // Hit point
-            gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
+                // Hit point
+                gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
 
-            // Raycast line
-            gc.strokeLine(startPoint.getX(), startPoint.getY(), raycastObject.getHitPoint().getX(), raycastObject.getHitPoint().getY());
-        } else {
-            //gc.strokeLine(startPoint.getX(), startPoint.getY(), startPoint.getX() + 5000 * Math.cos(Math.toRadians(angle)), startPoint.getY() + 5000 * Math.sin(Math.toRadians(angle)));
+                // Raycast line
+                gc.strokeLine(startPoint.getX(), startPoint.getY(), raycastObject.getHitPoint().getX(), raycastObject.getHitPoint().getY());
+            } else {
+                //gc.strokeLine(startPoint.getX(), startPoint.getY(), startPoint.getX() + 5000 * Math.cos(Math.toRadians(angle)), startPoint.getY() + 5000 * Math.sin(Math.toRadians(angle)));
+            }
         }
     }
 
