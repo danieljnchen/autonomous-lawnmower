@@ -61,4 +61,8 @@ class Robot extends UIObject {
             approachNextNode();
         }
     }
+
+    public String toString() {
+        return "Robot";
+    }
 }

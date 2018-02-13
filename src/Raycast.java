@@ -160,7 +160,8 @@ public class Raycast extends UIObject {
 
     @Override
     public String toString() {
-        return "Raycast [" + "startPoint = " + startPoint + ", angle = " + angle + "]";
+        //return "Raycast [" + "startPoint = " + startPoint + ", angle = " + angle + "]";
+        return "";
     }
 }
 

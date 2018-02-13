@@ -8,6 +8,7 @@ public class Algorithm {
 
     public void addPathToRobot() {
         Main.robot.queueNodes(pathNodes);
+        pathNodes.clear();
     }
 
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
@@ -138,14 +139,18 @@ public class Algorithm {
             }
 
             if (endIndex != 0) {
-                for (int i = 0; i < endIndex-1; ++i) {
+                for (int i = 0; i < endIndex - 1; i += 2) {
                     pathNodes.add(direct.getHitPoint(i));
+
+                    if (i == endIndex) break;
 
                     // Go around boundary
                     followBoundary(Main.boundary.bounds.get(direct.getHitPointBoundary(i)), direct.getHitPointSegment(i)[1], direct.getHitPointSegment(i)[0]);
 
-                    pathNodes.add(direct.getHitPoint(i+1));
+                    pathNodes.add(direct.getHitPoint(i + 1));
                 }
+            } else {
+                pathNodes.add(direct.getHitPoint(endIndex));
             }
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
