@@ -4,6 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -54,10 +55,18 @@ public class Main extends Application {
             for (File child : directoryListing) {
                 boundary_select.getItems().add(child.getName());
             }
+        } else {
+            dir.mkdir();
         }
 
         if (boundary_select.getItems().size() == 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("No saves found");
+            alert.setContentText("Please create a save using the editor before running the main program.");
 
+            alert.showAndWait();
+
+            System.exit(0);
         }
 
         // Load the default

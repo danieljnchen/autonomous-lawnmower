@@ -137,24 +137,22 @@ public class Raycast extends UIObject {
     }
 
     public void draw(GraphicsContext gc) {
-        if(render) {
-            gc.setStroke(Color.BLUE);
-            gc.setFill(Color.DARKBLUE);
-            gc.setLineWidth(1);
+        if (!render) return;
 
-            if (hitPointInfo.size() != 0) {
-                RaycastObject raycastObject = hitPointInfo.get(0);
-                // Target line segment
-                gc.strokeLine(raycastObject.getSegmentPoint1().getX(), raycastObject.getSegmentPoint1().getY(), raycastObject.getSegmentPoint2().getX(), raycastObject.getSegmentPoint2().getY());
+        gc.setStroke(Color.BLUE);
+        gc.setFill(Color.DARKBLUE);
+        gc.setLineWidth(1);
 
-                // Hit point
-                gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
+        if (getNumHits() > 0) {
+            RaycastObject raycastObject = hitPointInfo.get(0);
+            // Target line segment
+            gc.strokeLine(raycastObject.getSegmentPoint1().getX(), raycastObject.getSegmentPoint1().getY(), raycastObject.getSegmentPoint2().getX(), raycastObject.getSegmentPoint2().getY());
 
-                // Raycast line
-                gc.strokeLine(startPoint.getX(), startPoint.getY(), raycastObject.getHitPoint().getX(), raycastObject.getHitPoint().getY());
-            } else {
-                //gc.strokeLine(startPoint.getX(), startPoint.getY(), startPoint.getX() + 5000 * Math.cos(Math.toRadians(angle)), startPoint.getY() + 5000 * Math.sin(Math.toRadians(angle)));
-            }
+            // Hit point
+            gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
+
+            // Raycast line
+            gc.strokeLine(startPoint.getX(), startPoint.getY(), raycastObject.getHitPoint().getX(), raycastObject.getHitPoint().getY());
         }
     }
 

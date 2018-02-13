@@ -120,7 +120,7 @@ public class Algorithm {
     }
 
     public void toPoint(Point2D end) {
-        if (pathNodes.size() == 0) pathNodes.add(Point2D.ZERO);
+        assert pathNodes.size() > 0;
 
         // Always start at the last path node
         Point2D start = pathNodes.get(pathNodes.size() - 1);
