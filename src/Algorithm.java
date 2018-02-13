@@ -4,20 +4,14 @@ import java.util.ArrayList;
 
 public class Algorithm {
 
-    private final Robot robot;
-
     private ArrayList<Point2D> pathNodes = new ArrayList<>();
 
-    public Algorithm() {
-        this.robot = Main.robot;
+    public void addPathToRobot() {
+        Main.robot.queueNodes(pathNodes);
     }
 
-    public void addPathToRobot() {
-        robot.queueNodes(pathNodes);
-    }
-    
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
-        Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
+        Point2D distanceNext = new Point2D(Main.robot.width * Math.cos(Math.toRadians(angle)), Main.robot.width * Math.sin(Math.toRadians(angle)));
 
         try {
             Raycast right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound(), false); //raycast to the left and the right
@@ -42,7 +36,7 @@ public class Algorithm {
                 try {
                     Point2D nextStartPointTest = left.getHitPoint().add(distBetween.multiply((double) i / 100));
                     next = new Raycast(nextStartPointTest, angle, Main.boundary.getOuterBound(), false);
-                    if(next.getNumHits() % 2 == 0) {
+                    if (next.getNumHits() % 2 == 0) {
                         continue;
                     }
                     double newDistance = next.getHitPoint().distance(nextStartPointTest);
@@ -77,12 +71,12 @@ public class Algorithm {
 
             // indexStart to indexStop inner
             for (int i = indexStart; i < indexStop; i++) {
-                distancePositive += bound.get(i).distance(bound.get((i+1)%bound.size()));
+                distancePositive += bound.get(i).distance(bound.get((i + 1) % bound.size()));
             }
 
             // indexStart to indexStop outer
-            for (int i = indexStart; i != indexStop; i = ((i-1)%bound.size()+bound.size())%bound.size()) {
-                distanceNegative += bound.get(i).distance(bound.get(((i-1)%bound.size()+bound.size())%bound.size()));
+            for (int i = indexStart; i != indexStop; i = ((i - 1) % bound.size() + bound.size()) % bound.size()) {
+                distanceNegative += bound.get(i).distance(bound.get(((i - 1) % bound.size() + bound.size()) % bound.size()));
             }
             System.out.println(distancePositive);
             System.out.println(distanceNegative);
@@ -102,22 +96,22 @@ public class Algorithm {
 
             // indexStart to indexStop inner
             for (int i = indexStart; i > indexStop; i--) {
-                distancePositive += bound.get(i).distance(bound.get(((i-1)%bound.size()+bound.size())%bound.size()));
+                distancePositive += bound.get(i).distance(bound.get(((i - 1) % bound.size() + bound.size()) % bound.size()));
             }
 
             // indexStart to indexStop outer
-            for (int i = indexStart; i != indexStop; i = (i+1)%bound.size()) {
-                distanceNegative += bound.get(i).distance(bound.get((i+1)%bound.size()));
+            for (int i = indexStart; i != indexStop; i = (i + 1) % bound.size()) {
+                distanceNegative += bound.get(i).distance(bound.get((i + 1) % bound.size()));
             }
-            System.out.println("iStart iStop inner"+distancePositive);
-            System.out.println("iStart iStop outer"+distanceNegative);
+            System.out.println("iStart iStop inner" + distancePositive);
+            System.out.println("iStart iStop outer" + distanceNegative);
 
             if (distancePositive < distanceNegative) {
                 for (int i = indexStart; i > indexStop; i--) {
                     pathNodes.add(bound.get(i));
                 }
             } else {
-                for (int i = indexStart; i > indexStop; i = (i+1)%bound.size()) {
+                for (int i = indexStart; i > indexStop; i = (i + 1) % bound.size()) {
                     pathNodes.add(bound.get(i));
                 }
             }
@@ -136,19 +130,27 @@ public class Algorithm {
 
             Raycast direct = new Raycast(start, Math.toDegrees(angle), false);
 
-            if (direct.getNumHits() > 1) {
-                pathNodes.add(direct.getHitPoint());
+            int endIndex;
+            for (endIndex = 0; endIndex < direct.getNumHits(); ++endIndex) {
+                if (direct.getHitPoint(endIndex).equals(end)) {
+                    break;
+                }
+            }
 
-                // Go around boundary
-                followBoundary(Main.boundary.bounds.get(direct.getHitPointBoundary()), direct.getHitPointSegment(0)[1], direct.getHitPointSegment(1)[0]);
+            if (endIndex != 0) {
+                for (int i = 0; i < endIndex-1; ++i) {
+                    pathNodes.add(direct.getHitPoint(i));
 
-                pathNodes.add(direct.getHitPoint(1));
+                    // Go around boundary
+                    followBoundary(Main.boundary.bounds.get(direct.getHitPointBoundary(i)), direct.getHitPointSegment(i)[1], direct.getHitPointSegment(i)[0]);
+
+                    pathNodes.add(direct.getHitPoint(i+1));
+                }
             }
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
+            pathNodes.add(end);
             System.out.println("NoHit");
         }
-
-        pathNodes.add(end);
     }
 }
