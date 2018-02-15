@@ -34,6 +34,7 @@ public class Main extends Application {
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
+        primaryStage.show();
 
         Label label1 = new Label("Comb angle (deg)");
         label1.setLayoutY(40);
@@ -106,8 +107,6 @@ public class Main extends Application {
                 draw(gc);
             }
         }.start();
-
-        primaryStage.show();
     }
 
     private void draw(GraphicsContext gc) {

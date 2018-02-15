@@ -9,6 +9,7 @@ public class Algorithm {
     public void addPathToRobot() {
         Main.robot.queueNodes(pathNodes);
         pathNodes.clear();
+        pathNodes.add(Point2D.ZERO);
     }
 
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
@@ -16,15 +17,13 @@ public class Algorithm {
 
         try {
             Raycast right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound(), false); //raycast to the left and the right
-            System.out.println("Right");
             Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound(), false);
-            System.out.println("Left");
 
             if (side) { //alternate so robot follows a zigzag path
-                pathNodes.add(right.getHitPoint(right.getNumHits() - 1));
+                toPoint(right.getHitPoint(right.getNumHits() - 1));
                 toPoint(left.getHitPoint(left.getNumHits() - 1));
             } else {
-                pathNodes.add(left.getHitPoint(left.getNumHits() - 1));
+                toPoint(left.getHitPoint(left.getNumHits() - 1));
                 toPoint(right.getHitPoint(right.getNumHits() - 1));
             }
 
@@ -66,23 +65,51 @@ public class Algorithm {
     }
 
     public void followBoundary(ArrayList<Point2D> bound, int indexStart, int indexStop) {
+        double distanceInc = 0;
+        double distanceDec = 0;
+
+        // Incrementing
+        for (int i = indexStart; i != modulus(indexStop - 1, bound.size()); i = modulus(i + 1, bound.size())) {
+            distanceInc += bound.get(i).distance(bound.get(modulus(i + 1, bound.size())));
+        }
+
+        // Decrementing
+        for (int i = indexStart; i != indexStop % bound.size(); i = modulus(i - 1, bound.size())) {
+            distanceDec += bound.get(i).distance(bound.get(modulus(i - 1, bound.size())));
+        }
+
+        System.out.println("distanceInc: " + distanceInc);
+        System.out.println("distanceDec: " + distanceDec);
+
+        if (distanceInc < distanceDec) {
+            for (int i = indexStart; i != indexStop; i = modulus(i + 1, bound.size())) {
+                pathNodes.add(bound.get(i));
+            }
+        } else {
+            for (int i = indexStart; i != indexStop; i = modulus(i - 1, bound.size())) {
+                pathNodes.add(bound.get(i));
+            }
+        }
+    }
+
+    /*public void followBoundary(ArrayList<Point2D> bound, int indexStart, int indexStop) {
         if (indexStart < indexStop) {
-            double distancePositive = 0;
-            double distanceNegative = 0;
+            double distanceInner = 0;
+            double distanceOuter = 0;
 
             // indexStart to indexStop inner
-            for (int i = indexStart; i < indexStop; i++) {
-                distancePositive += bound.get(i).distance(bound.get((i + 1) % bound.size()));
+            for (int i = indexStart; i < indexStop - 1; i++) {
+                distanceInner += bound.get(i).distance(bound.get(i + 1));
             }
 
             // indexStart to indexStop outer
-            for (int i = indexStart; i != indexStop; i = ((i - 1) % bound.size() + bound.size()) % bound.size()) {
-                distanceNegative += bound.get(i).distance(bound.get(((i - 1) % bound.size() + bound.size()) % bound.size()));
+            for (int i = indexStart; i != indexStop + 1; i = ((i - 1) % bound.size() + bound.size()) % bound.size()) {
+                distanceOuter += bound.get(i).distance(bound.get(((i - 1) % bound.size() + bound.size()) % bound.size()));
             }
-            System.out.println(distancePositive);
-            System.out.println(distanceNegative);
+            System.out.println(distanceInner);
+            System.out.println(distanceOuter);
 
-            if (distancePositive < distanceNegative) {
+            if (distanceInner < distanceOuter) {
                 for (int i = indexStart; i < indexStop; i++) {
                     pathNodes.add(bound.get(i));
                 }
@@ -92,22 +119,22 @@ public class Algorithm {
                 }
             }
         } else {
-            double distancePositive = 0;
-            double distanceNegative = 0;
+            double distanceInner = 0;
+            double distanceOuter = 0;
 
             // indexStart to indexStop inner
-            for (int i = indexStart; i > indexStop; i--) {
-                distancePositive += bound.get(i).distance(bound.get(((i - 1) % bound.size() + bound.size()) % bound.size()));
+            for (int i = indexStart; i > indexStop + 1; i--) {
+                distanceInner += bound.get(i).distance(bound.get(i - 1));
             }
 
             // indexStart to indexStop outer
             for (int i = indexStart; i != indexStop; i = (i + 1) % bound.size()) {
-                distanceNegative += bound.get(i).distance(bound.get((i + 1) % bound.size()));
+                distanceOuter += bound.get(i).distance(bound.get((i + 1) % bound.size()));
             }
-            System.out.println("iStart iStop inner" + distancePositive);
-            System.out.println("iStart iStop outer" + distanceNegative);
+            System.out.println("reverse inner " + distanceInner);
+            System.out.println("reverse outer " + distanceOuter);
 
-            if (distancePositive < distanceNegative) {
+            if (distanceInner > distanceOuter) {
                 for (int i = indexStart; i > indexStop; i--) {
                     pathNodes.add(bound.get(i));
                 }
@@ -117,10 +144,10 @@ public class Algorithm {
                 }
             }
         }
-    }
+    }*/
 
     public void toPoint(Point2D end) {
-        assert pathNodes.size() > 0;
+        if (pathNodes.size() == 0) return;
 
         // Always start at the last path node
         Point2D start = pathNodes.get(pathNodes.size() - 1);
@@ -139,7 +166,7 @@ public class Algorithm {
             }
 
             if (endIndex != 0) {
-                for (int i = 0; i < endIndex - 1; i += 2) {
+                for (int i = 0; i < endIndex - 2; i += 2) {
                     pathNodes.add(direct.getHitPoint(i));
 
                     if (i == endIndex) break;
@@ -155,7 +182,11 @@ public class Algorithm {
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
             pathNodes.add(end);
-            System.out.println("NoHit");
+            System.out.println("toPoint wasn't obstructed");
         }
+    }
+
+    private static int modulus(int a, int n) {
+        return ((a % n) + n) % n;
     }
 }
