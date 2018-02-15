@@ -6,6 +6,10 @@ public class Algorithm {
 
     private ArrayList<Point2D> pathNodes = new ArrayList<>();
 
+    public Algorithm() {
+        pathNodes.add(Point2D.ZERO);
+    }
+
     public void addPathToRobot() {
         Main.robot.queueNodes(pathNodes);
         pathNodes.clear();
@@ -55,7 +59,7 @@ public class Algorithm {
 
             raycastIterative(nextStartPoint.add(distanceNext), angle, !side);
         } catch (NoHitException e) {
-            System.out.println("NoHitException");
+            System.out.println("raycastIterative reached end");
         }
     }
 
@@ -74,7 +78,7 @@ public class Algorithm {
         }
 
         // Decrementing
-        for (int i = indexStart; i != indexStop % bound.size(); i = modulus(i - 1, bound.size())) {
+        for (int i = indexStart; i != modulus(indexStop + 1, bound.size()); i = modulus(i - 1, bound.size())) {
             distanceDec += bound.get(i).distance(bound.get(modulus(i - 1, bound.size())));
         }
 
@@ -164,6 +168,8 @@ public class Algorithm {
                     break;
                 }
             }
+
+            System.out.println(endIndex);
 
             if (endIndex != 0) {
                 for (int i = 0; i < endIndex - 2; i += 2) {
