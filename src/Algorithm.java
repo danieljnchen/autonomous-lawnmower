@@ -74,11 +74,13 @@ public class Algorithm {
 
         // Incrementing
         for (int i = indexStart; i != modulus(indexStop - 1, bound.size()); i = modulus(i + 1, bound.size())) {
+            System.out.println(i);
             distanceInc += bound.get(i).distance(bound.get(modulus(i + 1, bound.size())));
         }
 
         // Decrementing
-        for (int i = indexStart; i != modulus(indexStop + 1, bound.size()); i = modulus(i - 1, bound.size())) {
+        for (int i = indexStart; i != indexStop; i = modulus(i - 1, bound.size())) {
+            System.out.println(i);
             distanceDec += bound.get(i).distance(bound.get(modulus(i - 1, bound.size())));
         }
 
@@ -108,14 +110,21 @@ public class Algorithm {
         try {
             Raycast direct = new Raycast(start, Math.toDegrees(angle), false);
 
-            int endIndex;
-            for (endIndex = 0; endIndex < direct.getNumHits(); ++endIndex) {
-                if (direct.getHitPoint(endIndex).distance(end) < 0.1) {
-                    break;
+            // Find the hit point that corresponds with the point we are going to
+            int endIndex = -1;
+            for (int i = 0; i < direct.getNumHits(); i++) {
+                if (direct.getHitPoint(i).distance(end) < 0.1) {
+                    endIndex = i;
                 }
             }
 
-            System.out.println(endIndex);
+            // If the raycast doesn't go through the end point, just go to the end
+            if (endIndex == -1) {
+                pathNodes.add(end);
+                return;
+            }
+
+            //System.out.println(endIndex);
 
             if (endIndex != 0) {
                 for (int i = 0; i < endIndex - 2; i += 2) {
@@ -128,14 +137,13 @@ public class Algorithm {
 
                     pathNodes.add(direct.getHitPoint(i + 1));
                 }
-            } else {
-                pathNodes.add(direct.getHitPoint(endIndex));
             }
         } catch (NoHitException e) {
             // If we haven't hit anything, just go straight to the end point
-            pathNodes.add(end);
             System.out.println("toPoint wasn't obstructed");
         }
+
+        pathNodes.add(end);
     }
 
     private static int modulus(int a, int n) {
