@@ -24,11 +24,11 @@ public class Algorithm {
             Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound(), false);
 
             if (side) { //alternate so robot follows a zigzag path
-                toPoint(right.getHitPoint(right.getNumHits() - 1));
-                toPoint(left.getHitPoint(left.getNumHits() - 1));
+                pathNodes.add(right.getHitPoint(right.getNumHits() - 1));
+                pathNodes.add(left.getHitPoint(left.getNumHits() - 1));
             } else {
-                toPoint(left.getHitPoint(left.getNumHits() - 1));
-                toPoint(right.getHitPoint(right.getNumHits() - 1));
+                pathNodes.add(left.getHitPoint(left.getNumHits() - 1));
+                pathNodes.add(right.getHitPoint(right.getNumHits() - 1));
             }
 
             Raycast next;
@@ -151,20 +151,20 @@ public class Algorithm {
     }*/
 
     public void toPoint(Point2D end) {
-        if (pathNodes.size() == 0) return;
+        assert pathNodes.size() != 0;
 
         // Always start at the last path node
         Point2D start = pathNodes.get(pathNodes.size() - 1);
 
-        try {
-            Point2D delta = end.subtract(start);
-            double angle = Math.atan2(delta.getY(), delta.getX());
+        Point2D delta = end.subtract(start);
+        double angle = Math.atan2(delta.getY(), delta.getX());
 
+        try {
             Raycast direct = new Raycast(start, Math.toDegrees(angle), false);
 
             int endIndex;
             for (endIndex = 0; endIndex < direct.getNumHits(); ++endIndex) {
-                if (direct.getHitPoint(endIndex).equals(end)) {
+                if (direct.getHitPoint(endIndex).distance(end) < 0.1) {
                     break;
                 }
             }
