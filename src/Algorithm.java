@@ -74,18 +74,13 @@ public class Algorithm {
 
         // Incrementing
         for (int i = indexStart; i != modulus(indexStop - 1, bound.size()); i = modulus(i + 1, bound.size())) {
-            System.out.println(i);
             distanceInc += bound.get(i).distance(bound.get(modulus(i + 1, bound.size())));
         }
 
         // Decrementing
-        for (int i = indexStart; i != indexStop; i = modulus(i - 1, bound.size())) {
-            System.out.println(i);
+        for (int i = indexStart; i != modulus(indexStop - 1, bound.size()); i = modulus(i - 1, bound.size())) {
             distanceDec += bound.get(i).distance(bound.get(modulus(i - 1, bound.size())));
         }
-
-        System.out.println("distanceInc: " + distanceInc);
-        System.out.println("distanceDec: " + distanceDec);
 
         if (distanceInc < distanceDec) {
             for (int i = indexStart; i != indexStop; i = modulus(i + 1, bound.size())) {
