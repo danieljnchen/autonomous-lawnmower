@@ -1,22 +1,25 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
 
 public class Main extends Application {
-    static Robot robot = new Robot();
-    static Boundary boundary = new Boundary();
-    static Algorithm algorithm = new Algorithm(robot, boundary);
+
+    public static Robot robot = new Robot();
+    public static Boundary boundary = new Boundary();
+    public static Algorithm algorithm = new Algorithm();
+    public static Mouse mouse = new Mouse();
 
     public static void main(String[] args) {
         launch(args);
@@ -31,6 +34,7 @@ public class Main extends Application {
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
+        primaryStage.show();
 
         Label label1 = new Label("Comb angle (deg)");
         label1.setLayoutY(40);
@@ -52,26 +56,57 @@ public class Main extends Application {
             for (File child : directoryListing) {
                 boundary_select.getItems().add(child.getName());
             }
+        } else {
+            dir.mkdir();
+        }
+
+        if (boundary_select.getItems().size() == 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("No saves found");
+            alert.setContentText("Please create a save using the editor before running the main program.");
+
+            alert.showAndWait();
+
+            System.exit(0);
         }
 
         // Load the default
         boundary_select.setValue(boundary_select.getItems().get(0));
         boundary.load(boundary_select.getValue());
 
-        // Create comb on mouse click
-        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-                algorithm.raycastComb(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText())));
+        Text text = new Text();
+        text.setX(400);
+        text.setY(20);
+        root.getChildren().add(text);
+        //Track mouse
+        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> {
+            mouse.setPos(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+            text.setText(mouse.getX() + " " + mouse.getY());
+        });
 
-        new AnimationTimer()
+        // Create comb on mouse click
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            algorithm.raycastIterative(mouse.getClosestPoint().add(
+                    robot.width * Math.cos(Math.toRadians(Double.parseDouble(comb_angle.getText()))) / 2,
+                    robot.width * Math.sin(Math.toRadians(Double.parseDouble(comb_angle.getText()))) / 2),
+                    Double.parseDouble(comb_angle.getText()), false);
+            algorithm.addPathToRobot();
+        });
+        /*canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
         {
-            public void handle(long currentNanoTime)
-            {
+            try {
+                new Raycast(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()), Double.parseDouble(comb_angle.getText()));
+            } catch(NoHitException e) {
+                e.printStackTrace();
+            }
+        });*/
+
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
                 draw(gc);
             }
         }.start();
-
-        primaryStage.show();
     }
 
     private void draw(GraphicsContext gc) {
