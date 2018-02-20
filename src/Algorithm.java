@@ -108,39 +108,41 @@ public class Algorithm {
         double angle = Math.atan2(delta.getY(), delta.getX());
 
         try {
+            // Raycast directly to the end point
             Raycast direct = new Raycast(start, Math.toDegrees(angle), false);
 
             // Find the hit point that corresponds with the point we are going to
             int endIndex = -1;
             for (int i = 0; i < direct.getNumHits(); i++) {
-                if (direct.getHitPoint(i).distance(end) < 0.1) {
+                if (direct.getHitPoint(i).distance(end) < 0.01) {
                     endIndex = i;
                 }
             }
 
-            // If the raycast doesn't go through the end point, just go to the end
+            // If the end point does not lie on a boundary, go to the end
             if (endIndex == -1) {
                 pathNodes.add(end);
                 return;
             }
 
-            //System.out.println(endIndex);
-
-            if (endIndex != 0) {
-                for (int i = 0; i < endIndex - 2; i += 2) {
-                    pathNodes.add(direct.getHitPoint(i));
-
-                    if (i == endIndex) break;
-
-                    // Go around boundary
-                    followBoundary(Main.boundary.bounds.get(direct.getHitPointBoundary(i)), direct.getHitPointSegment(i)[1], direct.getHitPointSegment(i)[0]);
-
-                    pathNodes.add(direct.getHitPoint(i + 1));
-                }
+            // If the index is odd, something is wrong
+            if (endIndex % 2 == 1) {
+                pathNodes.add(end);
+                return;
             }
+
+            // Go around each pair of hitpoints
+            for (int i = 0; i < endIndex; i += 2) {
+                pathNodes.add(direct.getHitPoint(i));
+
+                // Go around the boundary of this hitpoint pair
+                followBoundary(Main.boundary.bounds.get(direct.getHitPointBoundary(i)), direct.getHitPointSegment(i)[1], direct.getHitPointSegment(i + 1)[0]);
+
+                pathNodes.add(direct.getHitPoint(i + 1));
+            }
+
         } catch (NoHitException e) {
-            // If we haven't hit anything, just go straight to the end point
-            System.out.println("toPoint wasn't obstructed");
+            // Raycast went outside of boundary, go to the end
         }
 
         pathNodes.add(end);
