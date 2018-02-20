@@ -34,6 +34,7 @@ public class Main extends Application {
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
+        primaryStage.show();
 
         Label label1 = new Label("Comb angle (deg)");
         label1.setLayoutY(40);
@@ -84,11 +85,13 @@ public class Main extends Application {
         });
 
         // Create comb on mouse click
-        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
-                algorithm.raycastIterative(mouse.getClosestPoint().add(
-                        robot.width*Math.cos(Math.toRadians(Double.parseDouble(comb_angle.getText())))/2,
-                        robot.width*Math.sin(Math.toRadians(Double.parseDouble(comb_angle.getText())))/2),
-                        Double.parseDouble(comb_angle.getText()), false));
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            algorithm.raycastIterative(mouse.getClosestPoint().add(
+                    robot.width * Math.cos(Math.toRadians(Double.parseDouble(comb_angle.getText()))) / 2,
+                    robot.width * Math.sin(Math.toRadians(Double.parseDouble(comb_angle.getText()))) / 2),
+                    Double.parseDouble(comb_angle.getText()), false);
+            algorithm.addPathToRobot();
+        });
         /*canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->
         {
             try {
@@ -98,16 +101,12 @@ public class Main extends Application {
             }
         });*/
 
-        new AnimationTimer()
-        {
-            public void handle(long currentNanoTime)
-            {
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
                 gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
                 draw(gc);
             }
         }.start();
-
-        primaryStage.show();
     }
 
     private void draw(GraphicsContext gc) {
