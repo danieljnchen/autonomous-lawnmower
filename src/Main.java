@@ -27,7 +27,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Algorithm");
+        primaryStage.setTitle("IntelliMow Viewer");
         Group root = new Group();
         Canvas canvas = new Canvas(1400, 900);
         GraphicsContext gc = canvas.getGraphicsContext2D();

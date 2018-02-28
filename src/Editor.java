@@ -29,10 +29,10 @@ public class Editor extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Editor");
+        stage.setTitle("IntelliMow Editor");
 
         Group root = new Group();
-        Canvas canvas = new Canvas(800, 600);
+        Canvas canvas = new Canvas(1400, 900);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
