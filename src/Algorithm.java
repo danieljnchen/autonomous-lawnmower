@@ -36,7 +36,7 @@ public class Algorithm {
             Point2D distBetween = right.getHitPoint().subtract(left.getHitPoint());
             double maxDistance = 0;
 
-            for (int i = 0; i <= 100; ++i) {
+            for (int i = 1; i < 100; ++i) {
                 try {
                     Point2D nextStartPointTest = left.getHitPoint().add(distBetween.multiply((double) i / 100));
                     next = new Raycast(nextStartPointTest, angle, Main.boundary.getOuterBound(), false);
@@ -78,7 +78,7 @@ public class Algorithm {
         }
 
         // Decrementing
-        for (int i = indexStart; i != modulus(indexStop - 1, bound.size()); i = modulus(i - 1, bound.size())) {
+        for (int i = indexStart; i != modulus(indexStop + 1, bound.size()); i = modulus(i - 1, bound.size())) {
             distanceDec += bound.get(i).distance(bound.get(modulus(i - 1, bound.size())));
         }
 
