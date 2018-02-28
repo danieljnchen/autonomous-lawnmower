@@ -65,22 +65,19 @@ public class Editor extends Application {
         ToggleButton tb1 = new ToggleButton("Erase mode");
         tb1.setLayoutY(50);
         root.getChildren().add(tb1);
-        canvas.addEventFilter(MouseEvent.MOUSE_MOVED, mouseEvent -> runDraw(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY())));
 
-        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            if (drawMode == DrawMode.NONE) {
-                if (tb1.isSelected()) {
-                    drawMode = DrawMode.ERASE;
-                } else {
-                    drawMode = DrawMode.DRAW;
-                }
+        canvas.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseEvent -> {
+            if (tb1.isSelected()) {
+                drawMode = DrawMode.ERASE;
             } else {
-                drawMode = DrawMode.NONE;
+                drawMode = DrawMode.DRAW;
             }
 
             // Run the draw to place a single point
             runDraw(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
         });
+
+        canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEvent -> drawMode = DrawMode.NONE);
 
         /*stage.setOnCloseRequest(event -> {
             exit();
