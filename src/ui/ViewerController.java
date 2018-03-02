@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
-public class Controller {
+public class ViewerController {
     public static Robot robot = new Robot();
     public static Boundary boundary = new Boundary();
     public static Algorithm algorithm = new Algorithm();

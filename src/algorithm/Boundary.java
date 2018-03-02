@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
-import static ui.Controller.robot;
+import static ui.ViewerController.robot;
 
 public class Boundary extends UIObject {
     public ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();

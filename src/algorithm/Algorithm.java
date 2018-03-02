@@ -4,8 +4,8 @@ import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
 
-import static ui.Controller.boundary;
-import static ui.Controller.robot;
+import static ui.ViewerController.boundary;
+import static ui.ViewerController.robot;
 
 public class Algorithm {
 
