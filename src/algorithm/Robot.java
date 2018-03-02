@@ -45,7 +45,7 @@ public class Robot extends UIObject {
     }
 
     public void draw(GraphicsContext gc) {
-        // algorithm.Robot shape
+        // Robot shape
         gc.setFill(Color.ORANGE);
         gc.fillRect(pos.getX() - width / 2, pos.getY() - length / 2, width, length);
 

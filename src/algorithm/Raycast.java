@@ -155,7 +155,7 @@ public class Raycast extends UIObject {
             // Hit point
             gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
 
-            // algorithm.Raycast line
+            // Raycast line
             gc.strokeLine(startPoint.getX(), startPoint.getY(), raycastObject.getHitPoint().getX(), raycastObject.getHitPoint().getY());
         }
     }

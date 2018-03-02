@@ -108,7 +108,7 @@ public class Algorithm {
         double angle = Math.atan2(delta.getY(), delta.getX());
 
         try {
-            // algorithm.Raycast directly to the end point
+            // Raycast directly to the end point
             Raycast direct = new Raycast(start, Math.toDegrees(angle), false);
 
             // Find the hit point that corresponds with the point we are going to
@@ -142,7 +142,7 @@ public class Algorithm {
             }
 
         } catch (NoHitException e) {
-            // algorithm.Raycast went outside of boundary, go to the end
+            // Raycast went outside of boundary, go to the end
         }
 
         pathNodes.add(end);
