@@ -3,6 +3,8 @@ package algorithm;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import utility.NoHitException;
+import utility.RaycastObject;
 
 import java.util.ArrayList;
 
@@ -163,11 +165,5 @@ public class Raycast extends UIObject {
     @Override
     public String toString() {
         return "Raycast [" + "startPoint = " + startPoint + ", angle = " + angle + "]";
-    }
-}
-
-class NoHitException extends Exception {
-    NoHitException(String message) {
-        super(message);
     }
 }
