@@ -77,6 +77,17 @@ public class Editor extends Application {
             runDraw(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
         });
 
+        canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if (tb1.isSelected()) {
+                drawMode = DrawMode.ERASE;
+            } else {
+                drawMode = DrawMode.DRAW;
+            }
+
+            // Run the draw to place a single point
+            runDraw(new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+        });
+
         canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEvent -> drawMode = DrawMode.NONE);
 
         /*stage.setOnCloseRequest(event -> {
