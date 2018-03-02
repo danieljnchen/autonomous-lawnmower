@@ -3,14 +3,13 @@ package algorithm;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import viewer.Controller;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
-import static viewer.Controller.robot;
+import static ui.Controller.robot;
 
 public class Boundary extends UIObject {
     public ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();

@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import static viewer.Controller.boundary;
+import static ui.Controller.boundary;
 
 public class Mouse extends UIObject {
     private Point2D position;

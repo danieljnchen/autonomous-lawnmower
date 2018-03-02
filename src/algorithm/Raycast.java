@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-import static viewer.Controller.boundary;
+import static ui.Controller.boundary;
 
 public class Raycast extends UIObject {
 

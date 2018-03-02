@@ -1,4 +1,4 @@
-package viewer;
+package ui;
 
 import algorithm.*;
 import javafx.animation.AnimationTimer;
@@ -8,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
@@ -82,24 +81,16 @@ public class Controller {
             dir.mkdir();
         }
 
-        if (boundarySelector.getItems().size() == 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("No saves found");
-            alert.setContentText("Please create a save using the editor before running the main program.");
-
-            alert.showAndWait();
-
-            System.exit(0);
+        if (boundarySelector.getItems().size() > 0) {
+            // Select the default
+            boundarySelector.setValue(boundarySelector.getItems().get(0));
+            boundary.load(boundarySelector.getValue());
         }
-
-        // Select the default
-        boundarySelector.setValue(boundarySelector.getItems().get(0));
-        boundary.load(boundarySelector.getValue());
     }
 
     private void openEditor() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("../editor/editor.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("editor.fxml"));
             Stage primaryStage = new Stage();
             primaryStage.setTitle("IntelliMow Editor");
             primaryStage.setScene(new Scene(root));

@@ -1,4 +1,4 @@
-package editor;
+package ui;
 
 import algorithm.Boundary;
 import algorithm.UIObject;
@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Controller {
+public class EditorController {
     public static Boundary boundary = new Boundary();
 
     @FXML private Canvas canvas;
@@ -105,19 +105,8 @@ public class Controller {
             dir.mkdir();
         }
 
-        if (boundarySelector.getItems().size() == 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("No saves found");
-            alert.setContentText("Please create a save using the editor before running the main program.");
-
-            alert.showAndWait();
-
-            System.exit(0);
-        }
-
         // Load the default
         boundarySelector.setValue(boundarySelector.getItems().get(0));
-        boundary.load(boundarySelector.getValue());
     }
 
     private void exit() {
@@ -185,7 +174,7 @@ public class Controller {
 
     private void updatePerimColor() {
         if (boundary.bounds.size() == 0) {
-            currentPerimeter.setFill(Color.BLACK);
+            currentPerimeter.setFill(boundary.colorCycle[0]);
             return;
         }
 
