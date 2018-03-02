@@ -118,8 +118,4 @@ public class Boundary extends UIObject {
             }
         }
     }
-
-    public String toString() {
-        return "Boundary";
-    }
 }

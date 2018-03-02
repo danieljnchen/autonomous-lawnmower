@@ -41,8 +41,4 @@ public class Mouse extends UIObject {
         gc.setFill(Color.CRIMSON);
         gc.fillOval(closest.getX() - 4, closest.getY() - 4, 8, 8);
     }
-
-    public String toString() {
-        return "Mouse";
-    }
 }
