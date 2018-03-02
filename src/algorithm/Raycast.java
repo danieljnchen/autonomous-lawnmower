@@ -1,8 +1,12 @@
+package algorithm;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+
+import static viewer.Controller.boundary;
 
 public class Raycast extends UIObject {
 
@@ -21,7 +25,7 @@ public class Raycast extends UIObject {
     Raycast(Point2D startPoint, double angle, boolean render) throws NoHitException {
         this.startPoint = startPoint;
         this.angle = angle;
-        this.bounds = Main.boundary.bounds;
+        this.bounds = boundary.bounds;
         this.render = render;
 
         start(startPoint, angle);
@@ -151,14 +155,14 @@ public class Raycast extends UIObject {
             // Hit point
             gc.fillOval(getHitPoint().getX() - 2, getHitPoint().getY() - 2, 4, 4);
 
-            // Raycast line
+            // algorithm.Raycast line
             gc.strokeLine(startPoint.getX(), startPoint.getY(), raycastObject.getHitPoint().getX(), raycastObject.getHitPoint().getY());
         }
     }
 
     @Override
     public String toString() {
-        //return "Raycast [" + "startPoint = " + startPoint + ", angle = " + angle + "]";
+        //return "algorithm.Raycast [" + "startPoint = " + startPoint + ", angle = " + angle + "]";
         return "";
     }
 }

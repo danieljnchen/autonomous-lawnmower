@@ -1,6 +1,11 @@
+package algorithm;
+
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
+
+import static viewer.Controller.boundary;
+import static viewer.Controller.robot;
 
 public class Algorithm {
 
@@ -11,17 +16,17 @@ public class Algorithm {
     }
 
     public void addPathToRobot() {
-        Main.robot.queueNodes(pathNodes);
+        robot.queueNodes(pathNodes);
         pathNodes.clear();
         pathNodes.add(Point2D.ZERO);
     }
 
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
-        Point2D distanceNext = new Point2D(Main.robot.width * Math.cos(Math.toRadians(angle)), Main.robot.width * Math.sin(Math.toRadians(angle)));
+        Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
 
         try {
-            Raycast right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound(), false); //raycast to the left and the right
-            Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound(), false);
+            Raycast right = new Raycast(startPoint, angle + 90, boundary.getOuterBound(), false); //raycast to the left and the right
+            Raycast left = new Raycast(startPoint, angle - 90, boundary.getOuterBound(), false);
 
             if (side) { //alternate so robot follows a zigzag path
                 toPoint(right.getHitPoint(right.getNumHits() - 1));
@@ -39,7 +44,7 @@ public class Algorithm {
             for (int i = 1; i < 100; ++i) {
                 try {
                     Point2D nextStartPointTest = left.getHitPoint().add(distBetween.multiply((double) i / 100));
-                    next = new Raycast(nextStartPointTest, angle, Main.boundary.getOuterBound(), false);
+                    next = new Raycast(nextStartPointTest, angle, boundary.getOuterBound(), false);
                     if (next.getNumHits() % 2 == 0) {
                         continue;
                     }
@@ -103,7 +108,7 @@ public class Algorithm {
         double angle = Math.atan2(delta.getY(), delta.getX());
 
         try {
-            // Raycast directly to the end point
+            // algorithm.Raycast directly to the end point
             Raycast direct = new Raycast(start, Math.toDegrees(angle), false);
 
             // Find the hit point that corresponds with the point we are going to
@@ -131,13 +136,13 @@ public class Algorithm {
                 pathNodes.add(direct.getHitPoint(i));
 
                 // Go around the boundary of this hitpoint pair
-                followBoundary(Main.boundary.bounds.get(direct.getHitPointBoundary(i)), direct.getHitPointSegment(i)[1], direct.getHitPointSegment(i + 1)[0]);
+                followBoundary(boundary.bounds.get(direct.getHitPointBoundary(i)), direct.getHitPointSegment(i)[1], direct.getHitPointSegment(i + 1)[0]);
 
                 pathNodes.add(direct.getHitPoint(i + 1));
             }
 
         } catch (NoHitException e) {
-            // Raycast went outside of boundary, go to the end
+            // algorithm.Raycast went outside of boundary, go to the end
         }
 
         pathNodes.add(end);

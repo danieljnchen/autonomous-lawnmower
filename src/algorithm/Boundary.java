@@ -1,19 +1,23 @@
+package algorithm;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import viewer.Controller;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class Boundary extends UIObject {
-    public static final int CONCAVE = 0;
-    public static final int CONVEX = 1;
-    ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
-    private Color[] colorCycle = {Color.BLACK, Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON};
+import static viewer.Controller.robot;
 
-    Boundary() {
+public class Boundary extends UIObject {
+    public ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
+
+    public Color[] colorCycle = {Color.BLACK, Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON};
+
+    public Boundary() {
         Color[] colors = new Color[colorCycle.length];
 
         for (int i = 0; i < colorCycle.length; i++) {
@@ -23,8 +27,6 @@ public class Boundary extends UIObject {
         System.arraycopy(colors, 0, colorCycle, 0, colorCycle.length);
     }
 
-    public static String defaultSave = "default";
-
     public ArrayList<Point2D> getOuterBound() {
         return bounds.get(0);
     }
@@ -32,38 +34,6 @@ public class Boundary extends UIObject {
     public ArrayList<ArrayList<Point2D>> getInnerBounds() {
         return (ArrayList<ArrayList<Point2D>>) bounds.subList(1, bounds.size() - 1);
     }
-
-    /*
-    public ArrayList<Point2D> makeConcave (ArrayList<Point2D> bound) {
-        ArrayList<ArrayList<Point2D>> boundsIn = new ArrayList<>();
-        boundsIn.add(bound);
-        int index1 = -1;
-        int index2 = -1;
-
-        for (int i = 0; i < bound.size(); ++i) {
-            for (int j = 0; j < bound.size(); ++j) {
-                try {
-                    Point2D anglePoint = bound.get(j).subtract(bound.get(i));
-                    double angle = Math.toDegrees(Math.atan2(anglePoint.getY(), anglePoint.getX()));
-                    Raycast concaveCheck = new Raycast(bound.get(i), angle, boundsIn);
-                    if(index1 == -1) {
-                        if (concaveCheck.getNumHit() == 2) {
-                            index1 = i;
-                            break;
-                        }
-                    } else if(index2 == -1) {
-                        if(concaveCheck.getNumHit() != 2) {
-                            index2 = i-1;
-                        }
-                    }
-                } catch (NoHitException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return new ArrayList<Point2D>();
-    }*/
 
     public void save(String fileName) {
         fileName = "saves/" + fileName;
@@ -80,8 +50,6 @@ public class Boundary extends UIObject {
             }
 
             pw.close();
-
-            System.out.println("Boundary saved.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,11 +58,11 @@ public class Boundary extends UIObject {
     public void load(String fileName) {
         fileName = "saves/" + fileName;
 
-        String line = null;
-        try {
-            // Clear the current boundary before loading the new one in
-            clear();
+        // Clear the current boundary before loading the new one in
+        clear();
 
+        String line;
+        try {
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -109,20 +77,31 @@ public class Boundary extends UIObject {
             }
 
             bufferedReader.close();
-
-            System.out.println("Boundary loaded.");
         } catch (Exception e) {
-            e.printStackTrace();
+            // If the file couldn't be found, don't load anything
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void delete(String fileName) {
+        fileName = "saves/" + fileName;
+
+        File file = new File(fileName);
+
+        if (file.delete()) {
+            System.out.println("Save deleted.");
+        } else {
+            System.out.println("Failed to delete the save");
         }
     }
 
     public void clear() {
-        UIObject.uiObjects.clear();
-        UIObject.uiObjects.add(this);
-        UIObject.uiObjects.add(Main.robot);
-        UIObject.uiObjects.add(Main.mouse);
-        Main.robot.reset();
         bounds.clear();
+        robot.reset();
+
+
+
+        UIObject.clearObjects(Raycast.class);
     }
 
     public void draw(GraphicsContext gc) {

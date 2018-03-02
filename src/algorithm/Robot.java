@@ -1,14 +1,17 @@
+package algorithm;
+
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-class Robot extends UIObject {
-    private final double speedCoef = 3;
-    Point2D pos = Point2D.ZERO; // relative to center of robot
-    double length = 15;
-    double width = 10;
+public class Robot extends UIObject {
+    private final double speed = 3;
+
+    public double length = 15;
+    public double width = 10;
+    private Point2D pos = Point2D.ZERO; // relative to center of robot
 
     private ArrayList<Point2D> pathNodes = new ArrayList<>();
     private int curNodeDest = 1;
@@ -28,7 +31,7 @@ class Robot extends UIObject {
         if (!(pathNodes.size() > 1)) return;
 
         Point2D node = pathNodes.get(curNodeDest);
-        if (pos.distance(node) < speedCoef) {
+        if (pos.distance(node) < speed) {
             if (curNodeDest < pathNodes.size() - 1) {
                 curNodeDest++;
             }
@@ -36,13 +39,13 @@ class Robot extends UIObject {
             Point2D delta = node.subtract(pos);
             double angle = Math.atan2(delta.getY(), delta.getX());
 
-            pos = pos.add(speedCoef*Math.cos(angle), speedCoef*Math.sin(angle));
+            pos = pos.add(speed *Math.cos(angle), speed *Math.sin(angle));
 
         }
     }
 
     public void draw(GraphicsContext gc) {
-        // Robot shape
+        // algorithm.Robot shape
         gc.setFill(Color.ORANGE);
         gc.fillRect(pos.getX() - width / 2, pos.getY() - length / 2, width, length);
 
@@ -63,6 +66,6 @@ class Robot extends UIObject {
     }
 
     public String toString() {
-        return "Robot";
+        return "algorithm.Robot";
     }
 }
