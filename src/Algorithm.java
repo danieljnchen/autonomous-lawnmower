@@ -6,22 +6,21 @@ public class Algorithm {
 
     private ArrayList<Point2D> pathNodes = new ArrayList<>();
 
-    public Algorithm() {
-        pathNodes.add(Point2D.ZERO);
-    }
 
     public void addPathToRobot() {
         Main.robot.queueNodes(pathNodes);
+        for(Point2D p : pathNodes) {
+            System.out.println(p);
+        }
         pathNodes.clear();
-        pathNodes.add(Point2D.ZERO);
     }
 
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
         Point2D distanceNext = new Point2D(Main.robot.width * Math.cos(Math.toRadians(angle)), Main.robot.width * Math.sin(Math.toRadians(angle)));
 
         try {
-            Raycast right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound(), false); //raycast to the left and the right
-            Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound(), false);
+            Raycast right = new Raycast(startPoint, angle + 90, Main.boundary.getOuterBound(), true); //raycast to the left and the right
+            Raycast left = new Raycast(startPoint, angle - 90, Main.boundary.getOuterBound(), true);
 
             if (side) { //alternate so robot follows a zigzag path
                 toPoint(right.getHitPoint(right.getNumHits() - 1));
@@ -94,9 +93,12 @@ public class Algorithm {
     }
 
     public void toPoint(Point2D end) {
-        assert pathNodes.size() != 0;
 
         // Always start at the last path node
+        if (pathNodes.size() == 0) {
+            pathNodes.add(end);
+            return;
+        }
         Point2D start = pathNodes.get(pathNodes.size() - 1);
 
         Point2D delta = end.subtract(start);

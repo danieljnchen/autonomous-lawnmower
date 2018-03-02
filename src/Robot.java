@@ -6,11 +6,12 @@ import java.util.ArrayList;
 
 class Robot extends UIObject {
     private final double speedCoef = 3;
-    Point2D pos = Point2D.ZERO; // relative to center of robot
+    Point2D pos; // relative to center of robot
     double length = 15;
     double width = 10;
 
     private ArrayList<Point2D> pathNodes = new ArrayList<>();
+    private ArrayList<Point2D> trace = new ArrayList<>();
     private int curNodeDest = 1;
 
     public void queueNodes(ArrayList<Point2D> nodes) {
@@ -19,8 +20,8 @@ class Robot extends UIObject {
 
     public void reset() {
         pathNodes.clear();
-        pathNodes.add(Point2D.ZERO);
-        pos = pathNodes.get(0);
+        trace.clear();
+        pos = null;
         curNodeDest = 1;
     }
 
@@ -36,7 +37,8 @@ class Robot extends UIObject {
             Point2D delta = node.subtract(pos);
             double angle = Math.atan2(delta.getY(), delta.getX());
 
-            pos = pos.add(speedCoef*Math.cos(angle), speedCoef*Math.sin(angle));
+            pos = pos.add(speedCoef * Math.cos(angle), speedCoef * Math.sin(angle));
+            trace.add(pos);
 
         }
     }
@@ -44,17 +46,26 @@ class Robot extends UIObject {
     public void draw(GraphicsContext gc) {
         // Robot shape
         gc.setFill(Color.ORANGE);
-        gc.fillRect(pos.getX() - width / 2, pos.getY() - length / 2, width, length);
+        if (pos != null) {
+            gc.fillRect(pos.getX() - width / 2, pos.getY() - length / 2, width, length);
+        }
 
+        //Robot path
+        gc.setFill(Color.CRIMSON);
+        for (Point2D p : trace) {
+            gc.fillOval(p.getX(), p.getY(), 4, 4);
+        }
+        /*
         // Planned path
         gc.setLineWidth(5);
         gc.setStroke(Color.RED);
         for (int i = 0; i < pathNodes.size() - 1; i++) {
             gc.strokeLine(pathNodes.get(i).getX(), pathNodes.get(i).getY(), pathNodes.get(i + 1).getX(), pathNodes.get(i + 1).getY());
         }
+        */
 
         if (pathNodes.size() != 0) {
-            if (pos == Point2D.ZERO) {
+            if (pos == null) {
                 pos = pathNodes.get(0);
             }
             gc.fillOval(pathNodes.get(pathNodes.size() - 1).getX(), pathNodes.get(pathNodes.size() - 1).getY(), 5, 5);

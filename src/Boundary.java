@@ -122,6 +122,7 @@ public class Boundary extends UIObject {
         UIObject.uiObjects.add(Main.robot);
         UIObject.uiObjects.add(Main.mouse);
         Main.robot.reset();
+        Raycast.reset();
         bounds.clear();
     }
 
