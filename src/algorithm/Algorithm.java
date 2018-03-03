@@ -1,6 +1,7 @@
 package algorithm;
 
 import javafx.geometry.Point2D;
+import utility.NoHitException;
 
 import java.util.ArrayList;
 
