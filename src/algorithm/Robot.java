@@ -16,6 +16,10 @@ public class Robot extends UIObject {
     private ArrayList<Point2D> pathNodes = new ArrayList<>();
     private int curNodeDest = 1;
 
+    public Robot(ArrayList<UIObject> uiObjects) {
+        super(uiObjects);
+    }
+
     public void queueNodes(ArrayList<Point2D> nodes) {
         pathNodes.addAll(nodes);
     }
@@ -28,7 +32,7 @@ public class Robot extends UIObject {
     }
 
     private void approachNextNode() {
-        if (!(pathNodes.size() > 1)) return;
+        if (pathNodes.size() < 2) return;
 
         Point2D node = pathNodes.get(curNodeDest);
         if (pos.distance(node) < speed) {

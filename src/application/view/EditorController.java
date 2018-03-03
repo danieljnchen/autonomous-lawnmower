@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class EditorController {
-    public static Boundary boundary = new Boundary();
+    public static ArrayList<UIObject> uiObjects = new ArrayList<>();
+
+    public static Boundary boundary = new Boundary(uiObjects);
 
     @FXML private Canvas canvas;
     @FXML private ComboBox<String> boundarySelector;
@@ -27,7 +29,7 @@ public class EditorController {
     @FXML private Button newPerimeter;
     @FXML private Circle currentPerimeter;
 
-    GraphicsContext gc;
+    private GraphicsContext gc;
 
     enum DrawMode {
         NONE,
@@ -53,7 +55,7 @@ public class EditorController {
     }
 
     private void draw(GraphicsContext gc) {
-        for (UIObject obj : UIObject.uiObjects) {
+        for (UIObject obj : uiObjects) {
             obj.draw(gc);
         }
     }
@@ -90,7 +92,7 @@ public class EditorController {
         canvas.addEventFilter(MouseEvent.MOUSE_RELEASED, mouseEvent -> drawMode = DrawMode.NONE);
     }
 
-    public void loadBoundaries() {
+    private void loadBoundaries() {
         boundarySelector.getItems().clear();
 
         // Populate the list with all saves located in the saves folder

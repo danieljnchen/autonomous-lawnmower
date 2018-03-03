@@ -16,7 +16,9 @@ public class Boundary extends UIObject {
 
     public Color[] colorCycle = {Color.BLACK, Color.TURQUOISE, Color.ORANGE, Color.GREEN, Color.RED, Color.BLUE, Color.SALMON};
 
-    public Boundary() {
+    public Boundary(ArrayList<UIObject> uiObjects) {
+        super(uiObjects);
+
         Color[] colors = new Color[colorCycle.length];
 
         for (int i = 0; i < colorCycle.length; i++) {
@@ -100,7 +102,7 @@ public class Boundary extends UIObject {
 
 
 
-        UIObject.clearObjects(Raycast.class);
+        UIObject.removeType(uiObjects, Raycast.class);
     }
 
     public void draw(GraphicsContext gc) {

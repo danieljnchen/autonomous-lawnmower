@@ -4,11 +4,17 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+
 import static application.view.ViewerController.boundary;
 
 public class Mouse extends UIObject {
     private Point2D position;
     private Point2D closest;
+
+    public Mouse(ArrayList<UIObject> uiObjects) {
+        super(uiObjects);
+    }
 
     public void setPos(double xPos, double yPos) {
         position = new Point2D(xPos, yPos);

@@ -14,19 +14,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class ViewerController {
-    public static Robot robot = new Robot();
-    public static Boundary boundary = new Boundary();
+    public static ArrayList<UIObject> uiObjects = new ArrayList<>();
+
+    public static Robot robot = new Robot(uiObjects);
+    public static Boundary boundary = new Boundary(uiObjects);
     public static Algorithm algorithm = new Algorithm();
-    public static Mouse mouse = new Mouse();
+    public static Mouse mouse = new Mouse(uiObjects);
 
     @FXML private Canvas canvas;
     @FXML private ComboBox<String> boundarySelector;
     @FXML private Button reset;
     @FXML private Button openEditor;
 
-    GraphicsContext gc;
+    private GraphicsContext gc;
 
     @FXML
     public void initialize() {
@@ -44,7 +47,7 @@ public class ViewerController {
     }
 
     private void draw(GraphicsContext gc) {
-        for (UIObject obj : UIObject.uiObjects) {
+        for (UIObject obj : uiObjects) {
             obj.draw(gc);
         }
     }
@@ -69,7 +72,7 @@ public class ViewerController {
         });
     }
 
-    public void loadBoundaries() {
+    private void loadBoundaries() {
         // Populate the list with all saves located in the saves folder
         File dir = new File("saves");
         File[] directoryListing = dir.listFiles();
@@ -95,7 +98,7 @@ public class ViewerController {
             primaryStage.setTitle("IntelliMow Editor");
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }

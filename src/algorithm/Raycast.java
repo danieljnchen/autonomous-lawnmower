@@ -1,5 +1,6 @@
 package algorithm;
 
+import application.view.ViewerController;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -22,16 +23,21 @@ public class Raycast extends UIObject {
      * @param startPoint point to start raycast
      * @param angle in degrees
      */
-    Raycast(Point2D startPoint, double angle, boolean render) throws NoHitException {
+    public Raycast(Point2D startPoint, double angle, boolean render) throws NoHitException {
+        super(ViewerController.uiObjects);
+
         this.startPoint = startPoint;
         this.angle = angle;
-        this.bounds = boundary.bounds;
         this.render = render;
+
+        this.bounds = boundary.bounds;
 
         start(startPoint, angle);
     }
 
-    Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bound, boolean render) throws NoHitException {
+    public Raycast(Point2D startPoint, double angle, ArrayList<Point2D> bound, boolean render) throws NoHitException {
+        super(ViewerController.uiObjects);
+
         this.startPoint = startPoint;
         this.angle = angle;
         this.bounds.add(bound);
