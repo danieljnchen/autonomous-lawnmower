@@ -1,12 +1,11 @@
 package algorithm;
 
 import javafx.geometry.Point2D;
-import utility.NoHitException;
 
 import java.util.ArrayList;
 
-import static ui.ViewerController.boundary;
-import static ui.ViewerController.robot;
+import static application.view.ViewerController.boundary;
+import static application.view.ViewerController.robot;
 
 public class Algorithm {
 

@@ -3,9 +3,8 @@ package algorithm;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import utility.NoHitException;
 
-import static ui.ViewerController.boundary;
+import static application.view.ViewerController.boundary;
 
 public class Mouse extends UIObject {
     private Point2D position;

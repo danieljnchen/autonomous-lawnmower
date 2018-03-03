@@ -1,4 +1,4 @@
-package ui;
+package application.view;
 
 import algorithm.*;
 import javafx.animation.AnimationTimer;

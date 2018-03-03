@@ -3,12 +3,10 @@ package algorithm;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import utility.NoHitException;
-import utility.RaycastObject;
 
 import java.util.ArrayList;
 
-import static ui.ViewerController.boundary;
+import static application.view.ViewerController.boundary;
 
 public class Raycast extends UIObject {
 
