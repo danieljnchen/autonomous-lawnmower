@@ -58,7 +58,7 @@ public class Algorithm {
             }
 
             try {
-                next = new Raycast(nextStartPoint, angle, true);
+                new Raycast(nextStartPoint, angle, true);
             } catch (NoHitException e) {
             }
 
@@ -74,6 +74,11 @@ public class Algorithm {
     }
 
     public void followBoundary(ArrayList<Point2D> bound, int indexStart, int indexStop) {
+        if (indexStart < 0 || indexStart >= bound.size()
+                || indexStop < 0 || indexStop >= bound.size()) {
+            throw new IndexOutOfBoundsException("followBoundary indices out of bounds");
+        }
+
         double distanceInc = 0;
         double distanceDec = 0;
 
@@ -96,6 +101,7 @@ public class Algorithm {
                 pathNodes.add(bound.get(i));
             }
         }
+        pathNodes.add(bound.get(indexStop));
     }
 
     public void toPoint(Point2D end) {
@@ -121,12 +127,6 @@ public class Algorithm {
 
             // If the end point does not lie on a boundary, go to the end
             if (endIndex == -1) {
-                pathNodes.add(end);
-                return;
-            }
-
-            // If the index is odd, something is wrong
-            if (endIndex % 2 == 1) {
                 pathNodes.add(end);
                 return;
             }
