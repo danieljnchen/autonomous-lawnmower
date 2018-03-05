@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -13,6 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("view/viewer.fxml"));
         primaryStage.setTitle("IntelliMow Viewer");
         primaryStage.setScene(new Scene(root));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("img/icon.png")));
         primaryStage.show();
     }
 

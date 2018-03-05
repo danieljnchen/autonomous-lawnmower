@@ -30,6 +30,7 @@ public class EditorController {
     @FXML private Circle currentPerimeter;
 
     private GraphicsContext gc;
+    private final double MIN_DRAW_SPACING = 5;
 
     enum DrawMode {
         NONE,
@@ -146,6 +147,10 @@ public class EditorController {
         if (boundary.bounds.size() == 0) {
             boundary.bounds.add(new ArrayList<>());
         }
+
+        ArrayList<Point2D> curBound = boundary.bounds.get(boundary.bounds.size() - 1);
+
+        if (curBound.size() > 0 && curBound.get(curBound.size() - 1).distance(point) < MIN_DRAW_SPACING) return;
 
         boundary.bounds.get(boundary.bounds.size() - 1).add(point);
     }

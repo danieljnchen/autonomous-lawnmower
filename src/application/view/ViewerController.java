@@ -10,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -93,10 +94,12 @@ public class ViewerController {
 
     private void openEditor() {
         try {
+            System.out.println("openEditor");
             Parent root = FXMLLoader.load(getClass().getResource("editor.fxml"));
             Stage primaryStage = new Stage();
             primaryStage.setTitle("IntelliMow Editor");
             primaryStage.setScene(new Scene(root));
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("../img/icon.png")));
             primaryStage.show();
         } catch (Exception ignored) {
 
