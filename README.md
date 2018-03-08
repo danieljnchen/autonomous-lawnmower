@@ -7,4 +7,7 @@ IntelliMow is an algorithm for generating paths robots can follow in order to co
 * Multiple lawn configurations
 * Editor for creating lawn configurations with ease
 
-This was created by two students as a high school Senior engineering project.
+## How To Use
+* The user inputs the boundaries of their lawn through the editor, then saves the boundaries
+
+This was created by two students as a high school senior engineering project.
