@@ -9,5 +9,7 @@ IntelliMow is an algorithm for generating paths robots can follow in order to co
 
 ## How To Use
 * The user inputs the boundaries of their lawn through the editor, then saves the boundaries
+* The user then opens up their lawn, and clicks a point on the boundary for the robot to start from
+* The algorithm plans a path and displays the path and draws a robot following the generated path
 
 This was created by two students as a high school senior engineering project.
