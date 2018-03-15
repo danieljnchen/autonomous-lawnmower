@@ -24,10 +24,10 @@ public class Algorithm {
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
         try {
             // Raycast to the left and right of the current point
-            Raycast right = new Raycast(startPoint, angle + 90, boundary.getOuterBound(), false); //
+            Raycast right = new Raycast(startPoint, angle + 90, boundary.getOuterBound(), false);
             Raycast left = new Raycast(startPoint, angle - 90, boundary.getOuterBound(), false);
 
-            // Alternate so the path is zig-zag
+            // Alternate so the path is zigzag
             if (side) {
                 toPoint(right.getHitPoint(right.getNumHits() - 1));
                 toPoint(left.getHitPoint(left.getNumHits() - 1));
