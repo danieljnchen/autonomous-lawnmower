@@ -28,6 +28,7 @@ public class ViewerController {
     @FXML private Canvas canvas;
     @FXML private ComboBox<String> boundarySelector;
     @FXML private Button reset;
+    @FXML private Button refreshBoundaries;
     @FXML private Button openEditor;
 
     private GraphicsContext gc;
@@ -56,6 +57,7 @@ public class ViewerController {
     private void addEventHandlers() {
         boundarySelector.setOnAction(event -> boundary.load(boundarySelector.getValue()));
         reset.setOnAction(event -> boundary.load(boundarySelector.getValue()));
+        refreshBoundaries.setOnAction(event -> loadBoundaries());
         openEditor.setOnAction((event -> openEditor()));
 
         // Track mouse
