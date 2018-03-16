@@ -22,13 +22,13 @@ public class Algorithm {
     }
 
     public void raycastIterative(Point2D startPoint, double angle, boolean side) {
-        Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
-
         try {
+            // Raycast to the left and right of the current point
             Raycast right = new Raycast(startPoint, angle + 90, boundary.getOuterBound(), true); //raycast to the left and the right
             Raycast left = new Raycast(startPoint, angle - 90, boundary.getOuterBound(), true);
 
-            if (side) { //alternate so robot follows a zigzag path
+            // Alternate so the path is zigzag
+            if (side) {
                 toPoint(right.getHitPoint(right.getNumHits() - 1));
                 toPoint(left.getHitPoint(left.getNumHits() - 1));
             } else {
@@ -36,33 +36,32 @@ public class Algorithm {
                 toPoint(right.getHitPoint(right.getNumHits() - 1));
             }
 
-            Raycast next;
-            Point2D nextStartPoint = startPoint;
+            // Determine where to start the next iteration
+            Point2D nextStart = startPoint;
             Point2D distBetween = right.getHitPoint().subtract(left.getHitPoint());
             double maxDistance = 0;
-
+            // Gets the max distance over 100 intervals
             for (int i = 1; i < 100; ++i) {
                 try {
-                    Point2D nextStartPointTest = left.getHitPoint().add(distBetween.multiply((double) i / 100));
-                    next = new Raycast(nextStartPointTest, angle, boundary.getOuterBound(), false);
-                    if (next.getNumHits() % 2 == 0) {
-                        continue;
-                    }
-                    double newDistance = next.getHitPoint().distance(nextStartPointTest);
+                    Point2D testPoint = left.getHitPoint().add(distBetween.multiply((double) i / 100));
+                    Raycast next = new Raycast(testPoint, angle, boundary.getOuterBound(), false);
+
+                    if (next.getNumHits() % 2 == 0) continue;
+
+                    double newDistance = next.getHitPoint().distance(testPoint);
                     if (newDistance > maxDistance) {
                         maxDistance = newDistance;
-                        nextStartPoint = nextStartPointTest;
+                        nextStart = testPoint;
                     }
-                } catch (NoHitException e) {
-                }
+                } catch (NoHitException ignored) {}
             }
 
             try {
-                new Raycast(nextStartPoint, angle, true);
-            } catch (NoHitException e) {
-            }
+                new Raycast(nextStart, angle, true);
+            } catch (NoHitException ignored) {}
 
-            raycastIterative(nextStartPoint.add(distanceNext), angle, !side);
+            Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
+            raycastIterative(nextStart.add(distanceNext), angle, !side);
         } catch (NoHitException e) {
             System.out.println("raycastIterative reached end");
         }
@@ -76,7 +75,8 @@ public class Algorithm {
     public void followBoundary(ArrayList<Point2D> bound, int indexStart, int indexStop) {
         if (indexStart < 0 || indexStart >= bound.size()
                 || indexStop < 0 || indexStop >= bound.size()) {
-            throw new IndexOutOfBoundsException("followBoundary indices out of bounds");
+            throw new IndexOutOfBoundsException("followBoundary index out of bounds ("
+                    + indexStart + ", "  + indexStop + ", max=" + (bound.size()-1) + ")");
         }
 
         double distanceInc = 0;

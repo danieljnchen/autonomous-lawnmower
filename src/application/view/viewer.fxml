@@ -33,6 +33,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
+            <Button fx:id="refreshBoundaries" mnemonicParsing="false" text="Refresh boundaries" />
             <HBox HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
