@@ -25,8 +25,8 @@ public class Algorithm {
         Point2D distanceNext = new Point2D(robot.width * Math.cos(Math.toRadians(angle)), robot.width * Math.sin(Math.toRadians(angle)));
 
         try {
-            Raycast right = new Raycast(startPoint, angle + 90, boundary.getOuterBound(), false); //raycast to the left and the right
-            Raycast left = new Raycast(startPoint, angle - 90, boundary.getOuterBound(), false);
+            Raycast right = new Raycast(startPoint, angle + 90, boundary.getOuterBound(), true); //raycast to the left and the right
+            Raycast left = new Raycast(startPoint, angle - 90, boundary.getOuterBound(), true);
 
             if (side) { //alternate so robot follows a zigzag path
                 toPoint(right.getHitPoint(right.getNumHits() - 1));

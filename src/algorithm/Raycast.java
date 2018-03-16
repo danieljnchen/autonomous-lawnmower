@@ -16,7 +16,12 @@ public class Raycast extends UIObject {
     private ArrayList<ArrayList<Point2D>> bounds = new ArrayList<>();
 
     private ArrayList<RaycastObject> hitPointInfo = new ArrayList<>();
+
     private boolean render;
+    private static int numberRendered = 0;
+    private static int numberRendering = 0;
+    private int individualNumber;
+    private static long lastRenderTime = System.currentTimeMillis();
 
     /***
      * Raycasts a ray at the specified angle. Contains the point the ray intersects with a boundary.
@@ -47,6 +52,9 @@ public class Raycast extends UIObject {
     }
 
     private void start(Point2D startPoint, double angle) throws NoHitException {
+        if(render) {
+            individualNumber = numberRendering++;
+        }
 
         for (int i = 0; i < bounds.size(); i++) {
             for (int j = 0; j < bounds.get(i).size(); j++) {
@@ -148,6 +156,13 @@ public class Raycast extends UIObject {
 
     public void draw(GraphicsContext gc) {
         if (!render) return;
+        if (System.currentTimeMillis() > lastRenderTime + 500) {
+            lastRenderTime = System.currentTimeMillis();
+            if(numberRendered < numberRendering) {
+                numberRendered++;
+            }
+        }
+        if (individualNumber >= numberRendered) return;
 
         gc.setStroke(Color.BLUE);
         gc.setFill(Color.DARKBLUE);
